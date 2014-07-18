@@ -11,6 +11,7 @@
         "**/.*",
         "*.md",
         "src",
+        "defs",
         "tsd.json",
         "Gruntfile.js",
         "package.json",
