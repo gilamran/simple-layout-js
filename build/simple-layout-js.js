@@ -1,3 +1,76 @@
+var layoutFramework;
+(function (layoutFramework) {
+    (function (items) {
+        var LayoutItem = (function () {
+            function LayoutItem(dispObj) {
+                this.fittedIntoWidth = 0.0;
+                this.fittedIntoHeight = 0.0;
+                this.horizontalAlign = layoutFramework.enums.HorizontalAlignEnum.H_ALIGN_TYPE_NONE;
+                this.verticalAlign = layoutFramework.enums.VerticalAlignEnum.V_ALIGN_TYPE_NONE;
+                this.bestFit = true;
+                this.requestedWidthPercent = 0.0;
+                this.requestedHeightPercent = 0.0;
+                this.parent = null;
+                this.uniqueID = null;
+                this.displayObject = dispObj;
+
+                this.m_id = null;
+            }
+            Object.defineProperty(LayoutItem.prototype, "id", {
+                get: function () {
+                    return this.m_id;
+                },
+                set: function (value) {
+                    this.m_id = value;
+                    if (this.displayObject)
+                        this.displayObject.name = this.m_id;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+
+            LayoutItem.prototype.fitToSize = function (dispObj, w, h) {
+                if (typeof w === "undefined") { w = 0.0; }
+                if (typeof h === "undefined") { h = 0.0; }
+                var imageRatio = dispObj.width / dispObj.height;
+                var containerRatio = w / h;
+
+                if (containerRatio > imageRatio) {
+                    dispObj.height = h;
+                    dispObj.width = imageRatio * dispObj.height;
+                } else {
+                    dispObj.width = w;
+                    dispObj.height = dispObj.width / imageRatio;
+                }
+            };
+
+            LayoutItem.prototype.executeLayout = function () {
+                if (this.displayObject) {
+                    if (this.bestFit) {
+                        this.fitToSize(this.displayObject, this.fittedIntoWidth, this.fittedIntoHeight);
+                    } else {
+                        this.displayObject.width = this.fittedIntoWidth;
+                        this.displayObject.height = this.fittedIntoHeight;
+                    }
+                }
+            };
+
+            LayoutItem.prototype.fitInto = function (w, h) {
+                if (this.displayObject == null)
+                    return;
+
+                this.fittedIntoWidth = w;
+                this.fittedIntoHeight = h;
+
+                this.executeLayout();
+            };
+            return LayoutItem;
+        })();
+        items.LayoutItem = LayoutItem;
+    })(layoutFramework.items || (layoutFramework.items = {}));
+    var items = layoutFramework.items;
+})(layoutFramework || (layoutFramework = {}));
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -80,64 +153,6 @@ var layoutFramework;
         containers.LayoutContainer = LayoutContainer;
     })(layoutFramework.containers || (layoutFramework.containers = {}));
     var containers = layoutFramework.containers;
-})(layoutFramework || (layoutFramework = {}));
-var layoutFramework;
-(function (layoutFramework) {
-    (function (displayObject) {
-        var CreateJSContainerWrapper = (function (_super) {
-            __extends(CreateJSContainerWrapper, _super);
-            function CreateJSContainerWrapper(createjsContainer) {
-                this.m_givenWidth = 0;
-                this.m_givenHeight = 0;
-                if (createjsContainer == null)
-                    throw "createjsContainer is null";
-
-                _super.call(this, createjsContainer);
-            }
-            Object.defineProperty(CreateJSContainerWrapper.prototype, "width", {
-                get: function () {
-                    return this.m_givenWidth;
-                },
-                set: function (value) {
-                    this.m_givenWidth = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-
-            Object.defineProperty(CreateJSContainerWrapper.prototype, "height", {
-                get: function () {
-                    return this.m_givenHeight;
-                },
-                set: function (value) {
-                    this.m_givenHeight = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-
-            Object.defineProperty(CreateJSContainerWrapper.prototype, "displayObjectContainer", {
-                get: function () {
-                    return this.concreteDisplayObject;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-            CreateJSContainerWrapper.prototype.addChild = function (child) {
-                this.displayObjectContainer.addChild(child.concreteDisplayObject);
-            };
-
-            CreateJSContainerWrapper.prototype.removeChild = function (child) {
-                this.displayObjectContainer.removeChild(child.concreteDisplayObject);
-            };
-            return CreateJSContainerWrapper;
-        })(displayObject.CreateJSDisplayObjectWrapper);
-        displayObject.CreateJSContainerWrapper = CreateJSContainerWrapper;
-    })(layoutFramework.displayObject || (layoutFramework.displayObject = {}));
-    var displayObject = layoutFramework.displayObject;
 })(layoutFramework || (layoutFramework = {}));
 var layoutFramework;
 (function (layoutFramework) {
@@ -237,17 +252,17 @@ var layoutFramework;
 var layoutFramework;
 (function (layoutFramework) {
     (function (displayObject) {
-        var PixiJSContainerWrapper = (function (_super) {
-            __extends(PixiJSContainerWrapper, _super);
-            function PixiJSContainerWrapper(pixiJSContainer) {
+        var CreateJSContainerWrapper = (function (_super) {
+            __extends(CreateJSContainerWrapper, _super);
+            function CreateJSContainerWrapper(createjsContainer) {
                 this.m_givenWidth = 0;
                 this.m_givenHeight = 0;
-                if (pixiJSContainer == null)
-                    throw "pixiJSContainer is null";
+                if (createjsContainer == null)
+                    throw "createjsContainer is null";
 
-                _super.call(this, pixiJSContainer);
+                _super.call(this, createjsContainer);
             }
-            Object.defineProperty(PixiJSContainerWrapper.prototype, "width", {
+            Object.defineProperty(CreateJSContainerWrapper.prototype, "width", {
                 get: function () {
                     return this.m_givenWidth;
                 },
@@ -259,7 +274,7 @@ var layoutFramework;
             });
 
 
-            Object.defineProperty(PixiJSContainerWrapper.prototype, "height", {
+            Object.defineProperty(CreateJSContainerWrapper.prototype, "height", {
                 get: function () {
                     return this.m_givenHeight;
                 },
@@ -271,7 +286,7 @@ var layoutFramework;
             });
 
 
-            Object.defineProperty(PixiJSContainerWrapper.prototype, "displayObjectContainer", {
+            Object.defineProperty(CreateJSContainerWrapper.prototype, "displayObjectContainer", {
                 get: function () {
                     return this.concreteDisplayObject;
                 },
@@ -279,16 +294,16 @@ var layoutFramework;
                 configurable: true
             });
 
-            PixiJSContainerWrapper.prototype.addChild = function (child) {
+            CreateJSContainerWrapper.prototype.addChild = function (child) {
                 this.displayObjectContainer.addChild(child.concreteDisplayObject);
             };
 
-            PixiJSContainerWrapper.prototype.removeChild = function (child) {
+            CreateJSContainerWrapper.prototype.removeChild = function (child) {
                 this.displayObjectContainer.removeChild(child.concreteDisplayObject);
             };
-            return PixiJSContainerWrapper;
-        })(displayObject.PixiJSDisplayObjectWrapper);
-        displayObject.PixiJSContainerWrapper = PixiJSContainerWrapper;
+            return CreateJSContainerWrapper;
+        })(displayObject.CreateJSDisplayObjectWrapper);
+        displayObject.CreateJSContainerWrapper = CreateJSContainerWrapper;
     })(layoutFramework.displayObject || (layoutFramework.displayObject = {}));
     var displayObject = layoutFramework.displayObject;
 })(layoutFramework || (layoutFramework = {}));
@@ -385,6 +400,64 @@ var layoutFramework;
 })(layoutFramework || (layoutFramework = {}));
 var layoutFramework;
 (function (layoutFramework) {
+    (function (displayObject) {
+        var PixiJSContainerWrapper = (function (_super) {
+            __extends(PixiJSContainerWrapper, _super);
+            function PixiJSContainerWrapper(pixiJSContainer) {
+                this.m_givenWidth = 0;
+                this.m_givenHeight = 0;
+                if (pixiJSContainer == null)
+                    throw "pixiJSContainer is null";
+
+                _super.call(this, pixiJSContainer);
+            }
+            Object.defineProperty(PixiJSContainerWrapper.prototype, "width", {
+                get: function () {
+                    return this.m_givenWidth;
+                },
+                set: function (value) {
+                    this.m_givenWidth = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+
+            Object.defineProperty(PixiJSContainerWrapper.prototype, "height", {
+                get: function () {
+                    return this.m_givenHeight;
+                },
+                set: function (value) {
+                    this.m_givenHeight = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+
+            Object.defineProperty(PixiJSContainerWrapper.prototype, "displayObjectContainer", {
+                get: function () {
+                    return this.concreteDisplayObject;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+            PixiJSContainerWrapper.prototype.addChild = function (child) {
+                this.displayObjectContainer.addChild(child.concreteDisplayObject);
+            };
+
+            PixiJSContainerWrapper.prototype.removeChild = function (child) {
+                this.displayObjectContainer.removeChild(child.concreteDisplayObject);
+            };
+            return PixiJSContainerWrapper;
+        })(displayObject.PixiJSDisplayObjectWrapper);
+        displayObject.PixiJSContainerWrapper = PixiJSContainerWrapper;
+    })(layoutFramework.displayObject || (layoutFramework.displayObject = {}));
+    var displayObject = layoutFramework.displayObject;
+})(layoutFramework || (layoutFramework = {}));
+var layoutFramework;
+(function (layoutFramework) {
     (function (enums) {
         var HorizontalAlignEnum = (function () {
             function HorizontalAlignEnum() {
@@ -414,79 +487,6 @@ var layoutFramework;
         enums.VerticalAlignEnum = VerticalAlignEnum;
     })(layoutFramework.enums || (layoutFramework.enums = {}));
     var enums = layoutFramework.enums;
-})(layoutFramework || (layoutFramework = {}));
-var layoutFramework;
-(function (layoutFramework) {
-    (function (items) {
-        var LayoutItem = (function () {
-            function LayoutItem(dispObj) {
-                this.fittedIntoWidth = 0.0;
-                this.fittedIntoHeight = 0.0;
-                this.horizontalAlign = layoutFramework.enums.HorizontalAlignEnum.H_ALIGN_TYPE_NONE;
-                this.verticalAlign = layoutFramework.enums.VerticalAlignEnum.V_ALIGN_TYPE_NONE;
-                this.bestFit = true;
-                this.requestedWidthPercent = 0.0;
-                this.requestedHeightPercent = 0.0;
-                this.parent = null;
-                this.uniqueID = null;
-                this.displayObject = dispObj;
-
-                this.m_id = null;
-            }
-            Object.defineProperty(LayoutItem.prototype, "id", {
-                get: function () {
-                    return this.m_id;
-                },
-                set: function (value) {
-                    this.m_id = value;
-                    if (this.displayObject)
-                        this.displayObject.name = this.m_id;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-
-            LayoutItem.prototype.fitToSize = function (dispObj, w, h) {
-                if (typeof w === "undefined") { w = 0.0; }
-                if (typeof h === "undefined") { h = 0.0; }
-                var imageRatio = dispObj.width / dispObj.height;
-                var containerRatio = w / h;
-
-                if (containerRatio > imageRatio) {
-                    dispObj.height = h;
-                    dispObj.width = imageRatio * dispObj.height;
-                } else {
-                    dispObj.width = w;
-                    dispObj.height = dispObj.width / imageRatio;
-                }
-            };
-
-            LayoutItem.prototype.executeLayout = function () {
-                if (this.displayObject) {
-                    if (this.bestFit) {
-                        this.fitToSize(this.displayObject, this.fittedIntoWidth, this.fittedIntoHeight);
-                    } else {
-                        this.displayObject.width = this.fittedIntoWidth;
-                        this.displayObject.height = this.fittedIntoHeight;
-                    }
-                }
-            };
-
-            LayoutItem.prototype.fitInto = function (w, h) {
-                if (this.displayObject == null)
-                    return;
-
-                this.fittedIntoWidth = w;
-                this.fittedIntoHeight = h;
-
-                this.executeLayout();
-            };
-            return LayoutItem;
-        })();
-        items.LayoutItem = LayoutItem;
-    })(layoutFramework.items || (layoutFramework.items = {}));
-    var items = layoutFramework.items;
 })(layoutFramework || (layoutFramework = {}));
 var layoutFramework;
 (function (layoutFramework) {

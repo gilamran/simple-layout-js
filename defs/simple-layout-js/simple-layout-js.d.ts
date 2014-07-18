@@ -1,8 +1,8 @@
-/// <reference path="../easeljs/easeljs.d.ts" />
+/// <reference path="src/defs/easeljs/easeljs.d.ts" />
 /// <reference path="../pixi/pixi.d.ts" />
 
 declare module layoutFramework {
-    declare module containers {
+    module containers {
         class LayoutContainer extends items.LayoutItem {
             public layout: layout.ILayout;
             private m_children;
@@ -17,7 +17,7 @@ declare module layoutFramework {
         }
     }
 
-    declare module displayObject {
+    module displayObject {
         interface IDisplayObject {
             width: number;
             height: number;
@@ -80,7 +80,7 @@ declare module layoutFramework {
         }
     }
 
-    declare module enums {
+    module enums {
         class HorizontalAlignEnum {
             static H_ALIGN_TYPE_NONE: string;
             static H_ALIGN_TYPE_CENTER: string;
@@ -95,7 +95,7 @@ declare module layoutFramework {
         }
     }
 
-    declare module items {
+    module items {
         class LayoutItem {
             public parent: containers.LayoutContainer;
             public requestedWidthPercent: number;
@@ -116,7 +116,7 @@ declare module layoutFramework {
         }
     }
 
-    declare module layout {
+    module layout {
         interface ILayout {
             horizontalAlign: string;
             verticalAlign: string;
@@ -155,7 +155,7 @@ declare module layoutFramework {
             public fitChildrenInto(targetContainer: containers.LayoutContainer, w: number, h: number): void;
         }
 
-        declare module visualizer {
+        module visualizer {
             interface ILayoutVisualizer {
                 setDebugPadding(w: number, h: number, topPadding: number, bottomPadding: number, leftPadding: number, rightPadding: number): void;
                 setDebugGap(x: number, y: number, width: number, height: number): void;

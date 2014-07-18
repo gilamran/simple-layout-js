@@ -1,19 +1,16 @@
-/// <reference path="defs/tsd.d.ts" />
+/// <reference path="../defs/tsd.d.ts" />
+/// <reference path="items/LayoutItem.ts" />
+/// <reference path="containers/LayoutContainer.ts" />
+/// <reference path="displayObject/impl/CreateJSDisplayObjectWrapper.ts" />
+/// <reference path="displayObject/impl/CreateJSContainerWrapper.ts" />
+/// <reference path="displayObject/impl/PixiJSDisplayObjectWrapper.ts" />
+/// <reference path="displayObject/impl/PixiJSContainerWrapper.ts" />
 
 //grunt-start
-/// <reference path="containers/LayoutContainer.ts" />
-/// <reference path="defs/easeljs/easeljs.d.ts" />
-/// <reference path="defs/pixi/pixi.d.ts" />
-/// <reference path="defs/tweenjs/tweenjs.d.ts" />
 /// <reference path="displayObject/IDisplayObject.ts" />
 /// <reference path="displayObject/IDisplayObjectContainer.ts" />
-/// <reference path="displayObject/impl/CreateJSContainerWrapper.ts" />
-/// <reference path="displayObject/impl/CreateJSDisplayObjectWrapper.ts" />
-/// <reference path="displayObject/impl/PixiJSContainerWrapper.ts" />
-/// <reference path="displayObject/impl/PixiJSDisplayObjectWrapper.ts" />
 /// <reference path="enums/HorizontalAlignEnum.ts" />
 /// <reference path="enums/VerticalAlignEnum.ts" />
-/// <reference path="items/LayoutItem.ts" />
 /// <reference path="layout/BasicLayout.ts" />
 /// <reference path="layout/HorizontalLayout.ts" />
 /// <reference path="layout/ILayout.ts" />

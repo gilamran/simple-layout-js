@@ -2,8 +2,8 @@
   "version": "v4",
   "repo": "gilamran/DefinitelyTyped",
   "ref": "master",
-  "path": "src/defs/",
-  "bundle": "src/defs/tsd.d.ts",
+  "path": "defs/",
+  "bundle": "defs/tsd.d.ts",
   "installed": {
     "easeljs/easeljs.d.ts": {
       "commit": "bea96d9405fcac4a2bc362e9775211f6314cb093"
