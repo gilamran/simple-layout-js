@@ -1,4 +1,4 @@
-/// <reference path="src/defs/easeljs/easeljs.d.ts" />
+/// <reference path="../easeljs/easeljs.d.ts" />
 /// <reference path="../pixi/pixi.d.ts" />
 
 declare module layoutFramework {
