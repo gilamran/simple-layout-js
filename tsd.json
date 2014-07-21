@@ -16,9 +16,6 @@
     },
     "pixi/pixi.d.ts": {
       "commit": "bea96d9405fcac4a2bc362e9775211f6314cb093"
-    },
-    "pixi/webgl.d.ts": {
-      "commit": "debbd093e0740406c425594304e63ad12716edcf"
     }
   }
 }

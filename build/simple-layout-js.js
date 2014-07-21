@@ -83,9 +83,17 @@ var layoutFramework;
         var LayoutContainer = (function (_super) {
             __extends(LayoutContainer, _super);
             function LayoutContainer(dispObjCont) {
-                this.m_children = [];
+                this.m_layoutItems = [];
                 _super.call(this, dispObjCont);
             }
+            Object.defineProperty(LayoutContainer.prototype, "layoutItems", {
+                get: function () {
+                    return this.m_layoutItems;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
             Object.defineProperty(LayoutContainer.prototype, "displayObjectContainer", {
                 get: function () {
                     return this.displayObject;
@@ -104,46 +112,46 @@ var layoutFramework;
                 }
             };
 
-            LayoutContainer.prototype.getItemAt = function (index) {
-                return this.m_children[index];
+            LayoutContainer.prototype.getLayoutItemAt = function (index) {
+                return this.m_layoutItems[index];
             };
 
             LayoutContainer.prototype.addLayoutItem = function (layoutItem) {
                 if (layoutItem == null)
                     throw "Can not add a null layoutItem";
 
-                if (this.m_children.indexOf(layoutItem) != -1) {
+                if (this.m_layoutItems.indexOf(layoutItem) != -1) {
                     return null;
                 } else {
-                    this.m_children.push(layoutItem);
+                    this.m_layoutItems.push(layoutItem);
                     layoutItem.parent = this;
                     this.displayObjectContainer.addChild(layoutItem.displayObject);
                     return layoutItem;
                 }
             };
 
-            LayoutContainer.prototype.removeItem = function (layoutItem) {
+            LayoutContainer.prototype.removeLayoutItem = function (layoutItem) {
                 if (layoutItem == null)
                     return null;
 
-                var pos = this.m_children.indexOf(layoutItem);
+                var pos = this.m_layoutItems.indexOf(layoutItem);
                 if (pos == -1) {
                     return null;
                 } else {
                     layoutItem.parent = null;
                     this.displayObjectContainer.removeChild(layoutItem.displayObject);
-                    return this.m_children.splice(pos, 1)[0];
+                    return this.m_layoutItems.splice(pos, 1)[0];
                 }
             };
 
-            LayoutContainer.prototype.clearChildren = function () {
-                while (this.m_children.length > 0)
-                    this.removeItem(this.m_children[0]);
+            LayoutContainer.prototype.removeAllLayoutItems = function () {
+                while (this.m_layoutItems.length > 0)
+                    this.removeLayoutItem(this.m_layoutItems[0]);
             };
 
-            Object.defineProperty(LayoutContainer.prototype, "numChildItems", {
+            Object.defineProperty(LayoutContainer.prototype, "countLayoutItems", {
                 get: function () {
-                    return this.m_children.length;
+                    return this.m_layoutItems.length;
                 },
                 enumerable: true,
                 configurable: true
@@ -512,7 +520,7 @@ var layoutFramework;
             };
 
             BasicLayout.prototype.fitChildrenInto = function (targetContainer, w, h) {
-                if (targetContainer == null || targetContainer.numChildItems == 0)
+                if (targetContainer == null || targetContainer.countLayoutItems == 0)
                     return;
 
                 var targetWidth;
@@ -533,8 +541,8 @@ var layoutFramework;
                     targetHeight = Math.round(targetHeight);
                 }
 
-                for (var i = 0; i < targetContainer.numChildItems; i++) {
-                    layoutItem = targetContainer.getItemAt(i);
+                for (var i = 0; i < targetContainer.countLayoutItems; i++) {
+                    layoutItem = targetContainer.getLayoutItemAt(i);
                     displayObject = layoutItem.displayObject;
                     layoutItem.fitInto(targetWidth, targetHeight);
 
@@ -606,7 +614,7 @@ var layoutFramework;
                 _super.call(this);
             }
             HorizontalLayout.prototype.fitChildrenInto = function (targetContainer, w, h) {
-                if (targetContainer == null || targetContainer.numChildItems == 0)
+                if (targetContainer == null || targetContainer.countLayoutItems == 0)
                     return;
 
                 var paddingTopVal = this.calcPercentField(this.paddingTop, h);
@@ -633,7 +641,7 @@ var layoutFramework;
                     this.layoutVisualizer.setDebugPadding(w, h, paddingTopVal, paddingBottomVal, paddingLeftVal, paddingRightVal);
                 }
 
-                totalItemsGap = gapVal * (targetContainer.numChildItems - 1);
+                totalItemsGap = gapVal * (targetContainer.countLayoutItems - 1);
                 totalVPadding = paddingTopVal + paddingBottomVal;
                 totalHPadding = paddingLeftVal + paddingRightVal;
                 totalGaps = totalItemsGap + totalHPadding;
@@ -644,8 +652,8 @@ var layoutFramework;
 
                 var unRequestedWidthPercent = 1.0;
                 var countRequestedItems = 0;
-                for (i = 0; i < targetContainer.numChildItems; i++) {
-                    layoutItem = targetContainer.getItemAt(i);
+                for (i = 0; i < targetContainer.countLayoutItems; i++) {
+                    layoutItem = targetContainer.getLayoutItemAt(i);
                     if (layoutItem.requestedWidthPercent > 0) {
                         countRequestedItems++;
                         unRequestedWidthPercent = unRequestedWidthPercent - layoutItem.requestedWidthPercent;
@@ -658,13 +666,13 @@ var layoutFramework;
                     throw "Too much space was requested from the horizontal layout";
 
                 var widthPercentForUnrequested = 0.0;
-                if (countRequestedItems < targetContainer.numChildItems) {
-                    widthPercentForUnrequested = unRequestedWidthPercent / (targetContainer.numChildItems - countRequestedItems);
+                if (countRequestedItems < targetContainer.countLayoutItems) {
+                    widthPercentForUnrequested = unRequestedWidthPercent / (targetContainer.countLayoutItems - countRequestedItems);
                 }
 
                 currentX = paddingLeftVal;
-                for (i = 0; i < targetContainer.numChildItems; i++) {
-                    layoutItem = targetContainer.getItemAt(i);
+                for (i = 0; i < targetContainer.countLayoutItems; i++) {
+                    layoutItem = targetContainer.getLayoutItemAt(i);
                     displayObject = layoutItem.displayObject;
                     if (layoutItem.requestedWidthPercent > 0.0)
                         targetWidth = spaceForItems * layoutItem.requestedWidthPercent;
@@ -733,7 +741,7 @@ var layoutFramework;
 
                     currentX = currentX + targetWidth;
 
-                    if (this.layoutVisualizer && i < targetContainer.numChildItems - 1)
+                    if (this.layoutVisualizer && i < targetContainer.countLayoutItems - 1)
                         this.layoutVisualizer.setDebugGap(currentX, paddingTopVal, targetGap, h - totalVPadding);
 
                     currentX = currentX + targetGap;
@@ -757,7 +765,7 @@ var layoutFramework;
                 _super.call(this);
             }
             VerticalLayout.prototype.fitChildrenInto = function (targetContainer, w, h) {
-                if (targetContainer == null || targetContainer.numChildItems == 0)
+                if (targetContainer == null || targetContainer.countLayoutItems == 0)
                     return;
 
                 var paddingTopVal = this.calcPercentField(this.paddingTop, h);
@@ -784,7 +792,7 @@ var layoutFramework;
                     this.layoutVisualizer.setDebugPadding(w, h, paddingTopVal, paddingBottomVal, paddingLeftVal, paddingRightVal);
                 }
 
-                totalItemsGap = gapVal * (targetContainer.numChildItems - 1);
+                totalItemsGap = gapVal * (targetContainer.countLayoutItems - 1);
                 totalVPadding = paddingTopVal + paddingBottomVal;
                 totalHPadding = paddingLeftVal + paddingRightVal;
                 totalGaps = totalItemsGap + totalVPadding;
@@ -795,8 +803,8 @@ var layoutFramework;
 
                 var unRequestedHeightPercent = 1.0;
                 var countRequestedItems = 0;
-                for (i = 0; i < targetContainer.numChildItems; i++) {
-                    layoutItem = targetContainer.getItemAt(i);
+                for (i = 0; i < targetContainer.countLayoutItems; i++) {
+                    layoutItem = targetContainer.getLayoutItemAt(i);
                     if (layoutItem.requestedHeightPercent > 0) {
                         countRequestedItems++;
                         unRequestedHeightPercent = unRequestedHeightPercent - layoutItem.requestedHeightPercent;
@@ -809,13 +817,13 @@ var layoutFramework;
                     throw "Too much space was requested from the vertical layout";
 
                 var heightPercentForUnrequested = 0.0;
-                if (countRequestedItems < targetContainer.numChildItems) {
-                    heightPercentForUnrequested = unRequestedHeightPercent / (targetContainer.numChildItems - countRequestedItems);
+                if (countRequestedItems < targetContainer.countLayoutItems) {
+                    heightPercentForUnrequested = unRequestedHeightPercent / (targetContainer.countLayoutItems - countRequestedItems);
                 }
 
                 currentY = paddingTopVal;
-                for (i = 0; i < targetContainer.numChildItems; i++) {
-                    layoutItem = targetContainer.getItemAt(i);
+                for (i = 0; i < targetContainer.countLayoutItems; i++) {
+                    layoutItem = targetContainer.getLayoutItemAt(i);
                     displayObject = layoutItem.displayObject;
                     if (layoutItem.requestedHeightPercent > 0.0)
                         targetHeight = spaceForItems * layoutItem.requestedHeightPercent;
@@ -884,7 +892,7 @@ var layoutFramework;
 
                     currentY = currentY + targetHeight;
 
-                    if (this.layoutVisualizer && i < targetContainer.numChildItems - 1)
+                    if (this.layoutVisualizer && i < targetContainer.countLayoutItems - 1)
                         this.layoutVisualizer.setDebugGap(paddingLeftVal, currentY, w - totalHPadding, targetGap);
 
                     currentY = currentY + targetGap;

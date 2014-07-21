@@ -8,7 +8,7 @@ module layoutFramework.layout {
         }
 
         public fitChildrenInto(targetContainer:containers.LayoutContainer, w:number, h:number):void {
-            if (targetContainer==null || targetContainer.numChildItems==0)
+            if (targetContainer==null || targetContainer.countLayoutItems==0)
                 return;
 
             var paddingTopVal		: number = this.calcPercentField(this.paddingTop, h);
@@ -35,7 +35,7 @@ module layoutFramework.layout {
                 this.layoutVisualizer.setDebugPadding(w, h, paddingTopVal, paddingBottomVal, paddingLeftVal, paddingRightVal);
             }
 
-            totalItemsGap = gapVal*(targetContainer.numChildItems-1);
+            totalItemsGap = gapVal*(targetContainer.countLayoutItems-1);
             totalVPadding = paddingTopVal+paddingBottomVal;
             totalHPadding = paddingLeftVal+paddingRightVal;
             totalGaps = totalItemsGap + totalVPadding;
@@ -47,9 +47,9 @@ module layoutFramework.layout {
             // find out how much space left for each item (The ones that didn't request for specific height)
             var unRequestedHeightPercent : number = 1.0;
             var countRequestedItems		 : number = 0;
-            for (i=0; i<targetContainer.numChildItems; i++)
+            for (i=0; i<targetContainer.countLayoutItems; i++)
             {
-                layoutItem = targetContainer.getItemAt(i);
+                layoutItem = targetContainer.getLayoutItemAt(i);
                 if (layoutItem.requestedHeightPercent>0)
                 {
                     countRequestedItems++;
@@ -65,15 +65,15 @@ module layoutFramework.layout {
                 throw "Too much space was requested from the vertical layout";
 
             var heightPercentForUnrequested : number = 0.0;
-            if (countRequestedItems<targetContainer.numChildItems)
+            if (countRequestedItems<targetContainer.countLayoutItems)
             {
-                heightPercentForUnrequested = unRequestedHeightPercent/(targetContainer.numChildItems-countRequestedItems);
+                heightPercentForUnrequested = unRequestedHeightPercent/(targetContainer.countLayoutItems-countRequestedItems);
             }
 
             currentY = paddingTopVal;
-            for (i=0; i<targetContainer.numChildItems; i++)
+            for (i=0; i<targetContainer.countLayoutItems; i++)
             {
-                layoutItem = targetContainer.getItemAt(i);
+                layoutItem = targetContainer.getLayoutItemAt(i);
                 displayObject = layoutItem.displayObject;
                 if (layoutItem.requestedHeightPercent>0.0)
                     targetHeight = spaceForItems*layoutItem.requestedHeightPercent;
@@ -154,7 +154,7 @@ module layoutFramework.layout {
                 // move on
                 currentY = currentY + targetHeight;
 
-                if (this.layoutVisualizer && i<targetContainer.numChildItems-1)
+                if (this.layoutVisualizer && i<targetContainer.countLayoutItems-1)
                     this.layoutVisualizer.setDebugGap(paddingLeftVal, currentY, w-totalHPadding, targetGap);
 
                 currentY = currentY + targetGap;

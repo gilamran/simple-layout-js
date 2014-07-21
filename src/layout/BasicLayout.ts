@@ -36,7 +36,7 @@ module layoutFramework.layout {
         }
 
         public fitChildrenInto(targetContainer:containers.LayoutContainer, w:number, h:number):void {
-            if (targetContainer == null || targetContainer.numChildItems == 0)
+            if (targetContainer == null || targetContainer.countLayoutItems == 0)
                 return;
 
             var targetWidth:number;
@@ -58,8 +58,8 @@ module layoutFramework.layout {
                 targetHeight = Math.round(targetHeight);
             }
 
-            for (var i:number = 0; i < targetContainer.numChildItems; i++) {
-                layoutItem = targetContainer.getItemAt(i);
+            for (var i:number = 0; i < targetContainer.countLayoutItems; i++) {
+                layoutItem = targetContainer.getLayoutItemAt(i);
                 displayObject = layoutItem.displayObject;
                 layoutItem.fitInto(targetWidth, targetHeight);
 

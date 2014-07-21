@@ -3,12 +3,16 @@
 module layoutFramework.containers {
     export class LayoutContainer extends items.LayoutItem {
 
-        public layout       : layout.ILayout;
-        private m_children  : items.LayoutItem[];
+        public layout          : layout.ILayout;
+        private m_layoutItems  : items.LayoutItem[];
 
         constructor(dispObjCont:displayObject.IDisplayObjectContainer) {
-            this.m_children = [];
+            this.m_layoutItems = [];
             super(dispObjCont);
+        }
+
+        get layoutItems():items.LayoutItem[] {
+            return this.m_layoutItems;
         }
 
         get displayObjectContainer():displayObject.IDisplayObjectContainer {
@@ -26,47 +30,47 @@ module layoutFramework.containers {
             }
         }
 
-        public getItemAt(index:number):items.LayoutItem {
-            return this.m_children[index];
+        public getLayoutItemAt(index:number):items.LayoutItem {
+            return this.m_layoutItems[index];
         }
 
         public addLayoutItem(layoutItem:items.LayoutItem):items.LayoutItem {
             if (layoutItem == null)
                 throw "Can not add a null layoutItem";
 
-            if (this.m_children.indexOf(layoutItem) != -1) {
+            if (this.m_layoutItems.indexOf(layoutItem) != -1) {
                 return null; // already a child
             }
             else {
-                this.m_children.push(layoutItem);
+                this.m_layoutItems.push(layoutItem);
                 layoutItem.parent = this;
                 this.displayObjectContainer.addChild(layoutItem.displayObject);
                 return layoutItem;
             }
         }
 
-        public removeItem(layoutItem:items.LayoutItem):items.LayoutItem {
+        public removeLayoutItem(layoutItem:items.LayoutItem):items.LayoutItem {
             if (layoutItem == null)
                 return null;
 
-            var pos:number = this.m_children.indexOf(layoutItem);
+            var pos:number = this.m_layoutItems.indexOf(layoutItem);
             if (pos == -1) {
                 return null; // not a child
             }
             else {
                 layoutItem.parent = null;
                 this.displayObjectContainer.removeChild(layoutItem.displayObject);
-                return this.m_children.splice(pos, 1)[0];
+                return this.m_layoutItems.splice(pos, 1)[0];
             }
         }
 
-        public clearChildren():void {
-            while (this.m_children.length > 0)
-                this.removeItem(this.m_children[0]);
+        public removeAllLayoutItems():void {
+            while (this.m_layoutItems.length > 0)
+                this.removeLayoutItem(this.m_layoutItems[0]);
         }
 
-        public get numChildItems():number {
-            return this.m_children.length;
+        public get countLayoutItems():number {
+            return this.m_layoutItems.length;
         }
     }
 }
