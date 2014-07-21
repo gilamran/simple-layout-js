@@ -511,6 +511,20 @@ var layoutFramework;
 
                 this.snapToPixels = false;
             }
+            BasicLayout.prototype.setLayoutVisualizer = function (value) {
+                if (this.layoutVisualizer !== value) {
+                    if (this.layoutVisualizer) {
+                        this.layoutVisualizer.attachedTo = null;
+                    }
+
+                    this.layoutVisualizer = value;
+
+                    if (this.layoutVisualizer) {
+                        this.layoutVisualizer.attachedTo = this;
+                    }
+                }
+            };
+
             BasicLayout.prototype.calcPercentField = function (field, percentFrom) {
                 var isPercent = (field.indexOf("%") == field.length - 1);
                 if (isPercent)
@@ -915,6 +929,7 @@ var layoutFramework;
                 __extends(CreateJSLayoutVisualizer, _super);
                 function CreateJSLayoutVisualizer() {
                     _super.call(this);
+                    this.attachedTo = null;
                 }
                 CreateJSLayoutVisualizer.prototype.setDebugPadding = function (w, h, topPadding, bottomPadding, leftPadding, rightPadding) {
                     this.graphics.beginFill("#ffff00");
@@ -964,6 +979,7 @@ var layoutFramework;
                 __extends(PixiJSLayoutVisualizer, _super);
                 function PixiJSLayoutVisualizer() {
                     _super.call(this);
+                    this.attachedTo = null;
                 }
                 PixiJSLayoutVisualizer.prototype.setDebugPadding = function (w, h, topPadding, bottomPadding, leftPadding, rightPadding) {
                     this.beginFill(0xffff00);

@@ -27,6 +27,22 @@ module layoutFramework.layout {
             this.snapToPixels = false;
         }
 
+        public setLayoutVisualizer(value:visualizer.ILayoutVisualizer):void {
+            if (this.layoutVisualizer !== value) {
+                // un attach the previous layout, if it's not null
+                if (this.layoutVisualizer) {
+                    this.layoutVisualizer.attachedTo = null;
+                }
+
+                this.layoutVisualizer = value;
+
+                // attach the new layout, if it's not null
+                if (this.layoutVisualizer) {
+                    this.layoutVisualizer.attachedTo = this;
+                }
+            }
+        }
+
         public calcPercentField(field:string, percentFrom:number):number {
             var isPercent:Boolean = (field.indexOf("%") == field.length - 1);
             if (isPercent)

@@ -3,8 +3,11 @@
 module layoutFramework.layout.visualizer {
     export class CreateJSLayoutVisualizer extends createjs.Shape implements ILayoutVisualizer {
 
+        public attachedTo   : ILayout;
+
         constructor() {
             super();
+            this.attachedTo = null;
         }
 
         public setDebugPadding(w:number, h:number, topPadding:number, bottomPadding:number, leftPadding:number, rightPadding:number):void {
