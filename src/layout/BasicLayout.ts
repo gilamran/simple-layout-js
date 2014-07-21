@@ -1,7 +1,7 @@
 /// <reference path="../reference.ts"/>
 
 module layoutFramework.layout {
-    export class BasicLayout {
+    export class BasicLayout implements ILayout{
 
         public paddingTop:string;
         public paddingBottom:string;

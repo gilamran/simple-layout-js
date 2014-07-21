@@ -13,6 +13,6 @@ module layoutFramework.layout {
         snapToPixels:boolean;
 
         fitChildrenInto(targetContainer:containers.LayoutContainer, w:number, h:number):void;
-        layoutVisualizer:visualizer.ILayoutVisualizer;
+        setLayoutVisualizer(value:visualizer.ILayoutVisualizer):void;
     }
 }
