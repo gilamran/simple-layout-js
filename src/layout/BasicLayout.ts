@@ -30,8 +30,8 @@ module layoutFramework.layout {
         public setLayoutVisualizer(value:visualizer.ILayoutVisualizer):void {
             if (this.layoutVisualizer !== value) {
                 // un attach the previous layout, if it's not null
-                if (this.layoutVisualizer) {
-                    this.layoutVisualizer.attachedTo = null;
+                if (value && value.attachedTo) {
+                    value.attachedTo.setLayoutVisualizer(null);
                 }
 
                 this.layoutVisualizer = value;

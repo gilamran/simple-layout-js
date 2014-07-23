@@ -10,6 +10,17 @@ module layoutFramework.layout.visualizer {
             this.attachedTo = null;
         }
 
+        public setDebugFitAreaSize(w:number, h:number):void {
+            w = Math.max(1, Math.abs(w));
+            h = Math.max(1, Math.abs(h));
+            this.beginFill(0x000000);
+            this.drawRect(0, 0, w, 1);
+            this.drawRect(0, 0, 1, h);
+            this.drawRect(0, h-1, w, 1);
+            this.drawRect(w-1, 0, 1, h);
+            this.endFill();
+        }
+
         public setDebugPadding(w:number, h:number, topPadding:number, bottomPadding:number, leftPadding:number, rightPadding:number):void {
             this.beginFill(0xffff00);
             this.drawRect(0, 0, w, topPadding);

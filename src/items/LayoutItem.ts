@@ -70,8 +70,8 @@ module layoutFramework.items {
             if (this.displayObject == null)
                 return;
 
-            this.fittedIntoWidth = w;
-            this.fittedIntoHeight = h;
+            this.fittedIntoWidth = Math.max(1, Math.abs(w));
+            this.fittedIntoHeight = Math.max(1, Math.abs(h));
 
             this.executeLayout();
         }

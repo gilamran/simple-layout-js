@@ -162,6 +162,7 @@ module layoutFramework.layout {
 
             if (this.layoutVisualizer) {
                 this.layoutVisualizer.setPosition(targetContainer.displayObject.globalPos);
+                this.layoutVisualizer.setDebugFitAreaSize(w, h);
                 this.layoutVisualizer.update();
             }
         }

@@ -544,8 +544,8 @@ var layoutFramework;
             }
             BasicLayout.prototype.setLayoutVisualizer = function (value) {
                 if (this.layoutVisualizer !== value) {
-                    if (this.layoutVisualizer) {
-                        this.layoutVisualizer.attachedTo = null;
+                    if (value) {
+                        value.attachedTo = null;
                     }
 
                     this.layoutVisualizer = value;

@@ -44,7 +44,18 @@ module.exports = function (grunt) {
                     removeComments: true,
                     declaration: true
                 }
-            }
+           },
+           localdist: {
+                src: ["src/**/*.ts"],
+                reference: "src/reference.ts",
+                out: '../simple-layout-js-examples/bower_components/simple-layout-js/build/simple-layout-js.js',
+                options: {
+                    target: 'es5',
+                    module: 'amd',
+                    sourceMap: true,
+                    removeComments: true
+                }
+           }
         },
 
         tsd: {
