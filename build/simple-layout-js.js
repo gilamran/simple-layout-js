@@ -792,8 +792,10 @@ var layoutFramework;
                     currentX = currentX + targetGap;
                 }
 
-                if (this.layoutVisualizer)
+                if (this.layoutVisualizer) {
+                    this.layoutVisualizer.setPosition(targetContainer.displayObject.globalPos);
                     this.layoutVisualizer.update();
+                }
             };
             return HorizontalLayout;
         })(layout.BasicLayout);
@@ -943,8 +945,10 @@ var layoutFramework;
                     currentY = currentY + targetGap;
                 }
 
-                if (this.layoutVisualizer)
+                if (this.layoutVisualizer) {
+                    this.layoutVisualizer.setPosition(targetContainer.displayObject.globalPos);
                     this.layoutVisualizer.update();
+                }
             };
             return VerticalLayout;
         })(layout.BasicLayout);
@@ -986,6 +990,11 @@ var layoutFramework;
 
                 CreateJSLayoutVisualizer.prototype.setAlpha = function (alpha) {
                     this.alpha = alpha;
+                };
+
+                CreateJSLayoutVisualizer.prototype.setPosition = function (point) {
+                    this.x = point.x;
+                    this.y = point.y;
                 };
 
                 CreateJSLayoutVisualizer.prototype.clear = function () {
@@ -1036,6 +1045,11 @@ var layoutFramework;
 
                 PixiJSLayoutVisualizer.prototype.setAlpha = function (alpha) {
                     this.alpha = alpha;
+                };
+
+                PixiJSLayoutVisualizer.prototype.setPosition = function (point) {
+                    this.x = point.x;
+                    this.y = point.y;
                 };
 
                 PixiJSLayoutVisualizer.prototype.update = function () {

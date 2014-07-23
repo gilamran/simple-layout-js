@@ -7,6 +7,7 @@ module layoutFramework.layout.visualizer {
         setDebugGap(x:number, y:number, width:number, height:number):void;
         setDebugItem(x:number, y:number, width:number, height:number):void;
         setAlpha(alpha:number):void;
+        setPosition(point:displayObject.IPoint):void;
         update():void;
         clear():void;
     }

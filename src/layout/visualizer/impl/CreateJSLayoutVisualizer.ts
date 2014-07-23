@@ -36,6 +36,11 @@ module layoutFramework.layout.visualizer {
             this.alpha = alpha;
         }
 
+        public setPosition(point:displayObject.IPoint):void {
+            this.x = point.x;
+            this.y = point.y;
+        }
+
         public clear():void {
             this.graphics.clear();
         }

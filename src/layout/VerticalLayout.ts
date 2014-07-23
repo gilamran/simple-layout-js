@@ -160,8 +160,10 @@ module layoutFramework.layout {
                 currentY = currentY + targetGap;
             }
 
-            if (this.layoutVisualizer)
+            if (this.layoutVisualizer) {
+                this.layoutVisualizer.setPosition(targetContainer.displayObject.globalPos);
                 this.layoutVisualizer.update();
+            }
         }
     }
 }
