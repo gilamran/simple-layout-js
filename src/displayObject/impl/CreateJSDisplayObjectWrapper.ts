@@ -19,6 +19,15 @@ module layoutFramework.displayObject {
             return this.m_wrappedDispObj;
         }
 
+        public get globalPos():IPoint {
+            var point = this.m_wrappedDispObj.localToGlobal(0, 0);
+            return {x:point.x, y:point.y};
+        }
+
+        public set globalPos(value:IPoint) {
+            // do nothing
+        }
+
         public get width():number {
             var bounds : createjs.Rectangle = this.m_wrappedDispObj.getBounds();
             return bounds.width*this.m_wrappedDispObj.scaleX;

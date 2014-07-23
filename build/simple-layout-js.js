@@ -188,6 +188,18 @@ var layoutFramework;
                 configurable: true
             });
 
+            Object.defineProperty(CreateJSDisplayObjectWrapper.prototype, "globalPos", {
+                get: function () {
+                    var point = this.m_wrappedDispObj.localToGlobal(0, 0);
+                    return { x: point.x, y: point.y };
+                },
+                set: function (value) {
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+
             Object.defineProperty(CreateJSDisplayObjectWrapper.prototype, "width", {
                 get: function () {
                     var bounds = this.m_wrappedDispObj.getBounds();
@@ -325,6 +337,25 @@ var layoutFramework;
 
                 this.m_wrappedDispObj = pixiJSDisplayObject;
             }
+            Object.defineProperty(PixiJSDisplayObjectWrapper.prototype, "globalPos", {
+                get: function () {
+                    var point;
+                    var currentObj = this.m_wrappedDispObj;
+                    point = new PIXI.Point(0, 0);
+                    while (currentObj) {
+                        point.x += currentObj.position.x;
+                        point.y += currentObj.position.y;
+                        currentObj = currentObj.parent;
+                    }
+                    return { x: point.x, y: point.y };
+                },
+                set: function (value) {
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+
             Object.defineProperty(PixiJSDisplayObjectWrapper.prototype, "allowResize", {
                 get: function () {
                     return true;

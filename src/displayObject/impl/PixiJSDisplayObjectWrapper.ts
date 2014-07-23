@@ -13,6 +13,22 @@ module layoutFramework.displayObject {
             this.m_wrappedDispObj = pixiJSDisplayObject;
         }
 
+        public get globalPos():IPoint {
+            var point       : PIXI.Point;
+            var currentObj  : PIXI.DisplayObject = this.m_wrappedDispObj;
+            point = new PIXI.Point(0, 0);
+            while (currentObj) {
+                point.x += currentObj.position.x;
+                point.y += currentObj.position.y;
+                currentObj = currentObj.parent;
+            }
+            return {x:point.x, y:point.y};
+        }
+
+        public set globalPos(value:IPoint) {
+            // do nothing
+        }
+
         public get allowResize():boolean {
             return true;
         }
