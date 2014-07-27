@@ -14,28 +14,50 @@ module.exports = function (grunt) {
         watch: {
             ts: {
                 files: ['src/**/{,*/}*.ts'],
-                tasks: ['ts:build']
+                tasks: ['dev']
             }
         },
 
         // Empties folders to start fresh
         clean: {
-            dist: {
+            all: {
                 files: [
                     {
                         dot: true,
                         src: [
                             'build/**/*.*'
                         ]
+                    },
+                    {
+                        dot: true,
+                        src: [
+                            'defs/simple-layout-js/**/*.*'
+                        ]
+                    }
+                ]
+            },
+            libDefinitions: {
+                files: [
+                    {
+                        dot: true,
+                        src: ['build/simple-layout-js.d.ts']
+                    }
+                ]
+            },
+            implDefinitions: {
+                files: [
+                    {
+                        dot: true,
+                        src: ['build/simple-layout-for-*.d.ts']
                     }
                 ]
             }
         },
 
         ts: {
-           dist: {
-                src: ["src/**/*.ts"],
-                reference: "src/reference.ts",
+            distLib: {
+                src: ["src/simpleLayout/**/*.ts"],
+                reference: "src/simpleLayout/reference.ts",
                 out: 'build/simple-layout-js.js',
                 options: {
                     target: 'es5',
@@ -44,18 +66,31 @@ module.exports = function (grunt) {
                     removeComments: true,
                     declaration: true
                 }
-           },
-           localdist: {
-                src: ["src/**/*.ts"],
-                reference: "src/reference.ts",
-                out: '../simple-layout-js-examples/bower_components/simple-layout-js/build/simple-layout-js.js',
+            },
+            distCreateJS: {
+                src: ["src/CreateJSImpl/**/*.ts"],
+                reference: "src/CreateJSImpl/reference.ts",
+                out: 'build/simple-layout-for-createjs.js',
                 options: {
                     target: 'es5',
                     module: 'amd',
                     sourceMap: true,
-                    removeComments: true
+                    removeComments: true,
+                    declaration: true
                 }
-           }
+            },
+            distPixiJS: {
+                src: ["src/PixiJSImpl/**/*.ts"],
+                reference: "src/PixiJSImpl/reference.ts",
+                out: 'build/simple-layout-for-pixijs.js',
+                options: {
+                    target: 'es5',
+                    module: 'amd',
+                    sourceMap: true,
+                    removeComments: true,
+                    declaration: true
+                }
+            }
         },
 
         tsd: {
@@ -69,14 +104,66 @@ module.exports = function (grunt) {
                     // props from tsd.Options
                 }
             }
-        }
+        },
 
+        copy: {
+            libDefinitions: {
+                files: [
+                    {expand: true, cwd: 'build', src: ['simple-layout-js.d.ts'], dest: 'defs/simple-layout-js/', flatten: true, filter: 'isFile'}
+                ]
+            },
+            implDefinitions: {
+                files: [
+                    {expand: true, cwd: 'build', src: ['simple-layout-for-*.d.ts'], dest: 'defs/simple-layout-js/', flatten: true, filter: 'isFile'}
+                ]
+            },
+            dev: {
+                files: [
+                    {expand: true, cwd: 'defs/simple-layout-js', src: ['*.d.ts'], dest: '../simple-layout-js-examples/app/defs/simple-layout-js/', flatten: true, filter: 'isFile'},
+                    {expand: true, cwd: 'build', src: ['*.*'], dest: '../simple-layout-js-examples/bower_components/simple-layout-js/build', flatten: true, filter: 'isFile'}
+                ]
+            }
+        },
+
+        replace: {
+            createjsReferences: {
+                src: ['defs/simple-layout-js/simple-layout-for-createjs.d.ts'],
+                overwrite: true,
+                replacements: [
+                    {
+                        from: 'defs/tsd.d.ts',
+                        to: 'easeljs/easeljs.d.ts'
+                    }
+                ]
+            },
+            pixijsReferences: {
+                src: ['defs/simple-layout-js/simple-layout-for-pixijs.d.ts'],
+                overwrite: true,
+                replacements: [
+                    {
+                        from: 'defs/tsd.d.ts',
+                        to: 'pixi/pixi.d.ts'
+                    }
+                ]
+            }
+        }
     });
 
 
     grunt.registerTask('default', [
-        'tsd:refresh',
-        'clean:dist',
-        'ts:dist'
+        'clean:all',
+        'ts:distLib',
+        'copy:libDefinitions',
+        'clean:libDefinitions',
+        'ts:distCreateJS',
+        'ts:distPixiJS',
+        'copy:implDefinitions',
+        'clean:implDefinitions',
+        'replace'
+    ]);
+
+    grunt.registerTask('dev', [
+        'default',
+        'copy:dev'
     ]);
 };
