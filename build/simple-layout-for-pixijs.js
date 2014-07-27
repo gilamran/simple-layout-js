@@ -1,67 +1,3 @@
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-var SimpleLayout;
-(function (SimpleLayout) {
-    (function (PixiJSImpl) {
-        var PixiJSContainerWrapper = (function (_super) {
-            __extends(PixiJSContainerWrapper, _super);
-            function PixiJSContainerWrapper(pixiJSContainer) {
-                this.m_givenWidth = 0;
-                this.m_givenHeight = 0;
-                if (pixiJSContainer == null)
-                    throw "pixiJSContainer is null";
-
-                _super.call(this, pixiJSContainer);
-            }
-            Object.defineProperty(PixiJSContainerWrapper.prototype, "width", {
-                get: function () {
-                    return this.m_givenWidth;
-                },
-                set: function (value) {
-                    this.m_givenWidth = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-
-            Object.defineProperty(PixiJSContainerWrapper.prototype, "height", {
-                get: function () {
-                    return this.m_givenHeight;
-                },
-                set: function (value) {
-                    this.m_givenHeight = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-
-            Object.defineProperty(PixiJSContainerWrapper.prototype, "displayObjectContainer", {
-                get: function () {
-                    return this.concreteDisplayObject;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-            PixiJSContainerWrapper.prototype.addChild = function (child) {
-                this.displayObjectContainer.addChild(child.concreteDisplayObject);
-            };
-
-            PixiJSContainerWrapper.prototype.removeChild = function (child) {
-                this.displayObjectContainer.removeChild(child.concreteDisplayObject);
-            };
-            return PixiJSContainerWrapper;
-        })(PixiJSImpl.PixiJSDisplayObjectWrapper);
-        PixiJSImpl.PixiJSContainerWrapper = PixiJSContainerWrapper;
-    })(SimpleLayout.PixiJSImpl || (SimpleLayout.PixiJSImpl = {}));
-    var PixiJSImpl = SimpleLayout.PixiJSImpl;
-})(SimpleLayout || (SimpleLayout = {}));
 var SimpleLayout;
 (function (SimpleLayout) {
     (function (PixiJSImpl) {
@@ -173,6 +109,70 @@ var SimpleLayout;
             return PixiJSDisplayObjectWrapper;
         })();
         PixiJSImpl.PixiJSDisplayObjectWrapper = PixiJSDisplayObjectWrapper;
+    })(SimpleLayout.PixiJSImpl || (SimpleLayout.PixiJSImpl = {}));
+    var PixiJSImpl = SimpleLayout.PixiJSImpl;
+})(SimpleLayout || (SimpleLayout = {}));
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var SimpleLayout;
+(function (SimpleLayout) {
+    (function (PixiJSImpl) {
+        var PixiJSContainerWrapper = (function (_super) {
+            __extends(PixiJSContainerWrapper, _super);
+            function PixiJSContainerWrapper(pixiJSContainer) {
+                this.m_givenWidth = 0;
+                this.m_givenHeight = 0;
+                if (pixiJSContainer == null)
+                    throw "pixiJSContainer is null";
+
+                _super.call(this, pixiJSContainer);
+            }
+            Object.defineProperty(PixiJSContainerWrapper.prototype, "width", {
+                get: function () {
+                    return this.m_givenWidth;
+                },
+                set: function (value) {
+                    this.m_givenWidth = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+
+            Object.defineProperty(PixiJSContainerWrapper.prototype, "height", {
+                get: function () {
+                    return this.m_givenHeight;
+                },
+                set: function (value) {
+                    this.m_givenHeight = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+
+            Object.defineProperty(PixiJSContainerWrapper.prototype, "displayObjectContainer", {
+                get: function () {
+                    return this.concreteDisplayObject;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+            PixiJSContainerWrapper.prototype.addChild = function (child) {
+                this.displayObjectContainer.addChild(child.concreteDisplayObject);
+            };
+
+            PixiJSContainerWrapper.prototype.removeChild = function (child) {
+                this.displayObjectContainer.removeChild(child.concreteDisplayObject);
+            };
+            return PixiJSContainerWrapper;
+        })(PixiJSImpl.PixiJSDisplayObjectWrapper);
+        PixiJSImpl.PixiJSContainerWrapper = PixiJSContainerWrapper;
     })(SimpleLayout.PixiJSImpl || (SimpleLayout.PixiJSImpl = {}));
     var PixiJSImpl = SimpleLayout.PixiJSImpl;
 })(SimpleLayout || (SimpleLayout = {}));

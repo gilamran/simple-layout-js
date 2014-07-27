@@ -1,67 +1,3 @@
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-var SimpleLayout;
-(function (SimpleLayout) {
-    (function (CreateJSImpl) {
-        var CreateJSContainerWrapper = (function (_super) {
-            __extends(CreateJSContainerWrapper, _super);
-            function CreateJSContainerWrapper(createjsContainer) {
-                this.m_givenWidth = 0;
-                this.m_givenHeight = 0;
-                if (createjsContainer == null)
-                    throw "createjsContainer is null";
-
-                _super.call(this, createjsContainer);
-            }
-            Object.defineProperty(CreateJSContainerWrapper.prototype, "width", {
-                get: function () {
-                    return this.m_givenWidth;
-                },
-                set: function (value) {
-                    this.m_givenWidth = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-
-            Object.defineProperty(CreateJSContainerWrapper.prototype, "height", {
-                get: function () {
-                    return this.m_givenHeight;
-                },
-                set: function (value) {
-                    this.m_givenHeight = value;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-
-            Object.defineProperty(CreateJSContainerWrapper.prototype, "displayObjectContainer", {
-                get: function () {
-                    return this.concreteDisplayObject;
-                },
-                enumerable: true,
-                configurable: true
-            });
-
-            CreateJSContainerWrapper.prototype.addChild = function (child) {
-                this.displayObjectContainer.addChild(child.concreteDisplayObject);
-            };
-
-            CreateJSContainerWrapper.prototype.removeChild = function (child) {
-                this.displayObjectContainer.removeChild(child.concreteDisplayObject);
-            };
-            return CreateJSContainerWrapper;
-        })(CreateJSImpl.CreateJSDisplayObjectWrapper);
-        CreateJSImpl.CreateJSContainerWrapper = CreateJSContainerWrapper;
-    })(SimpleLayout.CreateJSImpl || (SimpleLayout.CreateJSImpl = {}));
-    var CreateJSImpl = SimpleLayout.CreateJSImpl;
-})(SimpleLayout || (SimpleLayout = {}));
 var SimpleLayout;
 (function (SimpleLayout) {
     (function (CreateJSImpl) {
@@ -171,6 +107,70 @@ var SimpleLayout;
             return CreateJSDisplayObjectWrapper;
         })();
         CreateJSImpl.CreateJSDisplayObjectWrapper = CreateJSDisplayObjectWrapper;
+    })(SimpleLayout.CreateJSImpl || (SimpleLayout.CreateJSImpl = {}));
+    var CreateJSImpl = SimpleLayout.CreateJSImpl;
+})(SimpleLayout || (SimpleLayout = {}));
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var SimpleLayout;
+(function (SimpleLayout) {
+    (function (CreateJSImpl) {
+        var CreateJSContainerWrapper = (function (_super) {
+            __extends(CreateJSContainerWrapper, _super);
+            function CreateJSContainerWrapper(createjsContainer) {
+                this.m_givenWidth = 0;
+                this.m_givenHeight = 0;
+                if (createjsContainer == null)
+                    throw "createjsContainer is null";
+
+                _super.call(this, createjsContainer);
+            }
+            Object.defineProperty(CreateJSContainerWrapper.prototype, "width", {
+                get: function () {
+                    return this.m_givenWidth;
+                },
+                set: function (value) {
+                    this.m_givenWidth = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+
+            Object.defineProperty(CreateJSContainerWrapper.prototype, "height", {
+                get: function () {
+                    return this.m_givenHeight;
+                },
+                set: function (value) {
+                    this.m_givenHeight = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+
+            Object.defineProperty(CreateJSContainerWrapper.prototype, "displayObjectContainer", {
+                get: function () {
+                    return this.concreteDisplayObject;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+            CreateJSContainerWrapper.prototype.addChild = function (child) {
+                this.displayObjectContainer.addChild(child.concreteDisplayObject);
+            };
+
+            CreateJSContainerWrapper.prototype.removeChild = function (child) {
+                this.displayObjectContainer.removeChild(child.concreteDisplayObject);
+            };
+            return CreateJSContainerWrapper;
+        })(CreateJSImpl.CreateJSDisplayObjectWrapper);
+        CreateJSImpl.CreateJSContainerWrapper = CreateJSContainerWrapper;
     })(SimpleLayout.CreateJSImpl || (SimpleLayout.CreateJSImpl = {}));
     var CreateJSImpl = SimpleLayout.CreateJSImpl;
 })(SimpleLayout || (SimpleLayout = {}));

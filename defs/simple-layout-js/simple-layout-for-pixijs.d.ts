@@ -1,17 +1,5 @@
 /// <reference path="../pixi/pixi.d.ts" />
 declare module SimpleLayout.PixiJSImpl {
-    class PixiJSContainerWrapper extends PixiJSDisplayObjectWrapper implements displayObject.IDisplayObjectContainer {
-        private m_givenWidth;
-        private m_givenHeight;
-        constructor(pixiJSContainer: PIXI.DisplayObjectContainer);
-        public width : number;
-        public height : number;
-        public displayObjectContainer : PIXI.DisplayObjectContainer;
-        public addChild(child: displayObject.IDisplayObject): void;
-        public removeChild(child: displayObject.IDisplayObject): void;
-    }
-}
-declare module SimpleLayout.PixiJSImpl {
     class PixiJSDisplayObjectWrapper implements displayObject.IDisplayObject {
         private m_wrappedDispObj;
         private m_name;
@@ -25,6 +13,18 @@ declare module SimpleLayout.PixiJSImpl {
         public x : number;
         public y : number;
         public name : string;
+    }
+}
+declare module SimpleLayout.PixiJSImpl {
+    class PixiJSContainerWrapper extends PixiJSDisplayObjectWrapper implements displayObject.IDisplayObjectContainer {
+        private m_givenWidth;
+        private m_givenHeight;
+        constructor(pixiJSContainer: PIXI.DisplayObjectContainer);
+        public width : number;
+        public height : number;
+        public displayObjectContainer : PIXI.DisplayObjectContainer;
+        public addChild(child: displayObject.IDisplayObject): void;
+        public removeChild(child: displayObject.IDisplayObject): void;
     }
 }
 declare module SimpleLayout.PixiJSImpl {

@@ -1,17 +1,5 @@
 /// <reference path="../easeljs/easeljs.d.ts" />
 declare module SimpleLayout.CreateJSImpl {
-    class CreateJSContainerWrapper extends CreateJSDisplayObjectWrapper implements displayObject.IDisplayObjectContainer {
-        private m_givenWidth;
-        private m_givenHeight;
-        constructor(createjsContainer: createjs.Container);
-        public width : number;
-        public height : number;
-        public displayObjectContainer : createjs.Container;
-        public addChild(child: displayObject.IDisplayObject): void;
-        public removeChild(child: displayObject.IDisplayObject): void;
-    }
-}
-declare module SimpleLayout.CreateJSImpl {
     class CreateJSDisplayObjectWrapper implements displayObject.IDisplayObject {
         private m_wrappedDispObj;
         constructor(createjsDisplayObject: createjs.DisplayObject);
@@ -24,6 +12,18 @@ declare module SimpleLayout.CreateJSImpl {
         public x : number;
         public y : number;
         public name : string;
+    }
+}
+declare module SimpleLayout.CreateJSImpl {
+    class CreateJSContainerWrapper extends CreateJSDisplayObjectWrapper implements displayObject.IDisplayObjectContainer {
+        private m_givenWidth;
+        private m_givenHeight;
+        constructor(createjsContainer: createjs.Container);
+        public width : number;
+        public height : number;
+        public displayObjectContainer : createjs.Container;
+        public addChild(child: displayObject.IDisplayObject): void;
+        public removeChild(child: displayObject.IDisplayObject): void;
     }
 }
 declare module SimpleLayout.CreateJSImpl {
