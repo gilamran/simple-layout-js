@@ -232,6 +232,16 @@ var SimpleLayout;
 
             CreateJSLayoutVisualizer.prototype.update = function () {
             };
+
+            CreateJSLayoutVisualizer.prototype.dispose = function () {
+                this.clear();
+                this.update();
+                this.highlightedLayoutItem = null;
+                if (this.attachedTo) {
+                    this.attachedTo.setLayoutVisualizer(null);
+                    this.attachedTo = null;
+                }
+            };
             return CreateJSLayoutVisualizer;
         })(createjs.Shape);
         CreateJSImpl.CreateJSLayoutVisualizer = CreateJSLayoutVisualizer;

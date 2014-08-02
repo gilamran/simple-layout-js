@@ -56,5 +56,15 @@ module SimpleLayout.PixiJSImpl {
 
         public update():void {
         }
+
+        public dispose():void {
+            this.clear();
+            this.update();
+            this.highlightedLayoutItem = null;
+            if (this.attachedTo) {
+                this.attachedTo.setLayoutVisualizer(null);
+                this.attachedTo = null;
+            }
+        }
     }
 }

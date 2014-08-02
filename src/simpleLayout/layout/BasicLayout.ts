@@ -54,6 +54,8 @@ module SimpleLayout.layout {
             if (targetContainer == null || targetContainer.countLayoutItems == 0)
                 return;
 
+            var HspaceForItems:number;
+            var VspaceForItems:number;
             var targetWidth:number;
             var targetHeight:number;
             var displayObject:displayObject.IDisplayObject;
@@ -64,29 +66,44 @@ module SimpleLayout.layout {
             var paddingLeftVal      : number = w * this.paddingLeft;
             var paddingRightVal     : number = w * this.paddingRight;
 
-            targetWidth = w - (paddingLeftVal + paddingRightVal);
-            targetHeight = h - (paddingTopVal + paddingBottomVal);
+            if (this.layoutVisualizer) {
+                this.layoutVisualizer.clear();
+                this.layoutVisualizer.setDebugPadding(w, h, paddingTopVal, paddingBottomVal, paddingLeftVal, paddingRightVal);
+            }
+
+            HspaceForItems = w - (paddingLeftVal + paddingRightVal);
+            VspaceForItems = h - (paddingTopVal + paddingBottomVal);
 
             // not space for items left
-            if (targetWidth <= 0.0) {
+            if (HspaceForItems <= 0.0) {
                 this.lastError = "Too much left/right padding was requested from the basic layout";
                 return;
             }
 
             // not space for items left
-            if (targetHeight <= 0.0) {
+            if (VspaceForItems <= 0.0) {
                 this.lastError = "Too much top/bottom padding was requested from the basic layout";
                 return;
             }
 
-            // snap to pixels?
-            if (this.snapToPixels == true) {
-                targetWidth = Math.round(targetWidth);
-                targetHeight = Math.round(targetHeight);
-            }
-
-            for (var i:number = 0; i < targetContainer.countLayoutItems; i++) {
+             for (var i:number = 0; i < targetContainer.countLayoutItems; i++) {
                 layoutItem = targetContainer.getLayoutItemAt(i);
+                if (layoutItem.requestedWidthPercent > 0.0)
+                    targetWidth = HspaceForItems * layoutItem.requestedWidthPercent;
+                else
+                    targetWidth = HspaceForItems;
+
+                if (layoutItem.requestedHeightPercent > 0.0)
+                    targetHeight = VspaceForItems * layoutItem.requestedHeightPercent;
+                else
+                    targetHeight = VspaceForItems;
+
+                // snap to pixels?
+                if (this.snapToPixels == true) {
+                    targetWidth = Math.round(targetWidth);
+                    targetHeight = Math.round(targetHeight);
+                }
+
                 layoutItem.fitInto(targetWidth, targetHeight);
                 displayObject = layoutItem.displayObject;
 
@@ -101,7 +118,7 @@ module SimpleLayout.layout {
                     switch (hAlignment) {
                         case enums.HorizontalAlignEnum.H_ALIGN_TYPE_CENTER:
                         {
-                            displayObject.x = paddingLeftVal + ((targetWidth - displayObject.width) / 2);
+                            displayObject.x = paddingLeftVal + ((HspaceForItems - displayObject.width) / 2);
                             break;
                         }
 
@@ -113,7 +130,7 @@ module SimpleLayout.layout {
 
                         case enums.HorizontalAlignEnum.H_ALIGN_TYPE_RIGHT:
                         {
-                            displayObject.x = paddingLeftVal + (targetWidth - displayObject.width);
+                            displayObject.x = paddingLeftVal + (HspaceForItems - displayObject.width);
                             break;
                         }
                     }
@@ -133,13 +150,13 @@ module SimpleLayout.layout {
 
                         case enums.VerticalAlignEnum.V_ALIGN_TYPE_MIDDLE:
                         {
-                            displayObject.y = paddingTopVal + ((targetHeight - displayObject.height) / 2);
+                            displayObject.y = paddingTopVal + ((VspaceForItems - displayObject.height) / 2);
                             break;
                         }
 
                         case enums.VerticalAlignEnum.V_ALIGN_TYPE_BOTTOM:
                         {
-                            displayObject.y = paddingTopVal + (targetHeight - displayObject.height);
+                            displayObject.y = paddingTopVal + (VspaceForItems - displayObject.height);
                             break;
                         }
                     }
@@ -151,6 +168,15 @@ module SimpleLayout.layout {
                     if (this.snapToPixels == true)
                         displayObject.y = Math.round(displayObject.y);
                 }
+
+                if (this.layoutVisualizer)
+                    this.layoutVisualizer.setDebugItem(layoutItem, paddingLeftVal, paddingTopVal, HspaceForItems, VspaceForItems);
+            }
+
+            if (this.layoutVisualizer) {
+                this.layoutVisualizer.setPosition(targetContainer.displayObject.globalPos);
+                this.layoutVisualizer.setDebugFitAreaSize(w, h);
+                this.layoutVisualizer.update();
             }
 
             this.lastError = "";

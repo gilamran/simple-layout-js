@@ -39,5 +39,6 @@ declare module SimpleLayout.CreateJSImpl {
         public setPosition(point: displayObject.IPoint): void;
         public clear(): void;
         public update(): void;
+        public dispose(): void;
     }
 }

@@ -11,6 +11,35 @@ module SimpleLayout {
             super(dispObjCont);
         }
 
+        public toJson():any {
+            var result = super.toJson();
+            var layoutItems = [];
+            for (var i:number=0; i<this.m_layoutItems.length; i++) {
+                layoutItems.push(this.m_layoutItems[i].toJson());
+            }
+
+            result['layoutItems'] = layoutItems;
+            return result;
+        }
+
+        static fromJson(json:any):LayoutItem {
+            if (json.hasOwnProperty('layoutItems')) {
+                var container : LayoutContainer = new LayoutContainer(null);
+                LayoutItem.copyPropertiesFromJson(container, json);
+
+                // layout items
+                var layoutItems = json.layoutItems;
+                for (var i:number=0; i<layoutItems.length; i++) {
+                    container.layoutItems.push( LayoutContainer.fromJson(layoutItems[i]) );
+                }
+
+                return container;
+            }
+            else {
+                return LayoutItem.fromJson(json);
+            }
+        }
+
         get layoutItems():LayoutItem[] {
             return this.m_layoutItems;
         }

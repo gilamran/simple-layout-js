@@ -230,6 +230,16 @@ var SimpleLayout;
 
             PixiJSLayoutVisualizer.prototype.update = function () {
             };
+
+            PixiJSLayoutVisualizer.prototype.dispose = function () {
+                this.clear();
+                this.update();
+                this.highlightedLayoutItem = null;
+                if (this.attachedTo) {
+                    this.attachedTo.setLayoutVisualizer(null);
+                    this.attachedTo = null;
+                }
+            };
             return PixiJSLayoutVisualizer;
         })(PIXI.Graphics);
         PixiJSImpl.PixiJSLayoutVisualizer = PixiJSLayoutVisualizer;

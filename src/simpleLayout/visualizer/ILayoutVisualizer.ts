@@ -12,5 +12,6 @@ module SimpleLayout.visualizer {
         setPosition(point:displayObject.IPoint):void;
         update():void;
         clear():void;
+        dispose():void;
     }
 }

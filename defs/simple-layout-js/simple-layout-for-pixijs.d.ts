@@ -39,5 +39,6 @@ declare module SimpleLayout.PixiJSImpl {
         public setAlpha(alpha: number): void;
         public setPosition(point: displayObject.IPoint): void;
         public update(): void;
+        public dispose(): void;
     }
 }

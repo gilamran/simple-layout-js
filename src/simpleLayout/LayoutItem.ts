@@ -2,17 +2,18 @@
 
 module SimpleLayout {
     export class LayoutItem {
-        public parent:LayoutContainer;
-        public requestedWidthPercent:number;
-        public requestedHeightPercent:number;
-        public horizontalAlign:string;
-        public verticalAlign:string;
-        public fittedIntoWidth:number;
-        public fittedIntoHeight:number;
-        public displayObject:displayObject.IDisplayObject;
-        public keepAspectRatio:boolean;
+        public parent                   : LayoutContainer;
+        public displayObject            : displayObject.IDisplayObject;
+        public requestedWidthPercent    : number;
+        public requestedHeightPercent   : number;
+        public horizontalAlign          : string;
+        public verticalAlign            : string;
+        public fittedIntoWidth          : number;
+        public fittedIntoHeight         : number;
+        public keepAspectRatio          : boolean;
+        public assetId                  : string;
 
-        private m_name:string;
+        private m_name                  : string;
 
         constructor(dispObj:displayObject.IDisplayObject) {
             this.fittedIntoWidth = 0.0;
@@ -24,6 +25,7 @@ module SimpleLayout {
             this.requestedHeightPercent = 0.0;
             this.parent = null;
             this.displayObject = dispObj;
+            this.assetId = "";
 
             this.m_name = null;
         }
@@ -38,6 +40,38 @@ module SimpleLayout {
                 this.displayObject.name = this.m_name;
         }
 
+        public toJson():any {
+            return {
+                requestedWidthPercent  : this.requestedWidthPercent,
+                requestedHeightPercent : this.requestedHeightPercent,
+                horizontalAlign        : this.horizontalAlign,
+                verticalAlign          : this.verticalAlign,
+                fittedIntoWidth        : this.fittedIntoWidth,
+                fittedIntoHeight       : this.fittedIntoHeight,
+                keepAspectRatio        : this.keepAspectRatio,
+                assetId                : this.assetId,
+                name                   : this.name
+            }            
+        }
+
+        static copyPropertiesFromJson(layoutItem:LayoutItem, json:any):void {
+            layoutItem.requestedWidthPercent  = json.requestedWidthPercent;
+            layoutItem.requestedHeightPercent = json.requestedHeightPercent;
+            layoutItem.horizontalAlign        = json.horizontalAlign;
+            layoutItem.verticalAlign          = json.verticalAlign;
+            layoutItem.fittedIntoWidth        = json.fittedIntoWidth;
+            layoutItem.fittedIntoHeight       = json.fittedIntoHeight;
+            layoutItem.keepAspectRatio        = json.keepAspectRatio;
+            layoutItem.assetId                = json.assetId;
+            layoutItem.name                   = json.name;
+        }
+
+        static fromJson(json:any):LayoutItem {
+            var result : LayoutItem = new LayoutItem(null);
+            LayoutItem.copyPropertiesFromJson(result, json);
+            return result;
+        }
+        
         public setDisplayObject(value:displayObject.IDisplayObject):void {
             if (value!=this.displayObject) {
                 // remove the previous

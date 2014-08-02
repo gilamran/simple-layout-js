@@ -11,6 +11,7 @@ var SimpleLayout;
             this.requestedHeightPercent = 0.0;
             this.parent = null;
             this.displayObject = dispObj;
+            this.assetId = "";
 
             this.m_name = null;
         }
@@ -27,6 +28,38 @@ var SimpleLayout;
             configurable: true
         });
 
+
+        LayoutItem.prototype.toJson = function () {
+            return {
+                requestedWidthPercent: this.requestedWidthPercent,
+                requestedHeightPercent: this.requestedHeightPercent,
+                horizontalAlign: this.horizontalAlign,
+                verticalAlign: this.verticalAlign,
+                fittedIntoWidth: this.fittedIntoWidth,
+                fittedIntoHeight: this.fittedIntoHeight,
+                keepAspectRatio: this.keepAspectRatio,
+                assetId: this.assetId,
+                name: this.name
+            };
+        };
+
+        LayoutItem.copyPropertiesFromJson = function (layoutItem, json) {
+            layoutItem.requestedWidthPercent = json.requestedWidthPercent;
+            layoutItem.requestedHeightPercent = json.requestedHeightPercent;
+            layoutItem.horizontalAlign = json.horizontalAlign;
+            layoutItem.verticalAlign = json.verticalAlign;
+            layoutItem.fittedIntoWidth = json.fittedIntoWidth;
+            layoutItem.fittedIntoHeight = json.fittedIntoHeight;
+            layoutItem.keepAspectRatio = json.keepAspectRatio;
+            layoutItem.assetId = json.assetId;
+            layoutItem.name = json.name;
+        };
+
+        LayoutItem.fromJson = function (json) {
+            var result = new LayoutItem(null);
+            LayoutItem.copyPropertiesFromJson(result, json);
+            return result;
+        };
 
         LayoutItem.prototype.setDisplayObject = function (value) {
             if (value != this.displayObject) {
@@ -94,6 +127,33 @@ var SimpleLayout;
             this.m_layoutItems = [];
             _super.call(this, dispObjCont);
         }
+        LayoutContainer.prototype.toJson = function () {
+            var result = _super.prototype.toJson.call(this);
+            var layoutItems = [];
+            for (var i = 0; i < this.m_layoutItems.length; i++) {
+                layoutItems.push(this.m_layoutItems[i].toJson());
+            }
+
+            result['layoutItems'] = layoutItems;
+            return result;
+        };
+
+        LayoutContainer.fromJson = function (json) {
+            if (json.hasOwnProperty('layoutItems')) {
+                var container = new LayoutContainer(null);
+                SimpleLayout.LayoutItem.copyPropertiesFromJson(container, json);
+
+                var layoutItems = json.layoutItems;
+                for (var i = 0; i < layoutItems.length; i++) {
+                    container.layoutItems.push(LayoutContainer.fromJson(layoutItems[i]));
+                }
+
+                return container;
+            } else {
+                return SimpleLayout.LayoutItem.fromJson(json);
+            }
+        };
+
         Object.defineProperty(LayoutContainer.prototype, "layoutItems", {
             get: function () {
                 return this.m_layoutItems;
@@ -251,6 +311,8 @@ var SimpleLayout;
                 if (targetContainer == null || targetContainer.countLayoutItems == 0)
                     return;
 
+                var HspaceForItems;
+                var VspaceForItems;
                 var targetWidth;
                 var targetHeight;
                 var displayObject;
@@ -261,26 +323,41 @@ var SimpleLayout;
                 var paddingLeftVal = w * this.paddingLeft;
                 var paddingRightVal = w * this.paddingRight;
 
-                targetWidth = w - (paddingLeftVal + paddingRightVal);
-                targetHeight = h - (paddingTopVal + paddingBottomVal);
+                if (this.layoutVisualizer) {
+                    this.layoutVisualizer.clear();
+                    this.layoutVisualizer.setDebugPadding(w, h, paddingTopVal, paddingBottomVal, paddingLeftVal, paddingRightVal);
+                }
 
-                if (targetWidth <= 0.0) {
+                HspaceForItems = w - (paddingLeftVal + paddingRightVal);
+                VspaceForItems = h - (paddingTopVal + paddingBottomVal);
+
+                if (HspaceForItems <= 0.0) {
                     this.lastError = "Too much left/right padding was requested from the basic layout";
                     return;
                 }
 
-                if (targetHeight <= 0.0) {
+                if (VspaceForItems <= 0.0) {
                     this.lastError = "Too much top/bottom padding was requested from the basic layout";
                     return;
                 }
 
-                if (this.snapToPixels == true) {
-                    targetWidth = Math.round(targetWidth);
-                    targetHeight = Math.round(targetHeight);
-                }
-
                 for (var i = 0; i < targetContainer.countLayoutItems; i++) {
                     layoutItem = targetContainer.getLayoutItemAt(i);
+                    if (layoutItem.requestedWidthPercent > 0.0)
+                        targetWidth = HspaceForItems * layoutItem.requestedWidthPercent;
+                    else
+                        targetWidth = HspaceForItems;
+
+                    if (layoutItem.requestedHeightPercent > 0.0)
+                        targetHeight = VspaceForItems * layoutItem.requestedHeightPercent;
+                    else
+                        targetHeight = VspaceForItems;
+
+                    if (this.snapToPixels == true) {
+                        targetWidth = Math.round(targetWidth);
+                        targetHeight = Math.round(targetHeight);
+                    }
+
                     layoutItem.fitInto(targetWidth, targetHeight);
                     displayObject = layoutItem.displayObject;
 
@@ -293,7 +370,7 @@ var SimpleLayout;
 
                         switch (hAlignment) {
                             case SimpleLayout.enums.HorizontalAlignEnum.H_ALIGN_TYPE_CENTER: {
-                                displayObject.x = paddingLeftVal + ((targetWidth - displayObject.width) / 2);
+                                displayObject.x = paddingLeftVal + ((HspaceForItems - displayObject.width) / 2);
                                 break;
                             }
 
@@ -303,7 +380,7 @@ var SimpleLayout;
                             }
 
                             case SimpleLayout.enums.HorizontalAlignEnum.H_ALIGN_TYPE_RIGHT: {
-                                displayObject.x = paddingLeftVal + (targetWidth - displayObject.width);
+                                displayObject.x = paddingLeftVal + (HspaceForItems - displayObject.width);
                                 break;
                             }
                         }
@@ -321,12 +398,12 @@ var SimpleLayout;
                             }
 
                             case SimpleLayout.enums.VerticalAlignEnum.V_ALIGN_TYPE_MIDDLE: {
-                                displayObject.y = paddingTopVal + ((targetHeight - displayObject.height) / 2);
+                                displayObject.y = paddingTopVal + ((VspaceForItems - displayObject.height) / 2);
                                 break;
                             }
 
                             case SimpleLayout.enums.VerticalAlignEnum.V_ALIGN_TYPE_BOTTOM: {
-                                displayObject.y = paddingTopVal + (targetHeight - displayObject.height);
+                                displayObject.y = paddingTopVal + (VspaceForItems - displayObject.height);
                                 break;
                             }
                         }
@@ -337,6 +414,15 @@ var SimpleLayout;
                         if (this.snapToPixels == true)
                             displayObject.y = Math.round(displayObject.y);
                     }
+
+                    if (this.layoutVisualizer)
+                        this.layoutVisualizer.setDebugItem(layoutItem, paddingLeftVal, paddingTopVal, HspaceForItems, VspaceForItems);
+                }
+
+                if (this.layoutVisualizer) {
+                    this.layoutVisualizer.setPosition(targetContainer.displayObject.globalPos);
+                    this.layoutVisualizer.setDebugFitAreaSize(w, h);
+                    this.layoutVisualizer.update();
                 }
 
                 this.lastError = "";
