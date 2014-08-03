@@ -7,6 +7,10 @@ module SimpleLayout.layout {
             super();
         }
 
+        public getLayoutType():string {
+            return 'horizontal';
+        }
+
         public fitChildrenInto(targetContainer:LayoutContainer, w:number, h:number):void {
             if (targetContainer == null || targetContainer.countLayoutItems == 0)
                 return;

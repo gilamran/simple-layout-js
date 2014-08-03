@@ -18,7 +18,11 @@ module SimpleLayout {
                 layoutItems.push(this.m_layoutItems[i].toJson());
             }
 
-            result['layoutItems'] = layoutItems;
+            result.layoutItems = layoutItems;
+
+            if (this.layout)
+                result.layout = this.layout.toJson();
+
             return result;
         }
 
@@ -30,9 +34,23 @@ module SimpleLayout {
                 // layout items
                 var layoutItems = json.layoutItems;
                 for (var i:number=0; i<layoutItems.length; i++) {
-                    container.layoutItems.push( LayoutContainer.fromJson(layoutItems[i]) );
+                    var layoutItem : LayoutItem = LayoutContainer.fromJson(layoutItems[i]);
+                    layoutItem.parent = container;
+                    container.layoutItems.push(layoutItem);
                 }
 
+                if (json.hasOwnProperty('layout')) {
+                    var layoutJson = json.layout;
+                    var layout;
+                    switch (layoutJson['layoutType']) {
+                        case 'basic'        : layout = new SimpleLayout.layout.BasicLayout(); break;
+                        case 'horizontal'   : layout = new SimpleLayout.layout.HorizontalLayout(); break;
+                        case 'vertical'     : layout = new SimpleLayout.layout.VerticalLayout(); break;
+                    }
+
+                    SimpleLayout.layout.BasicLayout.copyPropertiesFromJson(layout, layoutJson);
+                    container.layout = layout;
+                }
                 return container;
             }
             else {

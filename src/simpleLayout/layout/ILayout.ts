@@ -15,6 +15,8 @@ module SimpleLayout.layout {
         fitChildrenInto(targetContainer:LayoutContainer, w:number, h:number):void;
         setLayoutVisualizer(value:visualizer.ILayoutVisualizer):void;
         getLayoutVisualizer():visualizer.ILayoutVisualizer;
+        getLayoutType():string;
+        toJson():any;
         dispose():void;
     }
 }

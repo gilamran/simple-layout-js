@@ -3,17 +3,17 @@
 module SimpleLayout.layout {
     export class BasicLayout implements ILayout{
 
-        public paddingTop:number;
-        public paddingBottom:number;
-        public paddingLeft:number;
-        public paddingRight:number;
+        public paddingTop       : number;
+        public paddingBottom    : number;
+        public paddingLeft      : number;
+        public paddingRight     : number;
 
-        public gap:number;
-        public snapToPixels:boolean;
-        public horizontalAlign:string;
-        public verticalAlign:string;
+        public gap              : number;
+        public snapToPixels     : boolean;
+        public horizontalAlign  : string;
+        public verticalAlign    : string;
 
-        public lastError:string;
+        public lastError        : string;
 
         public layoutVisualizer:visualizer.ILayoutVisualizer;
 
@@ -28,6 +28,35 @@ module SimpleLayout.layout {
 
             this.snapToPixels = false;
             this.lastError = "";
+        }
+
+        public toJson():any {
+            return {
+                layoutType      : this.getLayoutType(),
+                paddingTop      : this.paddingTop,
+                paddingBottom   : this.paddingBottom,
+                paddingLeft     : this.paddingLeft,
+                paddingRight    : this.paddingRight,
+                gap             : this.gap,
+                snapToPixels    : this.snapToPixels,
+                horizontalAlign : this.horizontalAlign,
+                verticalAlign   : this.verticalAlign
+            }
+        }
+
+        static copyPropertiesFromJson(layout:ILayout, json:any):void {
+            layout.paddingTop      = json.paddingTop;
+            layout.paddingBottom   = json.paddingBottom;
+            layout.paddingLeft     = json.paddingLeft;
+            layout.paddingRight    = json.paddingRight;
+            layout.gap             = json.gap;
+            layout.snapToPixels    = json.snapToPixels;
+            layout.horizontalAlign = json.horizontalAlign;
+            layout.verticalAlign   = json.verticalAlign;
+        }
+
+        public getLayoutType():string {
+            return 'basic';
         }
 
         public setLayoutVisualizer(value:visualizer.ILayoutVisualizer):void {

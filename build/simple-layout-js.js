@@ -142,7 +142,11 @@ var SimpleLayout;
                 layoutItems.push(this.m_layoutItems[i].toJson());
             }
 
-            result['layoutItems'] = layoutItems;
+            result.layoutItems = layoutItems;
+
+            if (this.layout)
+                result.layout = this.layout.toJson();
+
             return result;
         };
 
@@ -153,9 +157,29 @@ var SimpleLayout;
 
                 var layoutItems = json.layoutItems;
                 for (var i = 0; i < layoutItems.length; i++) {
-                    container.layoutItems.push(LayoutContainer.fromJson(layoutItems[i]));
+                    var layoutItem = LayoutContainer.fromJson(layoutItems[i]);
+                    layoutItem.parent = container;
+                    container.layoutItems.push(layoutItem);
                 }
 
+                if (json.hasOwnProperty('layout')) {
+                    var layoutJson = json.layout;
+                    var layout;
+                    switch (layoutJson['layoutType']) {
+                        case 'basic':
+                            layout = new SimpleLayout.layout.BasicLayout();
+                            break;
+                        case 'horizontal':
+                            layout = new SimpleLayout.layout.HorizontalLayout();
+                            break;
+                        case 'vertical':
+                            layout = new SimpleLayout.layout.VerticalLayout();
+                            break;
+                    }
+
+                    SimpleLayout.layout.BasicLayout.copyPropertiesFromJson(layout, layoutJson);
+                    container.layout = layout;
+                }
                 return container;
             } else {
                 return SimpleLayout.LayoutItem.fromJson(json);
@@ -301,7 +325,7 @@ var SimpleLayout;
 })(SimpleLayout || (SimpleLayout = {}));
 var SimpleLayout;
 (function (SimpleLayout) {
-    (function (layout) {
+    (function (_layout) {
         var BasicLayout = (function () {
             function BasicLayout() {
                 this.horizontalAlign = SimpleLayout.enums.HorizontalAlignEnum.H_ALIGN_TYPE_CENTER;
@@ -315,6 +339,35 @@ var SimpleLayout;
                 this.snapToPixels = false;
                 this.lastError = "";
             }
+            BasicLayout.prototype.toJson = function () {
+                return {
+                    layoutType: this.getLayoutType(),
+                    paddingTop: this.paddingTop,
+                    paddingBottom: this.paddingBottom,
+                    paddingLeft: this.paddingLeft,
+                    paddingRight: this.paddingRight,
+                    gap: this.gap,
+                    snapToPixels: this.snapToPixels,
+                    horizontalAlign: this.horizontalAlign,
+                    verticalAlign: this.verticalAlign
+                };
+            };
+
+            BasicLayout.copyPropertiesFromJson = function (layout, json) {
+                layout.paddingTop = json.paddingTop;
+                layout.paddingBottom = json.paddingBottom;
+                layout.paddingLeft = json.paddingLeft;
+                layout.paddingRight = json.paddingRight;
+                layout.gap = json.gap;
+                layout.snapToPixels = json.snapToPixels;
+                layout.horizontalAlign = json.horizontalAlign;
+                layout.verticalAlign = json.verticalAlign;
+            };
+
+            BasicLayout.prototype.getLayoutType = function () {
+                return 'basic';
+            };
+
             BasicLayout.prototype.setLayoutVisualizer = function (value) {
                 if (this.layoutVisualizer !== value) {
                     if (value && value.attachedTo) {
@@ -459,7 +512,7 @@ var SimpleLayout;
             };
             return BasicLayout;
         })();
-        layout.BasicLayout = BasicLayout;
+        _layout.BasicLayout = BasicLayout;
     })(SimpleLayout.layout || (SimpleLayout.layout = {}));
     var layout = SimpleLayout.layout;
 })(SimpleLayout || (SimpleLayout = {}));
@@ -471,6 +524,10 @@ var SimpleLayout;
             function HorizontalLayout() {
                 _super.call(this);
             }
+            HorizontalLayout.prototype.getLayoutType = function () {
+                return 'horizontal';
+            };
+
             HorizontalLayout.prototype.fitChildrenInto = function (targetContainer, w, h) {
                 if (targetContainer == null || targetContainer.countLayoutItems == 0)
                     return;
@@ -640,6 +697,10 @@ var SimpleLayout;
             function VerticalLayout() {
                 _super.call(this);
             }
+            VerticalLayout.prototype.getLayoutType = function () {
+                return 'vertical';
+            };
+
             VerticalLayout.prototype.fitChildrenInto = function (targetContainer, w, h) {
                 if (targetContainer == null || targetContainer.countLayoutItems == 0)
                     return;
