@@ -109,6 +109,14 @@ var SimpleLayout;
 
             this.executeLayout();
         };
+
+        LayoutItem.prototype.dispose = function () {
+            this.parent = null;
+            if (this.displayObject) {
+                this.displayObject.dispose();
+                this.displayObject = null;
+            }
+        };
         return LayoutItem;
     })();
     SimpleLayout.LayoutItem = LayoutItem;
@@ -237,6 +245,24 @@ var SimpleLayout;
             enumerable: true,
             configurable: true
         });
+
+        LayoutContainer.prototype.dispose = function () {
+            _super.prototype.dispose.call(this);
+
+            if (this.layout) {
+                this.layout.dispose();
+                this.layout = null;
+            }
+
+            this.layout = null;
+            if (this.m_layoutItems) {
+                while (this.m_layoutItems.length > 0) {
+                    var item = this.m_layoutItems.pop();
+                    item.dispose();
+                }
+                this.m_layoutItems = null;
+            }
+        };
         return LayoutContainer;
     })(SimpleLayout.LayoutItem);
     SimpleLayout.LayoutContainer = LayoutContainer;
@@ -426,6 +452,10 @@ var SimpleLayout;
                 }
 
                 this.lastError = "";
+            };
+
+            BasicLayout.prototype.dispose = function () {
+                this.setLayoutVisualizer(null);
             };
             return BasicLayout;
         })();

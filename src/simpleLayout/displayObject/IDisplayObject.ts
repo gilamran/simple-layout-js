@@ -14,6 +14,7 @@ module SimpleLayout.displayObject {
         name                    : string;
         concreteDisplayObject   : Object;
         globalPos               : IPoint;
-        resetScaling():void;
+        resetScaling()          : void;
+        dispose()               : void;
     }
 }

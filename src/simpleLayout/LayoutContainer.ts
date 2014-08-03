@@ -6,7 +6,7 @@ module SimpleLayout {
         public layout          : layout.ILayout;
         private m_layoutItems  : LayoutItem[];
 
-        constructor(dispObjCont:displayObject.IDisplayObjectContainer) {
+        constructor(dispObjCont?:displayObject.IDisplayObjectContainer) {
             this.m_layoutItems = [];
             super(dispObjCont);
         }
@@ -114,6 +114,24 @@ module SimpleLayout {
 
         public get countLayoutItems():number {
             return this.m_layoutItems.length;
+        }
+
+        public dispose():void {
+            super.dispose();
+
+            if (this.layout) {
+                this.layout.dispose();
+                this.layout = null;
+            }
+
+            this.layout = null;
+            if (this.m_layoutItems) {
+                while (this.m_layoutItems.length>0) {
+                    var item = this.m_layoutItems.pop();
+                    item.dispose();
+                }
+                this.m_layoutItems = null;
+            }
         }
     }
 }

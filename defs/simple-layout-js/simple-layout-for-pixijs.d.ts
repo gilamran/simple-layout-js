@@ -13,6 +13,7 @@ declare module SimpleLayout.PixiJSImpl {
         public x : number;
         public y : number;
         public name : string;
+        public dispose(): void;
     }
 }
 declare module SimpleLayout.PixiJSImpl {

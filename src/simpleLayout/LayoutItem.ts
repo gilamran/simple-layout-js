@@ -15,7 +15,7 @@ module SimpleLayout {
 
         private m_name                  : string;
 
-        constructor(dispObj:displayObject.IDisplayObject) {
+        constructor(dispObj?:displayObject.IDisplayObject) {
             this.fittedIntoWidth = 0.0;
             this.fittedIntoHeight = 0.0;
             this.horizontalAlign = enums.HorizontalAlignEnum.H_ALIGN_TYPE_NONE;
@@ -102,7 +102,7 @@ module SimpleLayout {
             }
         }
 
-        executeLayout():void {
+        public executeLayout():void {
             if (this.displayObject) {
                 if (this.keepAspectRatio) {
                     this.fitToSize(this.displayObject, this.fittedIntoWidth, this.fittedIntoHeight);
@@ -114,7 +114,7 @@ module SimpleLayout {
             }
         }
 
-        fitInto(w:number, h:number):void {
+        public fitInto(w:number, h:number):void {
             if (this.displayObject == null)
                 return;
 
@@ -122,6 +122,14 @@ module SimpleLayout {
             this.fittedIntoHeight = Math.max(1, Math.abs(h));
 
             this.executeLayout();
+        }
+
+        public dispose():void {
+            this.parent = null;
+            if (this.displayObject) {
+                this.displayObject.dispose();
+                this.displayObject = null;
+            }
         }
     }
 }

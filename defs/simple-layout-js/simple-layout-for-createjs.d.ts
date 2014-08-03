@@ -12,6 +12,7 @@ declare module SimpleLayout.CreateJSImpl {
         public x : number;
         public y : number;
         public name : string;
+        public dispose(): void;
     }
 }
 declare module SimpleLayout.CreateJSImpl {

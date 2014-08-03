@@ -181,5 +181,10 @@ module SimpleLayout.layout {
 
             this.lastError = "";
         }
+
+        public dispose():void {
+            this.setLayoutVisualizer(null);
+        }
+
     }
 }

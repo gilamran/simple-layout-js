@@ -76,5 +76,9 @@ module SimpleLayout.CreateJSImpl {
         public get name():string {
             return this.m_wrappedDispObj.name;
         }
+
+        public dispose():void {
+            this.m_wrappedDispObj = null;
+        }
     }
 }

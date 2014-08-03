@@ -104,6 +104,10 @@ var SimpleLayout;
                 enumerable: true,
                 configurable: true
             });
+
+            CreateJSDisplayObjectWrapper.prototype.dispose = function () {
+                this.m_wrappedDispObj = null;
+            };
             return CreateJSDisplayObjectWrapper;
         })();
         CreateJSImpl.CreateJSDisplayObjectWrapper = CreateJSDisplayObjectWrapper;

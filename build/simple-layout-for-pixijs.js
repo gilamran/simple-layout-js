@@ -106,6 +106,10 @@ var SimpleLayout;
                 enumerable: true,
                 configurable: true
             });
+
+            PixiJSDisplayObjectWrapper.prototype.dispose = function () {
+                this.m_wrappedDispObj = null;
+            };
             return PixiJSDisplayObjectWrapper;
         })();
         PixiJSImpl.PixiJSDisplayObjectWrapper = PixiJSDisplayObjectWrapper;

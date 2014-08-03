@@ -80,5 +80,9 @@ module SimpleLayout.PixiJSImpl {
         public get name():string {
             return this.m_name;
         }
+
+        public dispose():void {
+            this.m_wrappedDispObj = null;
+        }
     }
 }
