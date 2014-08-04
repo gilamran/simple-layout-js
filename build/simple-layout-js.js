@@ -68,7 +68,7 @@ var SimpleLayout;
 
                 this.displayObject = value;
 
-                if (this.displayObject)
+                if (this.displayObject && this.parent && this.parent.displayObjectContainer)
                     this.parent.displayObjectContainer.addChild(this.displayObject);
             }
         };

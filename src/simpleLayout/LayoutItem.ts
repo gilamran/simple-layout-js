@@ -82,7 +82,7 @@ module SimpleLayout {
                 this.displayObject = value;
 
                 // and let the parent get the new display object
-                if (this.displayObject)
+                if (this.displayObject && this.parent && this.parent.displayObjectContainer)
                     this.parent.displayObjectContainer.addChild(this.displayObject);
             }
         }
