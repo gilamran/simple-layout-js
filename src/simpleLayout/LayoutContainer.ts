@@ -148,7 +148,7 @@ module SimpleLayout {
                     var item = this.m_layoutItems.pop();
                     item.dispose();
                 }
-                this.m_layoutItems = null;
+                this.m_layoutItems = [];
             }
         }
     }
