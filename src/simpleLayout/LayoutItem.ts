@@ -2,6 +2,8 @@
 
 module SimpleLayout {
     export class LayoutItem {
+        public layoutItemType           : string;
+
         public parent                   : LayoutContainer;
         public displayObject            : displayObject.IDisplayObject;
         public requestedWidthPercent    : number;
@@ -16,6 +18,7 @@ module SimpleLayout {
         private m_name                  : string;
 
         constructor(dispObj?:displayObject.IDisplayObject) {
+            this.layoutItemType = 'LayoutItem';
             this.fittedIntoWidth = 0.0;
             this.fittedIntoHeight = 0.0;
             this.horizontalAlign = enums.HorizontalAlignEnum.H_ALIGN_TYPE_NONE;
@@ -42,6 +45,7 @@ module SimpleLayout {
 
         public toJson():any {
             return {
+                layoutItemType         : this.layoutItemType,
                 requestedWidthPercent  : this.requestedWidthPercent,
                 requestedHeightPercent : this.requestedHeightPercent,
                 horizontalAlign        : this.horizontalAlign,
@@ -54,24 +58,19 @@ module SimpleLayout {
             }            
         }
 
-        static copyPropertiesFromJson(layoutItem:LayoutItem, json:any):void {
-            layoutItem.requestedWidthPercent  = json.requestedWidthPercent;
-            layoutItem.requestedHeightPercent = json.requestedHeightPercent;
-            layoutItem.horizontalAlign        = json.horizontalAlign;
-            layoutItem.verticalAlign          = json.verticalAlign;
-            layoutItem.fittedIntoWidth        = json.fittedIntoWidth;
-            layoutItem.fittedIntoHeight       = json.fittedIntoHeight;
-            layoutItem.keepAspectRatio        = json.keepAspectRatio;
-            layoutItem.assetId                = json.assetId;
-            layoutItem.name                   = json.name;
+        public fromJson(json:any):void {
+            this.layoutItemType         = json.layoutItemType;
+            this.requestedWidthPercent  = json.requestedWidthPercent;
+            this.requestedHeightPercent = json.requestedHeightPercent;
+            this.horizontalAlign        = json.horizontalAlign;
+            this.verticalAlign          = json.verticalAlign;
+            this.fittedIntoWidth        = json.fittedIntoWidth;
+            this.fittedIntoHeight       = json.fittedIntoHeight;
+            this.keepAspectRatio        = json.keepAspectRatio;
+            this.assetId                = json.assetId;
+            this.name                   = json.name;
         }
 
-        static fromJson(json:any):LayoutItem {
-            var result : LayoutItem = new LayoutItem(null);
-            LayoutItem.copyPropertiesFromJson(result, json);
-            return result;
-        }
-        
         public setDisplayObject(value:displayObject.IDisplayObject):void {
             if (value!=this.displayObject) {
                 // remove the previous

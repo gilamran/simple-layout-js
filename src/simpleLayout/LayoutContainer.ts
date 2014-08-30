@@ -6,9 +6,10 @@ module SimpleLayout {
         public layout          : layout.ILayout;
         private m_layoutItems  : LayoutItem[];
 
-        constructor(dispObjCont?:displayObject.IDisplayObjectContainer) {
+        constructor() {
+            super();
             this.m_layoutItems = [];
-            super(dispObjCont);
+            this.layoutItemType = 'LayoutContainer';
         }
 
         public toJson():any {
@@ -26,35 +27,29 @@ module SimpleLayout {
             return result;
         }
 
-        static fromJson(json:any):LayoutItem {
-            if (json.hasOwnProperty('layoutItems')) {
-                var container : LayoutContainer = new LayoutContainer(null);
-                LayoutItem.copyPropertiesFromJson(container, json);
+        public fromJson(json:any):any {
+            super.fromJson(json);
 
-                // layout items
-                var layoutItems = json.layoutItems;
-                for (var i:number=0; i<layoutItems.length; i++) {
-                    var layoutItem : LayoutItem = LayoutContainer.fromJson(layoutItems[i]);
-                    layoutItem.parent = container;
-                    container.layoutItems.push(layoutItem);
-                }
-
-                if (json.hasOwnProperty('layout')) {
-                    var layoutJson = json.layout;
-                    var layout;
-                    switch (layoutJson['layoutType']) {
-                        case 'basic'        : layout = new SimpleLayout.layout.BasicLayout(); break;
-                        case 'horizontal'   : layout = new SimpleLayout.layout.HorizontalLayout(); break;
-                        case 'vertical'     : layout = new SimpleLayout.layout.VerticalLayout(); break;
-                    }
-
-                    SimpleLayout.layout.BasicLayout.copyPropertiesFromJson(layout, layoutJson);
-                    container.layout = layout;
-                }
-                return container;
+            // layout items
+            var layoutItems = json.layoutItems;
+            for (var i:number=0; i<layoutItems.length; i++) {
+                var layoutItem : LayoutItem = LayoutView.itemFromJson(layoutItems[i]);
+                layoutItem.parent = this;
+                this.layoutItems.push(layoutItem);
             }
-            else {
-                return LayoutItem.fromJson(json);
+
+            if (json.hasOwnProperty('layout')) {
+                var layoutJson = json.layout;
+                var layout;
+                switch (layoutJson['layoutType']) {
+                    case 'basic'        : layout = new SimpleLayout.layout.BasicLayout(); break;
+                    case 'horizontal'   : layout = new SimpleLayout.layout.HorizontalLayout(); break;
+                    case 'vertical'     : layout = new SimpleLayout.layout.VerticalLayout(); break;
+                    default             : throw 'Bad Json, unknown layoutType';
+                }
+
+                layout.fromJson(layoutJson);
+                this.layout = layout;
             }
         }
 

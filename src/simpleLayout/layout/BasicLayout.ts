@@ -44,15 +44,15 @@ module SimpleLayout.layout {
             }
         }
 
-        static copyPropertiesFromJson(layout:ILayout, json:any):void {
-            layout.paddingTop      = json.paddingTop;
-            layout.paddingBottom   = json.paddingBottom;
-            layout.paddingLeft     = json.paddingLeft;
-            layout.paddingRight    = json.paddingRight;
-            layout.gap             = json.gap;
-            layout.snapToPixels    = json.snapToPixels;
-            layout.horizontalAlign = json.horizontalAlign;
-            layout.verticalAlign   = json.verticalAlign;
+        public fromJson(json:any):void {
+            this.paddingTop      = json.paddingTop;
+            this.paddingBottom   = json.paddingBottom;
+            this.paddingLeft     = json.paddingLeft;
+            this.paddingRight    = json.paddingRight;
+            this.gap             = json.gap;
+            this.snapToPixels    = json.snapToPixels;
+            this.horizontalAlign = json.horizontalAlign;
+            this.verticalAlign   = json.verticalAlign;
         }
 
         public getLayoutType():string {

@@ -3,32 +3,33 @@
 module SimpleLayout {
     export class LayoutView extends LayoutContainer {
 
-        constructor(dispObjCont?:displayObject.IDisplayObjectContainer) {
-            super(dispObjCont);
+        constructor() {
+            super();
+            this.layoutItemType = 'LayoutView';
         }
 
-        public toJson():any {
-            var result = super.toJson();
+        public static itemFromJson(json:any):LayoutItem {
+            var result : LayoutItem;
+
+            switch (json.layoutItemType) {
+                case 'LayoutView' :
+                    result = new LayoutView();
+                    break;
+
+                case 'LayoutContainer' :
+                    result = new LayoutContainer();
+                    break;
+
+                case 'LayoutItem' :
+                    result = new LayoutItem();
+                    break;
+
+                default :
+                    throw 'Bad JSON, unknown layoutItemType';
+            }
+
+            result.fromJson(json);
             return result;
-        }
-
-        public static fromJson(json:any):LayoutView {
-            var result : LayoutView = <LayoutView>LayoutContainer.fromJson(json);
-            return result;
-        }
-
-        public static isNodeContainer(node):boolean {
-            if (node)
-                return node['constructor'] === SimpleLayout.LayoutContainer;
-            else
-                return null;
-        }
-
-        public static isNodeLayoutItem(node):boolean {
-            if (node)
-                return node['constructor'] === SimpleLayout.LayoutItem;
-            else
-                return null;
         }
 
         public createAssets(assetsFactory:IAssetsFactory):void {
@@ -43,7 +44,7 @@ module SimpleLayout {
             for (var i:number = 0; i < node.countLayoutItems; i++) {
                 var layoutItem:SimpleLayout.LayoutItem = node.getLayoutItemAt(i);
 
-                if (LayoutView.isNodeContainer(layoutItem)) {
+                if (layoutItem.layoutItemType == 'LayoutContainer') {
                     this.createNodeAssets(<SimpleLayout.LayoutContainer>layoutItem, assetsFactory);
                 }
                 else {
@@ -64,7 +65,7 @@ module SimpleLayout {
                 var layoutItem:SimpleLayout.LayoutItem = node.getLayoutItemAt(i);
                 layoutItem.setDisplayObject(null);
 
-                if (LayoutView.isNodeContainer(layoutItem)) {
+                if (layoutItem.layoutItemType == 'LayoutView' || layoutItem.layoutItemType == 'LayoutContainer') {
                     this.clearNodeAssets(<SimpleLayout.LayoutContainer>layoutItem);
                 }
             }

@@ -5,7 +5,6 @@ var SimpleLayout;
             function CreateJSDisplayObjectWrapper(createjsDisplayObject) {
                 if (createjsDisplayObject == null)
                     throw "createjsDisplayObject is null";
-
                 this.m_wrappedDispObj = createjsDisplayObject;
             }
             Object.defineProperty(CreateJSDisplayObjectWrapper.prototype, "allowResize", {
@@ -15,7 +14,6 @@ var SimpleLayout;
                 enumerable: true,
                 configurable: true
             });
-
             Object.defineProperty(CreateJSDisplayObjectWrapper.prototype, "concreteDisplayObject", {
                 get: function () {
                     return this.m_wrappedDispObj;
@@ -23,7 +21,6 @@ var SimpleLayout;
                 enumerable: true,
                 configurable: true
             });
-
             Object.defineProperty(CreateJSDisplayObjectWrapper.prototype, "globalPos", {
                 get: function () {
                     var point = this.m_wrappedDispObj.localToGlobal(0, 0);
@@ -34,8 +31,6 @@ var SimpleLayout;
                 enumerable: true,
                 configurable: true
             });
-
-
             Object.defineProperty(CreateJSDisplayObjectWrapper.prototype, "width", {
                 get: function () {
                     var bounds = this.m_wrappedDispObj.getBounds();
@@ -48,8 +43,6 @@ var SimpleLayout;
                 enumerable: true,
                 configurable: true
             });
-
-
             Object.defineProperty(CreateJSDisplayObjectWrapper.prototype, "height", {
                 get: function () {
                     var bounds = this.m_wrappedDispObj.getBounds();
@@ -62,14 +55,10 @@ var SimpleLayout;
                 enumerable: true,
                 configurable: true
             });
-
-
             CreateJSDisplayObjectWrapper.prototype.resetScaling = function () {
                 this.m_wrappedDispObj.scaleX = 1;
                 this.m_wrappedDispObj.scaleY = 1;
             };
-
-
             Object.defineProperty(CreateJSDisplayObjectWrapper.prototype, "x", {
                 get: function () {
                     return this.m_wrappedDispObj.x;
@@ -80,8 +69,6 @@ var SimpleLayout;
                 enumerable: true,
                 configurable: true
             });
-
-
             Object.defineProperty(CreateJSDisplayObjectWrapper.prototype, "y", {
                 get: function () {
                     return this.m_wrappedDispObj.y;
@@ -92,8 +79,6 @@ var SimpleLayout;
                 enumerable: true,
                 configurable: true
             });
-
-
             Object.defineProperty(CreateJSDisplayObjectWrapper.prototype, "name", {
                 get: function () {
                     return this.m_wrappedDispObj.name;
@@ -104,7 +89,6 @@ var SimpleLayout;
                 enumerable: true,
                 configurable: true
             });
-
             CreateJSDisplayObjectWrapper.prototype.dispose = function () {
                 this.m_wrappedDispObj = null;
             };
@@ -130,7 +114,6 @@ var SimpleLayout;
                 this.m_givenHeight = 0;
                 if (createjsContainer == null)
                     throw "createjsContainer is null";
-
                 _super.call(this, createjsContainer);
             }
             Object.defineProperty(CreateJSContainerWrapper.prototype, "width", {
@@ -143,8 +126,6 @@ var SimpleLayout;
                 enumerable: true,
                 configurable: true
             });
-
-
             Object.defineProperty(CreateJSContainerWrapper.prototype, "height", {
                 get: function () {
                     return this.m_givenHeight;
@@ -155,8 +136,6 @@ var SimpleLayout;
                 enumerable: true,
                 configurable: true
             });
-
-
             Object.defineProperty(CreateJSContainerWrapper.prototype, "displayObjectContainer", {
                 get: function () {
                     return this.concreteDisplayObject;
@@ -164,11 +143,9 @@ var SimpleLayout;
                 enumerable: true,
                 configurable: true
             });
-
             CreateJSContainerWrapper.prototype.addChild = function (child) {
                 this.displayObjectContainer.addChild(child.concreteDisplayObject);
             };
-
             CreateJSContainerWrapper.prototype.removeChild = function (child) {
                 this.displayObjectContainer.removeChild(child.concreteDisplayObject);
             };
@@ -197,7 +174,6 @@ var SimpleLayout;
                 this.graphics.drawRect(w - 1, 0, 1, h);
                 this.graphics.endFill();
             };
-
             CreateJSLayoutVisualizer.prototype.setDebugPadding = function (w, h, topPadding, bottomPadding, leftPadding, rightPadding) {
                 this.graphics.beginFill("#ffff00");
                 this.graphics.drawRect(0, 0, w, topPadding);
@@ -206,13 +182,11 @@ var SimpleLayout;
                 this.graphics.drawRect(0, h - bottomPadding, w, bottomPadding);
                 this.graphics.endFill();
             };
-
             CreateJSLayoutVisualizer.prototype.setDebugGap = function (x, y, width, height) {
                 this.graphics.beginFill("#bbbb00");
                 this.graphics.drawRect(x, y, width, height);
                 this.graphics.endFill();
             };
-
             CreateJSLayoutVisualizer.prototype.setDebugItem = function (layoutItem, x, y, width, height) {
                 if (this.highlightedLayoutItem == layoutItem) {
                     this.graphics.beginFill("#8ab3bf");
@@ -220,23 +194,18 @@ var SimpleLayout;
                     this.graphics.endFill();
                 }
             };
-
             CreateJSLayoutVisualizer.prototype.setAlpha = function (alpha) {
                 this.alpha = alpha;
             };
-
             CreateJSLayoutVisualizer.prototype.setPosition = function (point) {
                 this.x = point.x;
                 this.y = point.y;
             };
-
             CreateJSLayoutVisualizer.prototype.clear = function () {
                 this.graphics.clear();
             };
-
             CreateJSLayoutVisualizer.prototype.update = function () {
             };
-
             CreateJSLayoutVisualizer.prototype.dispose = function () {
                 this.clear();
                 this.update();
