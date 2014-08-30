@@ -293,6 +293,83 @@ var SimpleLayout;
 })(SimpleLayout || (SimpleLayout = {}));
 var SimpleLayout;
 (function (SimpleLayout) {
+    var LayoutView = (function (_super) {
+        __extends(LayoutView, _super);
+        function LayoutView(dispObjCont) {
+            _super.call(this, dispObjCont);
+        }
+        LayoutView.prototype.toJson = function () {
+            var result = _super.prototype.toJson.call(this);
+            return result;
+        };
+
+        LayoutView.fromJson = function (json) {
+            var result = SimpleLayout.LayoutContainer.fromJson(json);
+            return result;
+        };
+
+        LayoutView.isNodeContainer = function (node) {
+            if (node)
+                return node['constructor'] === SimpleLayout.LayoutContainer;
+            else
+                return null;
+        };
+
+        LayoutView.isNodeLayoutItem = function (node) {
+            if (node)
+                return node['constructor'] === SimpleLayout.LayoutItem;
+            else
+                return null;
+        };
+
+        LayoutView.prototype.createAssets = function (assetsFactory) {
+            this.clearNodeAssets(this);
+            this.createNodeAssets(this, assetsFactory);
+        };
+
+        LayoutView.prototype.createNodeAssets = function (node, assetsFactory) {
+            var containerWrapper = assetsFactory.createDisplayObjectContainer();
+            node.setDisplayObject(containerWrapper);
+
+            for (var i = 0; i < node.countLayoutItems; i++) {
+                var layoutItem = node.getLayoutItemAt(i);
+
+                if (LayoutView.isNodeContainer(layoutItem)) {
+                    this.createNodeAssets(layoutItem, assetsFactory);
+                } else {
+                    if (layoutItem.assetId) {
+                        var displayObjectWrapper = assetsFactory.createDisplayObject(layoutItem.assetId);
+                        layoutItem.setDisplayObject(displayObjectWrapper);
+                    }
+                }
+            }
+        };
+
+        LayoutView.prototype.clearAssets = function () {
+            this.clearNodeAssets(this);
+        };
+
+        LayoutView.prototype.clearNodeAssets = function (node) {
+            for (var i = 0; i < node.countLayoutItems; i++) {
+                var layoutItem = node.getLayoutItemAt(i);
+                layoutItem.setDisplayObject(null);
+
+                if (LayoutView.isNodeContainer(layoutItem)) {
+                    this.clearNodeAssets(layoutItem);
+                }
+            }
+            node.setDisplayObject(null);
+        };
+
+        LayoutView.prototype.dispose = function () {
+            _super.prototype.dispose.call(this);
+        };
+        return LayoutView;
+    })(SimpleLayout.LayoutContainer);
+    SimpleLayout.LayoutView = LayoutView;
+})(SimpleLayout || (SimpleLayout = {}));
+var SimpleLayout;
+(function (SimpleLayout) {
     (function (enums) {
         var HorizontalAlignEnum = (function () {
             function HorizontalAlignEnum() {
