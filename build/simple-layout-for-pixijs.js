@@ -191,7 +191,7 @@ var SimpleLayout;
             };
             PixiJSLayoutVisualizer.prototype.setDebugItem = function (layoutItem, x, y, width, height) {
                 if (this.highlightedLayoutItem == layoutItem) {
-                    this.beginFill(0x8ab3bf);
+                    this.beginFill(0xff0000);
                     this.drawRect(x, y, width, height);
                     this.endFill();
                 }

@@ -179,11 +179,18 @@ var SimpleLayout;
                 var layoutVisualizer = this.layout.getLayoutVisualizer();
                 if (layoutVisualizer) {
                     layoutVisualizer.clear();
-                    layoutVisualizer.setDebugItem(this, 0, 0, this.fittedIntoWidth, this.fittedIntoHeight);
+                    if (this.displayObject)
+                        layoutVisualizer.setDebugItem(this, 0, 0, this.fittedIntoWidth, this.fittedIntoHeight);
                 }
                 this.layout.fitChildrenInto(this, this.fittedIntoWidth, this.fittedIntoHeight);
                 this.displayObject.width = this.fittedIntoWidth;
                 this.displayObject.height = this.fittedIntoHeight;
+                if (layoutVisualizer) {
+                    if (this.displayObject)
+                        layoutVisualizer.setPosition(this.displayObject.globalPos);
+                    layoutVisualizer.setDebugFitAreaSize(this.fittedIntoWidth, this.fittedIntoHeight);
+                    layoutVisualizer.update();
+                }
             }
             else {
                 _super.prototype.executeLayout.call(this);
@@ -501,11 +508,6 @@ var SimpleLayout;
                     if (this.layoutVisualizer)
                         this.layoutVisualizer.setDebugItem(layoutItem, paddingLeftVal, paddingTopVal, HspaceForItems, VspaceForItems);
                 }
-                if (this.layoutVisualizer) {
-                    this.layoutVisualizer.setPosition(targetContainer.displayObject.globalPos);
-                    this.layoutVisualizer.setDebugFitAreaSize(w, h);
-                    this.layoutVisualizer.update();
-                }
                 this.lastError = "";
             };
             BasicLayout.prototype.dispose = function () {
@@ -651,11 +653,6 @@ var SimpleLayout;
                         this.layoutVisualizer.setDebugGap(currentX, paddingTopVal, targetGap, h - totalVPadding);
                     currentX = currentX + targetGap;
                 }
-                if (this.layoutVisualizer) {
-                    this.layoutVisualizer.setPosition(targetContainer.displayObject.globalPos);
-                    this.layoutVisualizer.setDebugFitAreaSize(w, h);
-                    this.layoutVisualizer.update();
-                }
                 this.lastError = "";
             };
             return HorizontalLayout;
@@ -797,11 +794,6 @@ var SimpleLayout;
                     if (this.layoutVisualizer && i < targetContainer.countLayoutItems - 1)
                         this.layoutVisualizer.setDebugGap(paddingLeftVal, currentY, w - totalHPadding, targetGap);
                     currentY = currentY + targetGap;
-                }
-                if (this.layoutVisualizer) {
-                    this.layoutVisualizer.setPosition(targetContainer.displayObject.globalPos);
-                    this.layoutVisualizer.setDebugFitAreaSize(w, h);
-                    this.layoutVisualizer.update();
                 }
                 this.lastError = "";
             };

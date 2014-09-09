@@ -39,7 +39,7 @@ module SimpleLayout.PixiJSImpl {
 
         public setDebugItem(layoutItem:LayoutItem, x:number, y:number, width:number, height:number):void {
             if (this.highlightedLayoutItem==layoutItem) {
-                this.beginFill(0x8ab3bf);
+                this.beginFill(0xff0000);
                 this.drawRect(x, y, width, height);
                 this.endFill();
             }

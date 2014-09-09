@@ -66,11 +66,20 @@ module SimpleLayout {
                 var layoutVisualizer : visualizer.ILayoutVisualizer = this.layout.getLayoutVisualizer();
                 if (layoutVisualizer) {
                     layoutVisualizer.clear();
-                    layoutVisualizer.setDebugItem(this, 0, 0, this.fittedIntoWidth, this.fittedIntoHeight);
+                    if (this.displayObject)
+                        layoutVisualizer.setDebugItem(this, 0, 0, this.fittedIntoWidth, this.fittedIntoHeight);
                 }
+
                 this.layout.fitChildrenInto(this, this.fittedIntoWidth, this.fittedIntoHeight);
                 this.displayObject.width = this.fittedIntoWidth;
                 this.displayObject.height = this.fittedIntoHeight;
+
+                if (layoutVisualizer) {
+                    if (this.displayObject)
+                        layoutVisualizer.setPosition(this.displayObject.globalPos);
+                    layoutVisualizer.setDebugFitAreaSize(this.fittedIntoWidth, this.fittedIntoHeight);
+                    layoutVisualizer.update();
+                }
             }
             else {
                 super.executeLayout();

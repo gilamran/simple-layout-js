@@ -200,12 +200,6 @@ module SimpleLayout.layout {
                     this.layoutVisualizer.setDebugItem(layoutItem, paddingLeftVal, paddingTopVal, HspaceForItems, VspaceForItems);
             }
 
-            if (this.layoutVisualizer) {
-                this.layoutVisualizer.setPosition(targetContainer.displayObject.globalPos);
-                this.layoutVisualizer.setDebugFitAreaSize(w, h);
-                this.layoutVisualizer.update();
-            }
-
             this.lastError = "";
         }
 
