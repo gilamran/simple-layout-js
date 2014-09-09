@@ -149,6 +149,9 @@ var SimpleLayout;
             CreateJSContainerWrapper.prototype.removeChild = function (child) {
                 this.displayObjectContainer.removeChild(child.concreteDisplayObject);
             };
+            CreateJSContainerWrapper.prototype.removeAllChildren = function () {
+                this.displayObjectContainer.removeAllChildren();
+            };
             return CreateJSContainerWrapper;
         })(CreateJSImpl.CreateJSDisplayObjectWrapper);
         CreateJSImpl.CreateJSContainerWrapper = CreateJSContainerWrapper;

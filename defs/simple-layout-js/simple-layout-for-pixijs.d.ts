@@ -26,6 +26,7 @@ declare module SimpleLayout.PixiJSImpl {
         displayObjectContainer: PIXI.DisplayObjectContainer;
         addChild(child: displayObject.IDisplayObject): void;
         removeChild(child: displayObject.IDisplayObject): void;
+        removeAllChildren(): void;
     }
 }
 declare module SimpleLayout.PixiJSImpl {

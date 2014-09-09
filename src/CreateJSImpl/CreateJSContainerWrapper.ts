@@ -41,5 +41,9 @@ module SimpleLayout.CreateJSImpl {
         public removeChild(child:displayObject.IDisplayObject):void {
             this.displayObjectContainer.removeChild(<createjs.DisplayObject>child.concreteDisplayObject);
         }
+
+        public removeAllChildren():void {
+            this.displayObjectContainer.removeAllChildren();
+        }
     }
 }

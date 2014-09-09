@@ -41,5 +41,10 @@ module SimpleLayout.PixiJSImpl {
         public removeChild(child:displayObject.IDisplayObject):void {
             this.displayObjectContainer.removeChild(<PIXI.DisplayObject>child.concreteDisplayObject);
         }
+
+        public removeAllChildren():void {
+            while (this.displayObjectContainer.children.length>0)
+                this.displayObjectContainer.removeChild(this.displayObjectContainer.children[0]);
+        }
     }
 }

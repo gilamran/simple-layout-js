@@ -90,6 +90,35 @@ module SimpleLayout {
             return this.m_layoutItems[index];
         }
 
+        private removeAllDisplayObjects():void {
+            this.displayObjectContainer.removeAllChildren();
+            for (var i:number=0; i<this.m_layoutItems.length; i++) {
+                var layoutItem : LayoutItem = this.m_layoutItems[i];
+
+                if (layoutItem.layoutItemType == 'LayoutContainer')
+                    (<LayoutContainer>layoutItem).removeAllDisplayObjects();
+            }
+        }
+
+        public rearrangeLayoutItems():void {
+            if (!this.displayObjectContainer)
+                return;
+
+            this.removeAllDisplayObjects();
+
+            // re add all the children by the items order
+            for (var i:number=0; i<this.m_layoutItems.length; i++) {
+                var layoutItem : LayoutItem = this.m_layoutItems[i];
+
+                layoutItem.parent = this;
+                if (layoutItem.displayObject)
+                    this.displayObjectContainer.addChild(layoutItem.displayObject);
+
+                if (layoutItem.layoutItemType == 'LayoutContainer')
+                    (<LayoutContainer>layoutItem).rearrangeLayoutItems();
+            }
+        }
+
         public addLayoutItem(layoutItem:LayoutItem, index:number=-1):LayoutItem {
             if (layoutItem == null)
                 throw "Can not add a null layoutItem";

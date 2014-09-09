@@ -151,6 +151,10 @@ var SimpleLayout;
             PixiJSContainerWrapper.prototype.removeChild = function (child) {
                 this.displayObjectContainer.removeChild(child.concreteDisplayObject);
             };
+            PixiJSContainerWrapper.prototype.removeAllChildren = function () {
+                while (this.displayObjectContainer.children.length > 0)
+                    this.displayObjectContainer.removeChild(this.displayObjectContainer.children[0]);
+            };
             return PixiJSContainerWrapper;
         })(PixiJSImpl.PixiJSDisplayObjectWrapper);
         PixiJSImpl.PixiJSContainerWrapper = PixiJSContainerWrapper;

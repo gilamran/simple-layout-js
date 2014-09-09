@@ -25,6 +25,7 @@ declare module SimpleLayout.CreateJSImpl {
         displayObjectContainer: createjs.Container;
         addChild(child: displayObject.IDisplayObject): void;
         removeChild(child: displayObject.IDisplayObject): void;
+        removeAllChildren(): void;
     }
 }
 declare module SimpleLayout.CreateJSImpl {
