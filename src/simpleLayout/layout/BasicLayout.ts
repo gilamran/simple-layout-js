@@ -95,10 +95,8 @@ module SimpleLayout.layout {
             var paddingLeftVal      : number = w * this.paddingLeft;
             var paddingRightVal     : number = w * this.paddingRight;
 
-            if (this.layoutVisualizer) {
-                this.layoutVisualizer.clear();
+            if (this.layoutVisualizer)
                 this.layoutVisualizer.setDebugPadding(w, h, paddingTopVal, paddingBottomVal, paddingLeftVal, paddingRightVal);
-            }
 
             HspaceForItems = w - (paddingLeftVal + paddingRightVal);
             VspaceForItems = h - (paddingTopVal + paddingBottomVal);

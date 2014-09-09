@@ -34,10 +34,8 @@ module SimpleLayout.layout {
             var displayObject       : displayObject.IDisplayObject;
             var i                   : number;
 
-            if (this.layoutVisualizer) {
-                this.layoutVisualizer.clear();
+            if (this.layoutVisualizer)
                 this.layoutVisualizer.setDebugPadding(w, h, paddingTopVal, paddingBottomVal, paddingLeftVal, paddingRightVal);
-            }
 
             totalItemsGap = gapVal * (targetContainer.countLayoutItems - 1);
             totalVPadding = paddingTopVal + paddingBottomVal;

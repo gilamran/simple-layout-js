@@ -63,12 +63,14 @@ module SimpleLayout {
 
         public executeLayout():void {
             if (this.layout) {
+                var layoutVisualizer : visualizer.ILayoutVisualizer = this.layout.getLayoutVisualizer();
+                if (layoutVisualizer) {
+                    layoutVisualizer.clear();
+                    layoutVisualizer.setDebugItem(this, 0, 0, this.fittedIntoWidth, this.fittedIntoHeight);
+                }
                 this.layout.fitChildrenInto(this, this.fittedIntoWidth, this.fittedIntoHeight);
                 this.displayObject.width = this.fittedIntoWidth;
                 this.displayObject.height = this.fittedIntoHeight;
-                var layoutVisualizer : visualizer.ILayoutVisualizer = this.layout.getLayoutVisualizer();
-                if (layoutVisualizer)
-                    layoutVisualizer.setDebugItem(this, 0, 0, this.fittedIntoWidth, this.fittedIntoHeight);
             }
             else {
                 super.executeLayout();

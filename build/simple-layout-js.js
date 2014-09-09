@@ -176,12 +176,14 @@ var SimpleLayout;
         });
         LayoutContainer.prototype.executeLayout = function () {
             if (this.layout) {
+                var layoutVisualizer = this.layout.getLayoutVisualizer();
+                if (layoutVisualizer) {
+                    layoutVisualizer.clear();
+                    layoutVisualizer.setDebugItem(this, 0, 0, this.fittedIntoWidth, this.fittedIntoHeight);
+                }
                 this.layout.fitChildrenInto(this, this.fittedIntoWidth, this.fittedIntoHeight);
                 this.displayObject.width = this.fittedIntoWidth;
                 this.displayObject.height = this.fittedIntoHeight;
-                var layoutVisualizer = this.layout.getLayoutVisualizer();
-                if (layoutVisualizer)
-                    layoutVisualizer.setDebugItem(this, 0, 0, this.fittedIntoWidth, this.fittedIntoHeight);
             }
             else {
                 _super.prototype.executeLayout.call(this);
@@ -418,10 +420,8 @@ var SimpleLayout;
                 var paddingBottomVal = h * this.paddingBottom;
                 var paddingLeftVal = w * this.paddingLeft;
                 var paddingRightVal = w * this.paddingRight;
-                if (this.layoutVisualizer) {
-                    this.layoutVisualizer.clear();
+                if (this.layoutVisualizer)
                     this.layoutVisualizer.setDebugPadding(w, h, paddingTopVal, paddingBottomVal, paddingLeftVal, paddingRightVal);
-                }
                 HspaceForItems = w - (paddingLeftVal + paddingRightVal);
                 VspaceForItems = h - (paddingTopVal + paddingBottomVal);
                 if (HspaceForItems <= 0.0) {
@@ -548,10 +548,8 @@ var SimpleLayout;
                 var layoutItem;
                 var displayObject;
                 var i;
-                if (this.layoutVisualizer) {
-                    this.layoutVisualizer.clear();
+                if (this.layoutVisualizer)
                     this.layoutVisualizer.setDebugPadding(w, h, paddingTopVal, paddingBottomVal, paddingLeftVal, paddingRightVal);
-                }
                 totalItemsGap = gapVal * (targetContainer.countLayoutItems - 1);
                 totalVPadding = paddingTopVal + paddingBottomVal;
                 totalHPadding = paddingLeftVal + paddingRightVal;
@@ -697,10 +695,8 @@ var SimpleLayout;
                 var layoutItem;
                 var displayObject;
                 var i;
-                if (this.layoutVisualizer) {
-                    this.layoutVisualizer.clear();
+                if (this.layoutVisualizer)
                     this.layoutVisualizer.setDebugPadding(w, h, paddingTopVal, paddingBottomVal, paddingLeftVal, paddingRightVal);
-                }
                 totalItemsGap = gapVal * (targetContainer.countLayoutItems - 1);
                 totalVPadding = paddingTopVal + paddingBottomVal;
                 totalHPadding = paddingLeftVal + paddingRightVal;
