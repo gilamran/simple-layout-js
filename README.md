@@ -40,7 +40,7 @@ Using
 --------------------
 The easiest way to use Simple-Layout is to build your layout using the [Layout-Editor](http://www.simple-layout.com/#/layout-editor), once you are done, export to JSON, and import it in your app/game at run-time.
 ```JavaScript
-var myLayout = SimpleLayout.LayoutView.itemFromJson(exported_json);
+var myLayout = SimpleLayout.LayoutContainer.itemFromJson(exported_json);
 myLayout.createAssets(myAssetsFactory);
 myLayout.fitInto(this.m_canvasElement.offsetWidth, this.m_canvasElement.offsetHeight);
 ```
@@ -62,7 +62,7 @@ Currently Simple-Layout comes with CreateJs and PIXI implementations of these in
 The Layout-Editor
 --------------------
 This is a side project that uses Simple-Layout to help you build your app/game UI, export it to JSON and import it at run-time.
-More details [here](https://github.com/gilamran/simple-layout-js-examples).
+More details [here](https://github.com/gilamran/simple-layout-editor).
 
 
 

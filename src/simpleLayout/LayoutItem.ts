@@ -1,11 +1,28 @@
 /// <reference path="reference.ts"/>
-
+/**
+ * The global namespace for all the Simple Layout framework classes.
+ *
+ * @module SimpleLayout
+ */
 module SimpleLayout {
-    export class LayoutItem {
-        public layoutItemType           : string;
 
+    export interface ILayoutItemData {
+        layoutItemType           : string;
+        requestedWidthPercent    : number;
+        requestedHeightPercent   : number;
+        horizontalAlign          : string;
+        verticalAlign            : string;
+        fittedIntoWidth          : number;
+        fittedIntoHeight         : number;
+        keepAspectRatio          : boolean;
+        name                     : string;
+        assetId                  : string;
+    }
+
+    export class LayoutItem {
         public parent                   : LayoutContainer;
         public displayObject            : displayObject.IDisplayObject;
+
         public requestedWidthPercent    : number;
         public requestedHeightPercent   : number;
         public horizontalAlign          : string;
@@ -13,12 +30,20 @@ module SimpleLayout {
         public fittedIntoWidth          : number;
         public fittedIntoHeight         : number;
         public keepAspectRatio          : boolean;
+        public name                     : string;
         public assetId                  : string;
 
-        private m_name                  : string;
+        /**
+         * The {{#crossLink "LayoutItem"}}{{/crossLink}} class is the most basic building block for defining your UI layout
+         *
+         * @class LayoutItem
+         * @param displayObject {Object} An object that implements the <b>IDisplayObject</b> interface.
+         * @constructor
+         **/
+        constructor(displayObject?:displayObject.IDisplayObject) {
+            this.parent = null;
+            this.displayObject = displayObject;
 
-        constructor(dispObj?:displayObject.IDisplayObject) {
-            this.layoutItemType = 'LayoutItem';
             this.fittedIntoWidth = 0.0;
             this.fittedIntoHeight = 0.0;
             this.horizontalAlign = enums.HorizontalAlignEnum.H_ALIGN_TYPE_NONE;
@@ -26,24 +51,73 @@ module SimpleLayout {
             this.keepAspectRatio = true;
             this.requestedWidthPercent = 0.0;
             this.requestedHeightPercent = 0.0;
-            this.parent = null;
-            this.displayObject = dispObj;
+            this.name = "";
             this.assetId = "";
-
-            this.m_name = null;
         }
 
-        get name():string {
-            return this.m_name;
+        /**
+         * Because a layout is built using a tree of {{#crossLink "LayoutContainer"}}LayoutContainers{{/crossLink}} and
+         * {{#crossLink "LayoutItem"}}LayoutItems{{/crossLink}}, we have to know the type of the nodes in the tree
+         * while building the layout. This is an easy way to get the type of the LayoutItem.
+         * This function will be overridden in the {{#crossLink "LayoutContainer"}}{{/crossLink}}.
+         *
+         * @attribute layoutItemType
+         * @type string
+         * @readonly
+         */
+        public get layoutItemType():string {
+            return 'LayoutItem';
         }
 
-        set name(value:string) {
-            this.m_name = value;
-            if (this.displayObject)
-                this.displayObject.name = this.m_name;
+        /**
+         * Sets this LayoutItem's display object that it represents in the layout.
+         * A Layout item can exist without a display object and it will take the space that it own, but nothing
+         * will be displayed.
+         *
+         * @method setDisplayObject
+         * @param displayObject {Object} An object that implements the <b>IDisplayObject</b> interface.
+         */
+        public setDisplayObject(displayObject:displayObject.IDisplayObject):void {
+            if (displayObject!=this.displayObject) {
+                // remove the previous
+                if (this.displayObject && this.parent && this.parent.displayObjectContainer)
+                    this.parent.displayObjectContainer.removeChild(this.displayObject);
+
+                // take the new displayObject
+                this.displayObject = displayObject;
+
+                // and let the parent get the new display object
+                if (this.displayObject && this.parent && this.parent.displayObjectContainer)
+                    this.parent.displayObjectContainer.addChild(this.displayObject);
+            }
         }
 
-        public toJson():any {
+        /**
+         * In a LayoutItem this function will fit the LayoutItem's <b>displayObject</b> into its given width and height.
+         * This function is called by the LayoutContainer on all its children LayoutItems (And containers)
+         *
+         * @method executeLayout
+         */
+        public executeLayout():void {
+            if (this.displayObject) {
+                if (this.keepAspectRatio) {
+                    this.fitToSize(this.displayObject, this.fittedIntoWidth, this.fittedIntoHeight);
+                }
+                else {
+                    this.displayObject.width = this.fittedIntoWidth;
+                    this.displayObject.height = this.fittedIntoHeight;
+                }
+            }
+        }
+
+        /**
+         * Serialize the LayoutItem into its properties, the result json can be use to construct a new LayoutItem by
+         * calling fromJson function.
+         *
+         * @method toJson
+         * @returns {Object} A Json object that fully describe this LayoutItem
+         */
+        public toJson():ILayoutItemData {
             return {
                 layoutItemType         : this.layoutItemType,
                 requestedWidthPercent  : this.requestedWidthPercent,
@@ -53,13 +127,18 @@ module SimpleLayout {
                 fittedIntoWidth        : this.fittedIntoWidth,
                 fittedIntoHeight       : this.fittedIntoHeight,
                 keepAspectRatio        : this.keepAspectRatio,
-                assetId                : this.assetId,
-                name                   : this.name
-            }            
+                name                   : this.name,
+                assetId                : this.assetId
+            }
         }
 
-        public fromJson(json:any):void {
-            this.layoutItemType         = json.layoutItemType;
+        /**
+         * Copy all the properties from the given json.
+         *
+         * @method fromJson
+         * @param json {Object} object that fully describe this LayoutItem
+         */
+        public fromJson(json:ILayoutItemData):void {
             this.requestedWidthPercent  = json.requestedWidthPercent;
             this.requestedHeightPercent = json.requestedHeightPercent;
             this.horizontalAlign        = json.horizontalAlign;
@@ -67,22 +146,39 @@ module SimpleLayout {
             this.fittedIntoWidth        = json.fittedIntoWidth;
             this.fittedIntoHeight       = json.fittedIntoHeight;
             this.keepAspectRatio        = json.keepAspectRatio;
-            this.assetId                = json.assetId;
             this.name                   = json.name;
+            this.assetId                = json.assetId;
         }
 
-        public setDisplayObject(value:displayObject.IDisplayObject):void {
-            if (value!=this.displayObject) {
-                // remove the previous
-                if (this.displayObject && this.parent && this.parent.displayObjectContainer)
-                    this.parent.displayObjectContainer.removeChild(this.displayObject);
+        /**
+         * This function will be called by a <b>Layout</b> object.
+         *
+         * @method fitInto
+         * @param width {Number} A specific width that this LayoutItem takes
+         * @param height {Number} A specific height that this LayoutItem takes
+         */
+        public fitInto(width:number, height:number):void {
+            if (this.displayObject == null)
+                return;
 
-                // take the new value
-                this.displayObject = value;
+            this.fittedIntoWidth = Math.max(1, Math.abs(width));
+            this.fittedIntoHeight = Math.max(1, Math.abs(height));
 
-                // and let the parent get the new display object
-                if (this.displayObject && this.parent && this.parent.displayObjectContainer)
-                    this.parent.displayObjectContainer.addChild(this.displayObject);
+            this.executeLayout();
+        }
+
+
+        /**
+         * Disposing (Setting to null) all the objects that it holds, like <b>parent</b>. If a <b>displayObject</b> was
+         * assigned to this LayoutItem, its <b>dispose</b> function will also get called.
+         *
+         * @method dispose
+         */
+        public dispose():void {
+            this.parent = null;
+            if (this.displayObject) {
+                this.displayObject.dispose();
+                this.displayObject = null;
             }
         }
 
@@ -98,36 +194,6 @@ module SimpleLayout {
             else {
                 dispObj.width = w;
                 dispObj.height = dispObj.width / imageRatio;
-            }
-        }
-
-        public executeLayout():void {
-            if (this.displayObject) {
-                if (this.keepAspectRatio) {
-                    this.fitToSize(this.displayObject, this.fittedIntoWidth, this.fittedIntoHeight);
-                }
-                else {
-                    this.displayObject.width = this.fittedIntoWidth;
-                    this.displayObject.height = this.fittedIntoHeight;
-                }
-            }
-        }
-
-        public fitInto(w:number, h:number):void {
-            if (this.displayObject == null)
-                return;
-
-            this.fittedIntoWidth = Math.max(1, Math.abs(w));
-            this.fittedIntoHeight = Math.max(1, Math.abs(h));
-
-            this.executeLayout();
-        }
-
-        public dispose():void {
-            this.parent = null;
-            if (this.displayObject) {
-                this.displayObject.dispose();
-                this.displayObject = null;
             }
         }
     }

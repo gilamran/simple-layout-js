@@ -1,19 +1,48 @@
 /// <reference path="reference.ts"/>
 
 module SimpleLayout {
+    export interface ILayoutContainerData extends ILayoutItemData {
+        layout          : layout.ILayout;
+        layoutItems     : LayoutItem[];
+    }
+
     export class LayoutContainer extends LayoutItem {
 
         public layout          : layout.ILayout;
         private m_layoutItems  : LayoutItem[];
 
+        /**
+         * The {{#crossLink "LayoutContainer"}}{{/crossLink}} class is the a holder of LayoutItems. its displayObject
+         * property actually holds a displayObjectContainer. It doesn't have a regular displayObject (A graphical entity).
+         *
+         * @class LayoutContainer
+         **/
         constructor() {
             super();
             this.m_layoutItems = [];
-            this.layoutItemType = 'LayoutContainer';
         }
 
-        public toJson():any {
-            var result = super.toJson();
+        /**
+         * This is an override to
+         * {{#crossLink "LayoutItem"}}{{/crossLink}}:{{#crossLink "LayoutItem/getLayoutItemType:method"}}{{/crossLink}}.
+         *
+         * @method getLayoutItemType
+         * @returns {string} Always returns "LayoutContainer" string.
+         */
+        public getLayoutItemType():string {
+            return 'LayoutContainer';
+        }
+
+
+        /**
+         * This is an override to
+         * {{#crossLink "LayoutItem"}}{{/crossLink}}:{{#crossLink "LayoutItem/toJson:method"}}{{/crossLink}}.
+         *
+         * @method toJson
+         * @returns {Object} A Json object that fully describe this LayoutContainer
+         */
+        public toJson():ILayoutContainerData {
+            var result : ILayoutContainerData = <ILayoutContainerData>super.toJson();
             var layoutItems = [];
             for (var i:number=0; i<this.m_layoutItems.length; i++) {
                 layoutItems.push(this.m_layoutItems[i].toJson());
@@ -27,13 +56,51 @@ module SimpleLayout {
             return result;
         }
 
-        public fromJson(json:any):any {
+
+        /**
+         * A factory function to create a {{#crossLink "LayoutContainer"}}{{/crossLink}} or
+         * {{#crossLink "LayoutItem"}}{{/crossLink}} according the to the <b>layoutItemType</b> in the given json object.
+         * This function is being used internally when calling the
+         * {{#crossLink "LayoutContainer/fromJson:method"}}{{/crossLink}} function.
+         *
+         * @method itemFromJson
+         * @static
+         * @returns {Object} Depends of the <b>layoutItemType</b> in the given json object.
+         */
+        public static itemFromJson(json:any):LayoutItem {
+            var result : LayoutItem;
+
+            switch (json.layoutItemType) {
+                case 'LayoutItem' :
+                    result = new LayoutItem();
+                    break;
+
+                case 'LayoutContainer' :
+                    result = new LayoutContainer();
+                    break;
+
+                default :
+                    throw 'Bad JSON, unknown layoutItemType:' + json.layoutItemType;
+            }
+
+            result.fromJson(json);
+            return result;
+        }
+
+        /**
+         * This is an override to
+         * {{#crossLink "LayoutItem"}}{{/crossLink}}:{{#crossLink "LayoutItem/fromJson:method"}}{{/crossLink}}.
+         *
+         * @method fromJson
+         * @param json {Object} object that fully describe this LayoutContainer and its children.
+         */
+        public fromJson(json:ILayoutContainerData):void {
             super.fromJson(json);
 
             // layout items
             var layoutItems = json.layoutItems;
             for (var i:number=0; i<layoutItems.length; i++) {
-                var layoutItem : LayoutItem = LayoutView.itemFromJson(layoutItems[i]);
+                var layoutItem : LayoutItem = LayoutContainer.itemFromJson(layoutItems[i]);
                 layoutItem.parent = this;
                 this.layoutItems.push(layoutItem);
             }
@@ -86,18 +153,15 @@ module SimpleLayout {
             }
         }
 
+        /**
+         * A shortcut to <b>container.layoutItems[index]</b>
+         *
+         * @method getLayoutItemAt
+         * @param index {Number}
+         * @returns {LayoutItem} The LayoutItem as the given index.
+         */
         public getLayoutItemAt(index:number):LayoutItem {
             return this.m_layoutItems[index];
-        }
-
-        private removeAllDisplayObjects():void {
-            this.displayObjectContainer.removeAllChildren();
-            for (var i:number=0; i<this.m_layoutItems.length; i++) {
-                var layoutItem : LayoutItem = this.m_layoutItems[i];
-
-                if (layoutItem.layoutItemType == 'LayoutContainer')
-                    (<LayoutContainer>layoutItem).removeAllDisplayObjects();
-            }
         }
 
         public rearrangeLayoutItems():void {
@@ -114,7 +178,7 @@ module SimpleLayout {
                 if (layoutItem.displayObject)
                     this.displayObjectContainer.addChild(layoutItem.displayObject);
 
-                if (layoutItem.layoutItemType == 'LayoutContainer')
+                if (layoutItem.layoutItemType === 'LayoutContainer')
                     (<LayoutContainer>layoutItem).rearrangeLayoutItems();
             }
         }
@@ -184,6 +248,16 @@ module SimpleLayout {
                     item.dispose();
                 }
                 this.m_layoutItems = [];
+            }
+        }
+
+        private removeAllDisplayObjects():void {
+            this.displayObjectContainer.removeAllChildren();
+            for (var i:number=0; i<this.m_layoutItems.length; i++) {
+                var layoutItem : LayoutItem = this.m_layoutItems[i];
+
+                if (layoutItem.layoutItemType === 'LayoutContainer')
+                    (<LayoutContainer>layoutItem).removeAllDisplayObjects();
             }
         }
     }

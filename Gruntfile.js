@@ -10,6 +10,25 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
 
+        // This will load in our package.json file so we can have access
+        // to the project name and version number.
+        pkg: grunt.file.readJSON('package.json'),
+
+        // The YUIDoc plugin to generate documentation for code files.
+        yuidoc: {
+            compile: {
+                name: '<%= pkg.name %>',
+                description: '<%= pkg.description %>',
+                version: '<%= pkg.version %>',
+                url: '<%= pkg.homepage %>',
+                options: {
+                    extension: '.js',
+                    paths: 'docs_src/',
+                    outdir: 'docs/'
+                }
+            }
+        },
+
         // Watches files for changes and runs tasks based on the changed files
         watch: {
             ts: {
@@ -25,13 +44,27 @@ module.exports = function (grunt) {
                     {
                         dot: true,
                         src: [
-                            'build/**/*.*'
+                            'build/**/*.*', 'defs/simple-layout-js/**/*.*', 'docs', 'docs_src'
                         ]
-                    },
+                    }
+                ]
+            },
+            documentationSrc: {
+                files: [
+//                    {
+//                        dot: true,
+//                        src: [
+//                            'docs_src'
+//                        ]
+//                    }
+                ]
+            },
+            documentation: {
+                files: [
                     {
                         dot: true,
                         src: [
-                            'defs/simple-layout-js/**/*.*'
+                            'docs', 'docs_src'
                         ]
                     }
                 ]
@@ -56,14 +89,26 @@ module.exports = function (grunt) {
 
         ts: {
             distLib: {
-                src: ["src/simpleLayout/**/*.ts"],
-                reference: "src/simpleLayout/reference.ts",
+                src: ["src/SimpleLayout/**/*.ts"],
+                reference: "src/SimpleLayout/reference.ts",
                 out: 'build/simple-layout-js.js',
                 options: {
                     target: 'es5',
                     module: 'amd',
                     sourceMap: true,
                     removeComments: true,
+                    declaration: true
+                }
+            },
+            forDocs: {
+                src: ["src/SimpleLayout/**/*.ts"],
+                reference: "src/SimpleLayout/reference.ts",
+                outDir: 'docs_src',
+                options: {
+                    target: 'es5',
+                    module: 'amd',
+                    sourceMap: false,
+                    removeComments: false,
                     declaration: true
                 }
             },
@@ -75,7 +120,7 @@ module.exports = function (grunt) {
                     target: 'es5',
                     module: 'amd',
                     sourceMap: true,
-                    removeComments: true,
+                    removeComments: false,
                     declaration: true
                 }
             },
@@ -87,7 +132,7 @@ module.exports = function (grunt) {
                     target: 'es5',
                     module: 'amd',
                     sourceMap: true,
-                    removeComments: true,
+                    removeComments: false,
                     declaration: true
                 }
             }
@@ -119,8 +164,8 @@ module.exports = function (grunt) {
             },
             dev: {
                 files: [
-                    {expand: true, cwd: 'defs/simple-layout-js', src: ['*.d.ts'], dest: '../simple-layout-js-examples/app/defs/simple-layout-js/', flatten: true, filter: 'isFile'},
-                    {expand: true, cwd: 'build', src: ['*.*'], dest: '../simple-layout-js-examples/bower_components/simple-layout-js/build', flatten: true, filter: 'isFile'}
+                    {expand: true, cwd: 'defs/simple-layout-js', src: ['*.d.ts'], dest: '../simple-layout-editor/app/defs/simple-layout-js/', flatten: true, filter: 'isFile'},
+                    {expand: true, cwd: 'build', src: ['*.*'], dest: '../simple-layout-editor/bower_components/simple-layout-js/build', flatten: true, filter: 'isFile'}
                 ]
             }
         },
@@ -150,6 +195,13 @@ module.exports = function (grunt) {
     });
 
 
+    grunt.registerTask('documentation', [
+        'clean:documentation',
+        'ts:forDocs',
+        'yuidoc',
+        'clean:documentationSrc'
+    ]);
+
     grunt.registerTask('default', [
         'clean:all',
         'ts:distLib',
@@ -157,6 +209,7 @@ module.exports = function (grunt) {
         'clean:libDefinitions',
         'ts:distCreateJS',
         'ts:distPixiJS',
+        'documentation',
         'copy:implDefinitions',
         'clean:implDefinitions',
         'replace'
