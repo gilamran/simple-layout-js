@@ -34,6 +34,10 @@ module.exports = function (grunt) {
             ts: {
                 files: ['src/**/{,*/}*.ts'],
                 tasks: ['dev']
+            },
+            docs: {
+                files: ['src/**/{,*/}*.ts'],
+                tasks: ['documentation']
             }
         },
 
