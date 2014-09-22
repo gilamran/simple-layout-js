@@ -12,33 +12,31 @@ module SimpleLayout {
         private m_layoutItems  : LayoutItem[];
 
         /**
-         * The {{#crossLink "LayoutContainer"}}{{/crossLink}} class is the a holder of LayoutItems. its displayObject
-         * property actually holds a displayObjectContainer. It doesn't have a regular displayObject (A graphical entity).
-         *
-         * @class LayoutContainer
-         **/
+         * @class SimpleLayout.LayoutContainer
+         * @classdesc The LayoutContainer class is the a holder of LayoutItems. its displayObject property actually
+         * holds a displayObjectContainer. It doesn't have a regular displayObject (A graphical entity).
+         */
         constructor() {
             super();
             this.m_layoutItems = [];
         }
 
         /**
-         * This is an override to
-         * {{#crossLink "LayoutItem"}}{{/crossLink}}:{{#crossLink "LayoutItem/getLayoutItemType:method"}}{{/crossLink}}.
+         * This is an override to LayoutItem.layoutItemType
          *
-         * @method getLayoutItemType
-         * @returns {string} Always returns "LayoutContainer" string.
+         * @member SimpleLayout.LayoutContainer#layoutItemType
+         * @type string
+         * @readonly
          */
-        public getLayoutItemType():string {
+        public get layoutItemType():string {
             return 'LayoutContainer';
         }
 
 
         /**
-         * This is an override to
-         * {{#crossLink "LayoutItem"}}{{/crossLink}}:{{#crossLink "LayoutItem/toJson:method"}}{{/crossLink}}.
+         * This is an override to LayoutItem.toJson
          *
-         * @method toJson
+         * @method SimpleLayout.LayoutContainer#toJson
          * @returns {Object} A Json object that fully describe this LayoutContainer
          */
         public toJson():ILayoutContainerData {
@@ -58,12 +56,11 @@ module SimpleLayout {
 
 
         /**
-         * A factory function to create a {{#crossLink "LayoutContainer"}}{{/crossLink}} or
-         * {{#crossLink "LayoutItem"}}{{/crossLink}} according the to the <b>layoutItemType</b> in the given json object.
-         * This function is being used internally when calling the
-         * {{#crossLink "LayoutContainer/fromJson:method"}}{{/crossLink}} function.
+         * A factory function to create a LayoutContainer or LayoutItem according the to the <b>layoutItemType</b> in
+         * the given json object.
+         * This function is being used internally when calling the LayoutContainer.fromJson function.
          *
-         * @method itemFromJson
+         * @method SimpleLayout.LayoutContainer#itemFromJson
          * @static
          * @returns {Object} Depends of the <b>layoutItemType</b> in the given json object.
          */
@@ -88,10 +85,9 @@ module SimpleLayout {
         }
 
         /**
-         * This is an override to
-         * {{#crossLink "LayoutItem"}}{{/crossLink}}:{{#crossLink "LayoutItem/fromJson:method"}}{{/crossLink}}.
+         * This is an override to LayoutItem.fromJso
          *
-         * @method fromJson
+         * @method SimpleLayout.LayoutContainer#fromJson
          * @param json {Object} object that fully describe this LayoutContainer and its children.
          */
         public fromJson(json:ILayoutContainerData):void {
@@ -156,7 +152,7 @@ module SimpleLayout {
         /**
          * A shortcut to <b>container.layoutItems[index]</b>
          *
-         * @method getLayoutItemAt
+         * @method SimpleLayout.LayoutContainer#getLayoutItemAt
          * @param index {Number}
          * @returns {LayoutItem} The LayoutItem as the given index.
          */

@@ -10,22 +10,10 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
 
-        // This will load in our package.json file so we can have access
-        // to the project name and version number.
-        pkg: grunt.file.readJSON('package.json'),
-
-        // The YUIDoc plugin to generate documentation for code files.
-        yuidoc: {
-            compile: {
-                name: '<%= pkg.name %>',
-                description: '<%= pkg.description %>',
-                version: '<%= pkg.version %>',
-                url: '<%= pkg.homepage %>',
-                options: {
-                    extension: '.js',
-                    paths: 'docs_src/',
-                    outdir: 'docs/'
-                }
+        jsdoc : {
+            dist : {
+                src: ['build/*.js'],
+                dest: 'doc'
             }
         },
 
@@ -100,7 +88,7 @@ module.exports = function (grunt) {
                     target: 'es5',
                     module: 'amd',
                     sourceMap: true,
-                    removeComments: true,
+                    removeComments: false,
                     declaration: true
                 }
             },
@@ -202,7 +190,7 @@ module.exports = function (grunt) {
     grunt.registerTask('documentation', [
         'clean:documentation',
         'ts:forDocs',
-        'yuidoc',
+        'jsdoc',
         'clean:documentationSrc'
     ]);
 

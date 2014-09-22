@@ -1,8 +1,7 @@
 /// <reference path="reference.ts"/>
 /**
  * The global namespace for all the Simple Layout framework classes.
- *
- * @module SimpleLayout
+ * @namespace SimpleLayout
  */
 module SimpleLayout {
 
@@ -34,12 +33,11 @@ module SimpleLayout {
         public assetId                  : string;
 
         /**
-         * The {{#crossLink "LayoutItem"}}{{/crossLink}} class is the most basic building block for defining your UI layout
-         *
-         * @class LayoutItem
+         * Description of the constructor.
+         * @class SimpleLayout.LayoutItem
+         * @classdesc The LayoutItem class is the most basic building block for defining your UI layout
          * @param displayObject {Object} An object that implements the <b>IDisplayObject</b> interface.
-         * @constructor
-         **/
+         */
         constructor(displayObject?:displayObject.IDisplayObject) {
             this.parent = null;
             this.displayObject = displayObject;
@@ -56,12 +54,11 @@ module SimpleLayout {
         }
 
         /**
-         * Because a layout is built using a tree of {{#crossLink "LayoutContainer"}}LayoutContainers{{/crossLink}} and
-         * {{#crossLink "LayoutItem"}}LayoutItems{{/crossLink}}, we have to know the type of the nodes in the tree
-         * while building the layout. This is an easy way to get the type of the LayoutItem.
-         * This function will be overridden in the {{#crossLink "LayoutContainer"}}{{/crossLink}}.
+         * Because a layout is built using a tree of LayoutContainers and LayoutItems, we have to know the type
+         * of the nodes in the tree while building the layout. This is an easy way to get the type of the LayoutItem.
+         * This function will be overridden in the LayoutContainer.
          *
-         * @attribute layoutItemType
+         * @member SimpleLayout.LayoutItem#layoutItemType
          * @type string
          * @readonly
          */
@@ -74,7 +71,7 @@ module SimpleLayout {
          * A Layout item can exist without a display object and it will take the space that it own, but nothing
          * will be displayed.
          *
-         * @method setDisplayObject
+         * @method SimpleLayout.LayoutItem#setDisplayObject
          * @param displayObject {Object} An object that implements the <b>IDisplayObject</b> interface.
          */
         public setDisplayObject(displayObject:displayObject.IDisplayObject):void {
@@ -96,7 +93,7 @@ module SimpleLayout {
          * In a LayoutItem this function will fit the LayoutItem's <b>displayObject</b> into its given width and height.
          * This function is called by the LayoutContainer on all its children LayoutItems (And containers)
          *
-         * @method executeLayout
+         * @method SimpleLayout.LayoutItem#executeLayout
          */
         public executeLayout():void {
             if (this.displayObject) {
@@ -114,7 +111,7 @@ module SimpleLayout {
          * Serialize the LayoutItem into its properties, the result json can be use to construct a new LayoutItem by
          * calling fromJson function.
          *
-         * @method toJson
+         * @method SimpleLayout.LayoutItem#toJson
          * @returns {Object} A Json object that fully describe this LayoutItem
          */
         public toJson():ILayoutItemData {
@@ -135,7 +132,7 @@ module SimpleLayout {
         /**
          * Copy all the properties from the given json.
          *
-         * @method fromJson
+         * @method SimpleLayout.LayoutItem#fromJson
          * @param json {Object} object that fully describe this LayoutItem
          */
         public fromJson(json:ILayoutItemData):void {
@@ -153,7 +150,7 @@ module SimpleLayout {
         /**
          * This function will be called by a <b>Layout</b> object.
          *
-         * @method fitInto
+         * @method SimpleLayout.LayoutItem#fitInto
          * @param width {Number} A specific width that this LayoutItem takes
          * @param height {Number} A specific height that this LayoutItem takes
          */
@@ -172,7 +169,7 @@ module SimpleLayout {
          * Disposing (Setting to null) all the objects that it holds, like <b>parent</b>. If a <b>displayObject</b> was
          * assigned to this LayoutItem, its <b>dispose</b> function will also get called.
          *
-         * @method dispose
+         * @method SimpleLayout.LayoutItem#dispose
          */
         public dispose():void {
             this.parent = null;
