@@ -1,21 +1,24 @@
 /// <reference path="../reference.ts"/>
 
 module SimpleLayout {
-    /**
-     * The {{#crossLink "LayoutAssetsFactory"}}{{/crossLink}} class is a utility class for creating and clearing all the
-     * layout tree displayObjects and displayObjectContainers.
-     *
-     * @class LayoutAssetsFactory
-     **/
     export class LayoutAssetsFactory {
+
+        /**
+         * @class SimpleLayout.LayoutAssetsFactory
+         * @classdesc TThe LayoutAssetsFactory class is a utility class for creating and clearing all the
+         * layout tree displayObjects and displayObjectContainers.
+         */
+        constructor() {
+
+        }
 
          /**
          * Using the given assetsFactory to create all the displayObjects and displayObjectContainers of the UI.
          *
-         * @method createAssets
+         * @method SimpleLayout.LayoutAssetsFactory#createAssets
          * @static
-         * @param rootNode {LayoutContainer}
-         * @param assetsFactory {IAssetsFactory}
+         * @param rootNode {LayoutContainer} the root node to start from.
+         * @param assetsFactory {IAssetsFactory} an object that implements the IAssetsFactory interface.
          */
         public static createAssets(rootNode:LayoutContainer, assetsFactory:IAssetsFactory):void {
             this.clearAssets(rootNode);
@@ -41,6 +44,13 @@ module SimpleLayout {
             }
         }
 
+        /**
+         * Removed all the assets from the layout [calling setDisplayObject(null)] on all the layout items.
+         *
+         * @method SimpleLayout.LayoutAssetsFactory#clearAssets
+         * @static
+         * @param rootNode {LayoutContainer} The root node to start from.
+         */
         public static clearAssets(rootNode:LayoutContainer):void {
             for (var i:number = 0; i < rootNode.countLayoutItems; i++) {
                 var layoutItem:LayoutItem = rootNode.getLayoutItemAt(i);

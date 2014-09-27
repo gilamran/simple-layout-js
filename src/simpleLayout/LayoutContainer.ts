@@ -13,6 +13,7 @@ module SimpleLayout {
 
         /**
          * @class SimpleLayout.LayoutContainer
+         * @augments SimpleLayout.LayoutItem
          * @classdesc The LayoutContainer class is the a holder of LayoutItems. its displayObject property actually
          * holds a displayObjectContainer. It doesn't have a regular displayObject (A graphical entity).
          */
@@ -22,7 +23,7 @@ module SimpleLayout {
         }
 
         /**
-         * This is an override to LayoutItem.layoutItemType
+         * This is an override to LayoutItem.layoutItemType, and this function returns the string "LayoutContainer"
          *
          * @member SimpleLayout.LayoutContainer#layoutItemType
          * @type string
@@ -62,7 +63,8 @@ module SimpleLayout {
          *
          * @method SimpleLayout.LayoutContainer#itemFromJson
          * @static
-         * @returns {Object} Depends of the <b>layoutItemType</b> in the given json object.
+         * @returns {Object} a LayoutItem or a LayoutContainer Depends on the <b>layoutItemType</b> in the given json
+         * object.
          */
         public static itemFromJson(json:any):LayoutItem {
             var result : LayoutItem;
@@ -85,7 +87,7 @@ module SimpleLayout {
         }
 
         /**
-         * This is an override to LayoutItem.fromJso
+         * This is an override to LayoutItem.fromJson
          *
          * @method SimpleLayout.LayoutContainer#fromJson
          * @param json {Object} object that fully describe this LayoutContainer and its children.
@@ -116,6 +118,13 @@ module SimpleLayout {
             }
         }
 
+        /**
+         * An array of all the child LayoutItems of this LayoutContainer.
+         *
+         * @member SimpleLayout.LayoutContainer#layoutItems
+         * @readonly
+         * @type LayoutItem[]
+         */
         get layoutItems():LayoutItem[] {
             return this.m_layoutItems;
         }
@@ -160,6 +169,12 @@ module SimpleLayout {
             return this.m_layoutItems[index];
         }
 
+        /**
+         * Removes all the assets from the stage and re-adds them again. This is useful if you moved a LayoutItem in the
+         * z-order, and want the Layout to rearrange the layout items.
+         *
+         * @method SimpleLayout.LayoutContainer#rearrangeLayoutItems
+         */
         public rearrangeLayoutItems():void {
             if (!this.displayObjectContainer)
                 return;
@@ -179,6 +194,14 @@ module SimpleLayout {
             }
         }
 
+        /**
+         * Adds a given LayoutItem as a child to this LayoutContainer.
+         *
+         * @method SimpleLayout.LayoutContainer#addLayoutItem
+         * @param layoutItem {LayoutItem} The new LayoutItem.
+         * @param index {number} the position to add the given LayoutItem (Default is to add it last)
+         * @returns {LayoutItem} the added LayoutItem.
+         */
         public addLayoutItem(layoutItem:LayoutItem, index:number=-1):LayoutItem {
             if (layoutItem == null)
                 throw "Can not add a null layoutItem";
@@ -201,6 +224,13 @@ module SimpleLayout {
             }
         }
 
+        /**
+         * Removes the given LayoutItem from this LayoutContainer's children.
+         *
+         * @method SimpleLayout.LayoutContainer#removeLayoutItem
+         * @param layoutItem {LayoutItem} the LayoutItem to be removed
+         * @returns {LayoutItem} The removed LayoutItem
+         */
         public removeLayoutItem(layoutItem:LayoutItem):LayoutItem {
             if (layoutItem == null)
                 return null;
@@ -220,13 +250,34 @@ module SimpleLayout {
             }
         }
 
+        /**
+         * Removes the LayoutContainer's children.
+         *
+         * @method SimpleLayout.LayoutContainer#removeAllLayoutItems
+         */
         public removeAllLayoutItems():void {
             while (this.m_layoutItems.length > 0)
                 this.removeLayoutItem(this.m_layoutItems[0]);
         }
 
+        /**
+         * The number of LayoutItems this LayoutContainer has.
+         *
+         * @member SimpleLayout.LayoutContainer#countLayoutItems
+         * @readonly
+         */
         public get countLayoutItems():number {
             return this.m_layoutItems.length;
+        }
+
+        private removeAllDisplayObjects():void {
+            this.displayObjectContainer.removeAllChildren();
+            for (var i:number=0; i<this.m_layoutItems.length; i++) {
+                var layoutItem : LayoutItem = this.m_layoutItems[i];
+
+                if (layoutItem.layoutItemType === 'LayoutContainer')
+                    (<LayoutContainer>layoutItem).removeAllDisplayObjects();
+            }
         }
 
         public dispose():void {
@@ -244,16 +295,6 @@ module SimpleLayout {
                     item.dispose();
                 }
                 this.m_layoutItems = [];
-            }
-        }
-
-        private removeAllDisplayObjects():void {
-            this.displayObjectContainer.removeAllChildren();
-            for (var i:number=0; i<this.m_layoutItems.length; i++) {
-                var layoutItem : LayoutItem = this.m_layoutItems[i];
-
-                if (layoutItem.layoutItemType === 'LayoutContainer')
-                    (<LayoutContainer>layoutItem).removeAllDisplayObjects();
             }
         }
     }

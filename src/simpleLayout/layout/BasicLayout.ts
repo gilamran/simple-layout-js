@@ -7,40 +7,105 @@
 module SimpleLayout.layout {
     export class BasicLayout implements ILayout {
 
-        public paddingTop:number;
-        public paddingBottom:number;
-        public paddingLeft:number;
-        public paddingRight:number;
+        /**
+         * Area in the top of the Layout that will stay empty, the values are in percentage, so values of 0 to 1 are
+         * acceptable.
+         * @default 0
+         * @member SimpleLayout.layout.BasicLayout#paddingTop
+         */
+        public paddingTop:number = 0;
 
-        public gap:number;
-        public snapToPixels:boolean;
-        public horizontalAlign:string;
-        public verticalAlign:string;
+        /**
+         * Area in the bottom of the Layout that will stay empty, the values are in percentage, so values of 0 to 1 are
+         * acceptable.
+         * @default 0
+         * @member SimpleLayout.layout.BasicLayout#paddingBottom
+         */
+        public paddingBottom:number = 0;
 
-        public lastError:string;
+        /**
+         * Area in the left of the Layout that will stay empty, the values are in percentage, so values of 0 to 1 are
+         * acceptable.
+         * @default 0
+         * @member SimpleLayout.layout.BasicLayout#paddingLeft
+         */
+        public paddingLeft:number = 0;
 
-        public layoutVisualizer:visualizer.ILayoutVisualizer;
+        /**
+         * The gap property is not functional in the BasicLayout, be it is used by the Horizontal and Vertical layouts.
+         * @default 0
+         * @member SimpleLayout.layout.BasicLayout#gap
+         */
+        public gap:number = 0;
+
+        /**
+         * Area in the right of the Layout that will stay empty, the values are in percentage, so values of 0 to 1 are
+         * acceptable.
+         * @default 0
+         * @member SimpleLayout.layout.BasicLayout#paddingRight
+         */
+        public paddingRight:number = 0;
+
+        /**
+         * When snapToPixels is true, all the layout items will be positioned and sized in full pixel values.
+         * @default false
+         * @member SimpleLayout.layout.BasicLayout#paddingRight
+         */
+        public snapToPixels:boolean = false;
+
+        /**
+         * The layout items that have a shorter width than the space that was given to them will be aligned horizontally
+         * according to this property.
+         * @default enums.HorizontalAlignEnum.H_ALIGN_TYPE_CENTER
+         * @member SimpleLayout.layout.BasicLayout#horizontalAlign
+         */
+        public horizontalAlign:string = enums.HorizontalAlignEnum.H_ALIGN_TYPE_CENTER;
+
+        /**
+         * The layout items that have a shorter height than the space that was given to them will be aligned vertically
+         * according to this property.
+         * @default enums.VerticalAlignEnum.V_ALIGN_TYPE_MIDDLE
+         * @member SimpleLayout.layout.BasicLayout#verticalAlign
+         */
+        public verticalAlign:string = enums.VerticalAlignEnum.V_ALIGN_TYPE_MIDDLE;
+
+        /**
+         * Sometimes while building your layout, you might give the layout bad values that it cannot use to calculate
+         * the layout, this property will have the latest error text.
+         *
+         * For example: If you give the layoutitems more than 100% of the possible width.
+         * @default empty string
+         * @member SimpleLayout.layout.BasicLayout#lastError
+         */
+        public lastError:string = '';
+
+        /**
+         * The LayoutVisualizer is an helper for debugging and building your layout, it is used mostly by the editor.
+         *
+         * @default null
+         * @member SimpleLayout.layout.BasicLayout#layoutVisualizer
+         * @type visualizer.ILayoutVisualizer
+         */
+        public layoutVisualizer:visualizer.ILayoutVisualizer = null;
 
 
         /**
          * @class SimpleLayout.layout.BasicLayout
-         * @classdesc The BasicLayout is the most basic layout type. use this layout to grant the LayoutItems all the
-         * space the can take. The LayoutItems will be on top of each other.
-         * @param displayObject {Object} An object that implements the <b>IDisplayObject</b> interface.
+         * @classdesc The BasicLayout is the most basic layout type. Use this layout to grant the LayoutItems all the
+         * space they can take. The LayoutItems will be on top of each other. A good example for using the BasicLayout
+         * is to have a background and a container that take all the possible space.
+         * Also note that this is the default layout for any LayoutContainer.
          */
         constructor() {
-            this.horizontalAlign = enums.HorizontalAlignEnum.H_ALIGN_TYPE_CENTER;
-            this.verticalAlign = enums.VerticalAlignEnum.V_ALIGN_TYPE_MIDDLE;
-            this.paddingTop = 0;
-            this.paddingBottom = 0;
-            this.paddingLeft = 0;
-            this.paddingRight = 0;
-            this.gap = 0;
-
-            this.snapToPixels = false;
-            this.lastError = "";
         }
 
+        /**
+         * Serialize the Layout into its properties, the result json can be use to construct a new Layout by
+         * calling fromJson function.
+         *
+         * @method SimpleLayout.layout.BasicLayout#toJson
+         * @returns {Object} A Json object that fully describe this Layout
+         */
         public toJson():any {
             return {
                 layoutType: this.getLayoutType(),
@@ -55,6 +120,12 @@ module SimpleLayout.layout {
             }
         }
 
+        /**
+         * Copy all the properties from the given json into this Layout.
+         *
+         * @method SimpleLayout.layout.BasicLayout#fromJson
+         * @param json {Object} object that fully describe this Layout
+         */
         public fromJson(json:any):void {
             this.paddingTop = json.paddingTop;
             this.paddingBottom = json.paddingBottom;
@@ -66,10 +137,22 @@ module SimpleLayout.layout {
             this.verticalAlign = json.verticalAlign;
         }
 
+        /**
+         * There are several Layouts, and they all inherit from the BasicLayout. This is a simple way to get the
+         * Layout type class name, in this case it will return the string "BasicLayout".
+         *
+         * @method SimpleLayout.layout.BasicLayout#getLayoutType
+         * @returns {String} "BasicLayout"
+         */
         public getLayoutType():string {
-            return 'basic';
+            return 'BasicLayout';
         }
 
+        /**
+         * Use this function to set the layout visualizer.
+         * @method SimpleLayout.layout.BasicLayout#setLayoutVisualizer
+         * @param value {visualizer.ILayoutVisualizer} an object that implements the ILayoutVisualizer interface.
+         */
         public setLayoutVisualizer(value:visualizer.ILayoutVisualizer):void {
             if (this.layoutVisualizer !== value) {
                 // un attach the previous layout, if it's not null
@@ -86,10 +169,27 @@ module SimpleLayout.layout {
             }
         }
 
+        /**
+         * Use this function to get the layout visualizer.
+         * @method SimpleLayout.layout.BasicLayout#getLayoutVisualizer
+         * @returns {visualizer.ILayoutVisualizer}
+         */
         public getLayoutVisualizer():visualizer.ILayoutVisualizer {
             return this.layoutVisualizer;
         }
 
+        /**
+         * This function will position/resize all the given LayoutContainer's children (LayoutItems/LayoutContainers),
+         * and give each the space that it can occupy.
+         * Each child then will have its own width and height that it can fill, if the child is a LayoutContainer with
+         * a layout of its own, the space that was given to it will get sent to the internal layout to possition/resize
+         * the inner children and so on, recursively.
+         *
+         * @method SimpleLayout.layout.BasicLayout#fitChildrenInto
+         * @param targetContainer
+         * @param w {number} the Width (In pixels) that was given to this layout
+         * @param h {number} the Height (In pixels) that was given to this layout
+         */
         public fitChildrenInto(targetContainer:LayoutContainer, w:number, h:number):void {
             if (targetContainer == null || targetContainer.countLayoutItems == 0)
                 return;
@@ -214,6 +314,11 @@ module SimpleLayout.layout {
             this.lastError = "";
         }
 
+        /**
+         * Disposing (Setting to null) all the objects that it holds, like the layout visualizer.
+         *
+         * @method SimpleLayout.layout.BasicLayout#dispose
+         */
         public dispose():void {
             this.setLayoutVisualizer(null);
         }
