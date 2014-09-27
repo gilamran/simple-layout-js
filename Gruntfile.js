@@ -12,8 +12,10 @@ module.exports = function (grunt) {
 
         jsdoc : {
             dist : {
-                src: ['build/*.js'],
-                dest: 'doc'
+                src: ['docs_src/**/*.js'],
+                destination: {
+                    destination: 'doc'
+                }
             }
         },
 

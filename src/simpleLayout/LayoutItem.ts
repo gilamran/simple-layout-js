@@ -56,7 +56,7 @@ module SimpleLayout {
         /**
          * Because a layout is built using a tree of LayoutContainers and LayoutItems, we have to know the type
          * of the nodes in the tree while building the layout. This is an easy way to get the type of the LayoutItem.
-         * This function will be overridden in the LayoutContainer.
+         * This function returns the string "LayoutItem"
          *
          * @member SimpleLayout.LayoutItem#layoutItemType
          * @type string
@@ -130,7 +130,7 @@ module SimpleLayout {
         }
 
         /**
-         * Copy all the properties from the given json.
+         * Copy all the properties from the given json into this LayoutItem.
          *
          * @method SimpleLayout.LayoutItem#fromJson
          * @param json {Object} object that fully describe this LayoutItem
