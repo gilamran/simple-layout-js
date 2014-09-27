@@ -13,8 +13,10 @@ module.exports = function (grunt) {
         jsdoc : {
             dist : {
                 src: ['docs_src/**/*.js'],
-                destination: {
-                    destination: 'doc'
+                options: {
+                    destination: 'doc',
+                    template : "node_modules/grunt-jsdoc/node_modules/ink-docstrap/template",
+                    configure : "jsdoc.conf.json"
                 }
             }
         },
