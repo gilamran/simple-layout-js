@@ -14,7 +14,7 @@
 		"footer"                : "",
 		"copyright"             : "",
 		"navType"               : "inline",
-		"theme"                 : "journal",
+		"theme"                 : "cerulean",
 		"linenums"              : true,
 		"collapseSymbols"       : false,
 		"inverseNav"            : true,

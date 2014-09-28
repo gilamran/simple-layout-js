@@ -32,7 +32,7 @@ module SimpleLayout {
             for (var i:number = 0; i < node.countLayoutItems; i++) {
                 var layoutItem:LayoutItem = node.getLayoutItemAt(i);
 
-                if (layoutItem.layoutItemType === 'LayoutContainer') {
+                if (layoutItem.getLayoutItemType() === 'LayoutContainer') {
                     this.createNodeAssets(<LayoutContainer>layoutItem, assetsFactory);
                 }
                 else {
@@ -56,7 +56,7 @@ module SimpleLayout {
                 var layoutItem:LayoutItem = rootNode.getLayoutItemAt(i);
                 layoutItem.setDisplayObject(null);
 
-                if (layoutItem.layoutItemType === 'LayoutContainer') {
+                if (layoutItem.getLayoutItemType() === 'LayoutContainer') {
                     this.clearAssets(<LayoutContainer>layoutItem);
                 }
             }

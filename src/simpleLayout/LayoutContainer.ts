@@ -23,13 +23,12 @@ module SimpleLayout {
         }
 
         /**
-         * This is an override to LayoutItem.layoutItemType, and this function returns the string "LayoutContainer"
+         * This is an override to LayoutItem.getLayoutItemType, and this function returns the string "LayoutContainer"
          *
-         * @member SimpleLayout.LayoutContainer#layoutItemType
-         * @type string
-         * @readonly
+         * @method SimpleLayout.LayoutContainer#getLayoutItemType
+         * @returns {string} "LayoutContainer"
          */
-        public get layoutItemType():string {
+        public getLayoutItemType():string {
             return 'LayoutContainer';
         }
 
@@ -189,7 +188,7 @@ module SimpleLayout {
                 if (layoutItem.displayObject)
                     this.displayObjectContainer.addChild(layoutItem.displayObject);
 
-                if (layoutItem.layoutItemType === 'LayoutContainer')
+                if (layoutItem.getLayoutItemType() === 'LayoutContainer')
                     (<LayoutContainer>layoutItem).rearrangeLayoutItems();
             }
         }
@@ -275,7 +274,7 @@ module SimpleLayout {
             for (var i:number=0; i<this.m_layoutItems.length; i++) {
                 var layoutItem : LayoutItem = this.m_layoutItems[i];
 
-                if (layoutItem.layoutItemType === 'LayoutContainer')
+                if (layoutItem.getLayoutItemType() === 'LayoutContainer')
                     (<LayoutContainer>layoutItem).removeAllDisplayObjects();
             }
         }

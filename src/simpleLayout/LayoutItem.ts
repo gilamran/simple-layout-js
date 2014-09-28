@@ -58,11 +58,10 @@ module SimpleLayout {
          * of the nodes in the tree while building the layout. This is an easy way to get the type of the LayoutItem.
          * This function returns the string "LayoutItem"
          *
-         * @member SimpleLayout.LayoutItem#layoutItemType
-         * @type string
-         * @readonly
+         * @method SimpleLayout.LayoutItem#getLayoutItemType
+         * @returns {string} "LayoutItem"
          */
-        public get layoutItemType():string {
+        public getLayoutItemType():string {
             return 'LayoutItem';
         }
 
@@ -116,7 +115,7 @@ module SimpleLayout {
          */
         public toJson():ILayoutItemData {
             return {
-                layoutItemType         : this.layoutItemType,
+                layoutItemType         : this.getLayoutItemType(),
                 requestedWidthPercent  : this.requestedWidthPercent,
                 requestedHeightPercent : this.requestedHeightPercent,
                 horizontalAlign        : this.horizontalAlign,
