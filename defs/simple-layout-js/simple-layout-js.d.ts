@@ -1,57 +1,57 @@
 declare module SimpleLayout {
     class LayoutItem {
-        layoutItemType: string;
-        parent: LayoutContainer;
-        displayObject: displayObject.IDisplayObject;
-        requestedWidthPercent: number;
-        requestedHeightPercent: number;
-        horizontalAlign: string;
-        verticalAlign: string;
-        fittedIntoWidth: number;
-        fittedIntoHeight: number;
-        keepAspectRatio: boolean;
-        assetId: string;
+        public layoutItemType: string;
+        public parent: LayoutContainer;
+        public displayObject: displayObject.IDisplayObject;
+        public requestedWidthPercent: number;
+        public requestedHeightPercent: number;
+        public horizontalAlign: string;
+        public verticalAlign: string;
+        public fittedIntoWidth: number;
+        public fittedIntoHeight: number;
+        public keepAspectRatio: boolean;
+        public assetId: string;
         private m_name;
         constructor(dispObj?: displayObject.IDisplayObject);
-        name: string;
-        toJson(): any;
-        fromJson(json: any): void;
-        setDisplayObject(value: displayObject.IDisplayObject): void;
+        public name : string;
+        public toJson(): any;
+        public fromJson(json: any): void;
+        public setDisplayObject(value: displayObject.IDisplayObject): void;
         private fitToSize(dispObj, w?, h?);
-        executeLayout(): void;
-        fitInto(w: number, h: number): void;
-        dispose(): void;
+        public executeLayout(): void;
+        public fitInto(w: number, h: number): void;
+        public dispose(): void;
     }
 }
 declare module SimpleLayout {
     class LayoutContainer extends LayoutItem {
-        layout: layout.ILayout;
+        public layout: layout.ILayout;
         private m_layoutItems;
         constructor();
-        toJson(): any;
-        fromJson(json: any): any;
-        layoutItems: LayoutItem[];
-        displayObjectContainer: displayObject.IDisplayObjectContainer;
-        executeLayout(): void;
-        getLayoutItemAt(index: number): LayoutItem;
+        public toJson(): any;
+        public fromJson(json: any): any;
+        public layoutItems : LayoutItem[];
+        public displayObjectContainer : displayObject.IDisplayObjectContainer;
+        public executeLayout(): void;
+        public getLayoutItemAt(index: number): LayoutItem;
         private removeAllDisplayObjects();
-        rearrangeLayoutItems(): void;
-        addLayoutItem(layoutItem: LayoutItem, index?: number): LayoutItem;
-        removeLayoutItem(layoutItem: LayoutItem): LayoutItem;
-        removeAllLayoutItems(): void;
-        countLayoutItems: number;
-        dispose(): void;
+        public rearrangeLayoutItems(): void;
+        public addLayoutItem(layoutItem: LayoutItem, index?: number): LayoutItem;
+        public removeLayoutItem(layoutItem: LayoutItem): LayoutItem;
+        public removeAllLayoutItems(): void;
+        public countLayoutItems : number;
+        public dispose(): void;
     }
 }
 declare module SimpleLayout {
     class LayoutView extends LayoutContainer {
         constructor();
         static itemFromJson(json: any): LayoutItem;
-        createAssets(assetsFactory: IAssetsFactory): void;
+        public createAssets(assetsFactory: IAssetsFactory): void;
         private createNodeAssets(node, assetsFactory);
-        clearAssets(): void;
+        public clearAssets(): void;
         private clearNodeAssets(node);
-        dispose(): void;
+        public dispose(): void;
     }
 }
 interface IAssetsFactory {
@@ -69,8 +69,9 @@ declare module SimpleLayout.displayObject {
         x: number;
         y: number;
         name: string;
-        concreteDisplayObject: Object;
-        globalPos: IPoint;
+        getConcreteDisplayObject(): Object;
+        getGlobalPos(): IPoint;
+        getPivotPoint(): IPoint;
         resetScaling(): void;
         dispose(): void;
     }
@@ -100,31 +101,31 @@ declare module SimpleLayout.enums {
 }
 declare module SimpleLayout.layout {
     class BasicLayout implements ILayout {
-        paddingTop: number;
-        paddingBottom: number;
-        paddingLeft: number;
-        paddingRight: number;
-        gap: number;
-        snapToPixels: boolean;
-        horizontalAlign: string;
-        verticalAlign: string;
-        lastError: string;
-        layoutVisualizer: visualizer.ILayoutVisualizer;
+        public paddingTop: number;
+        public paddingBottom: number;
+        public paddingLeft: number;
+        public paddingRight: number;
+        public gap: number;
+        public snapToPixels: boolean;
+        public horizontalAlign: string;
+        public verticalAlign: string;
+        public lastError: string;
+        public layoutVisualizer: visualizer.ILayoutVisualizer;
         constructor();
-        toJson(): any;
-        fromJson(json: any): void;
-        getLayoutType(): string;
-        setLayoutVisualizer(value: visualizer.ILayoutVisualizer): void;
-        getLayoutVisualizer(): visualizer.ILayoutVisualizer;
-        fitChildrenInto(targetContainer: LayoutContainer, w: number, h: number): void;
-        dispose(): void;
+        public toJson(): any;
+        public fromJson(json: any): void;
+        public getLayoutType(): string;
+        public setLayoutVisualizer(value: visualizer.ILayoutVisualizer): void;
+        public getLayoutVisualizer(): visualizer.ILayoutVisualizer;
+        public fitChildrenInto(targetContainer: LayoutContainer, w: number, h: number): void;
+        public dispose(): void;
     }
 }
 declare module SimpleLayout.layout {
     class HorizontalLayout extends BasicLayout {
         constructor();
-        getLayoutType(): string;
-        fitChildrenInto(targetContainer: LayoutContainer, w: number, h: number): void;
+        public getLayoutType(): string;
+        public fitChildrenInto(targetContainer: LayoutContainer, w: number, h: number): void;
     }
 }
 declare module SimpleLayout.layout {
@@ -148,8 +149,8 @@ declare module SimpleLayout.layout {
 declare module SimpleLayout.layout {
     class VerticalLayout extends BasicLayout {
         constructor();
-        getLayoutType(): string;
-        fitChildrenInto(targetContainer: LayoutContainer, w: number, h: number): void;
+        public getLayoutType(): string;
+        public fitChildrenInto(targetContainer: LayoutContainer, w: number, h: number): void;
     }
 }
 declare module SimpleLayout.visualizer {
