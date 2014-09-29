@@ -31,15 +31,15 @@ module SimpleLayout.PixiJSImpl {
         }
 
         get displayObjectContainer():PIXI.DisplayObjectContainer {
-            return <PIXI.DisplayObjectContainer>this.concreteDisplayObject;
+            return <PIXI.DisplayObjectContainer>this.getConcreteDisplayObject();
         }
 
         public addChild(child:displayObject.IDisplayObject):void {
-            this.displayObjectContainer.addChild(<PIXI.DisplayObject>child.concreteDisplayObject);
+            this.displayObjectContainer.addChild(<PIXI.DisplayObject>child.getConcreteDisplayObject());
         }
 
         public removeChild(child:displayObject.IDisplayObject):void {
-            this.displayObjectContainer.removeChild(<PIXI.DisplayObject>child.concreteDisplayObject);
+            this.displayObjectContainer.removeChild(<PIXI.DisplayObject>child.getConcreteDisplayObject());
         }
 
         public removeAllChildren():void {

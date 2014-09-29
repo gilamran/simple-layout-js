@@ -15,17 +15,17 @@ module SimpleLayout.CreateJSImpl {
             return true;
         }
 
-        public get concreteDisplayObject():Object {
+        public getConcreteDisplayObject():Object {
             return this.m_wrappedDispObj;
         }
 
-        public get globalPos():displayObject.IPoint {
-            var point = this.m_wrappedDispObj.localToGlobal(0, 0);
-            return {x:point.x, y:point.y};
+        public getPivotPoint():displayObject.IPoint {
+            return {x:0, y:0};
         }
 
-        public set globalPos(value:displayObject.IPoint) {
-            // do nothing
+        public getGlobalPos():displayObject.IPoint {
+            var point = this.m_wrappedDispObj.localToGlobal(0, 0);
+            return {x:point.x, y:point.y};
         }
 
         public get width():number {

@@ -31,15 +31,15 @@ module SimpleLayout.CreateJSImpl {
         }
 
         get displayObjectContainer():createjs.Container {
-            return <createjs.Container>this.concreteDisplayObject;
+            return <createjs.Container>this.getConcreteDisplayObject();
         }
 
         public addChild(child:displayObject.IDisplayObject):void {
-            this.displayObjectContainer.addChild(<createjs.DisplayObject>child.concreteDisplayObject);
+            this.displayObjectContainer.addChild(<createjs.DisplayObject>child.getConcreteDisplayObject());
         }
 
         public removeChild(child:displayObject.IDisplayObject):void {
-            this.displayObjectContainer.removeChild(<createjs.DisplayObject>child.concreteDisplayObject);
+            this.displayObjectContainer.removeChild(<createjs.DisplayObject>child.getConcreteDisplayObject());
         }
 
         public removeAllChildren():void {
