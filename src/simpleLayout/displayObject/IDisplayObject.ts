@@ -7,14 +7,15 @@ module SimpleLayout.displayObject {
     }
 
     export interface IDisplayObject {
-        width                   : number;
-        height                  : number;
-        x                       : number;
-        y                       : number;
-        name                    : string;
-        concreteDisplayObject   : Object;
-        globalPos               : IPoint;
-        resetScaling()          : void;
-        dispose()               : void;
+        width                       : number;
+        height                      : number;
+        x                           : number;
+        y                           : number;
+        name                        : string;
+        getConcreteDisplayObject()  : Object;
+        getGlobalPos()              : IPoint;
+        getPivotPoint()             : IPoint;
+        resetScaling()              : void;
+        dispose()                   : void;
     }
 }

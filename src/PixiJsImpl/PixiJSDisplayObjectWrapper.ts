@@ -13,7 +13,11 @@ module SimpleLayout.PixiJSImpl {
             this.m_wrappedDispObj = pixiJSDisplayObject;
         }
 
-        public get globalPos():displayObject.IPoint {
+        public getPivotPoint():displayObject.IPoint {
+            return {x:0, y:0};
+        }
+
+        public getGlobalPos():displayObject.IPoint {
             var point       : PIXI.Point;
             var currentObj  : PIXI.DisplayObject = this.m_wrappedDispObj;
             point = new PIXI.Point(0, 0);
@@ -25,15 +29,11 @@ module SimpleLayout.PixiJSImpl {
             return {x:point.x, y:point.y};
         }
 
-        public set globalPos(value:displayObject.IPoint) {
-            // do nothing
-        }
-
         public get allowResize():boolean {
             return true;
         }
 
-        public get concreteDisplayObject():Object {
+        public getConcreteDisplayObject():Object {
             return this.m_wrappedDispObj;
         }
 

@@ -147,7 +147,7 @@ module SimpleLayout {
 
                 if (layoutVisualizer) {
                     if (this.displayObject)
-                        layoutVisualizer.setPosition(this.displayObject.globalPos);
+                        layoutVisualizer.setPosition(this.displayObject.getGlobalPos());
                     layoutVisualizer.setDebugFitAreaSize(this.fittedIntoWidth, this.fittedIntoHeight);
                     layoutVisualizer.update();
                 }
