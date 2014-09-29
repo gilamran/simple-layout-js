@@ -10,11 +10,26 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
 
+        jsdoc : {
+            dist : {
+                src: ['docs_src/**/*.js'],
+                options: {
+                    destination: 'doc',
+                    template : "node_modules/grunt-jsdoc/node_modules/ink-docstrap/template",
+                    configure : "jsdoc.conf.json"
+                }
+            }
+        },
+
         // Watches files for changes and runs tasks based on the changed files
         watch: {
             ts: {
                 files: ['src/**/{,*/}*.ts'],
                 tasks: ['dev']
+            },
+            docs: {
+                files: ['src/**/{,*/}*.ts'],
+                tasks: ['documentation']
             }
         },
 
@@ -25,13 +40,27 @@ module.exports = function (grunt) {
                     {
                         dot: true,
                         src: [
-                            'build/**/*.*'
+                            'build/**/*.*', 'defs/simple-layout-js/**/*.*', 'docs', 'docs_src'
                         ]
-                    },
+                    }
+                ]
+            },
+            documentationSrc: {
+                files: [
+//                    {
+//                        dot: true,
+//                        src: [
+//                            'docs_src'
+//                        ]
+//                    }
+                ]
+            },
+            documentation: {
+                files: [
                     {
                         dot: true,
                         src: [
-                            'defs/simple-layout-js/**/*.*'
+                            'docs', 'docs_src'
                         ]
                     }
                 ]
@@ -56,14 +85,26 @@ module.exports = function (grunt) {
 
         ts: {
             distLib: {
-                src: ["src/simpleLayout/**/*.ts"],
-                reference: "src/simpleLayout/reference.ts",
+                src: ["src/SimpleLayout/**/*.ts"],
+                reference: "src/SimpleLayout/reference.ts",
                 out: 'build/simple-layout-js.js',
                 options: {
                     target: 'es5',
                     module: 'amd',
                     sourceMap: true,
-                    removeComments: true,
+                    removeComments: false,
+                    declaration: true
+                }
+            },
+            forDocs: {
+                src: ["src/SimpleLayout/**/*.ts"],
+                reference: "src/SimpleLayout/reference.ts",
+                outDir: 'docs_src',
+                options: {
+                    target: 'es5',
+                    module: 'amd',
+                    sourceMap: false,
+                    removeComments: false,
                     declaration: true
                 }
             },
@@ -75,7 +116,7 @@ module.exports = function (grunt) {
                     target: 'es5',
                     module: 'amd',
                     sourceMap: true,
-                    removeComments: true,
+                    removeComments: false,
                     declaration: true
                 }
             },
@@ -87,7 +128,7 @@ module.exports = function (grunt) {
                     target: 'es5',
                     module: 'amd',
                     sourceMap: true,
-                    removeComments: true,
+                    removeComments: false,
                     declaration: true
                 }
             }
@@ -150,6 +191,13 @@ module.exports = function (grunt) {
     });
 
 
+    grunt.registerTask('documentation', [
+        'clean:documentation',
+        'ts:forDocs',
+        'jsdoc',
+        'clean:documentationSrc'
+    ]);
+
     grunt.registerTask('default', [
         'clean:all',
         'ts:distLib',
@@ -157,6 +205,7 @@ module.exports = function (grunt) {
         'clean:libDefinitions',
         'ts:distCreateJS',
         'ts:distPixiJS',
+        'documentation',
         'copy:implDefinitions',
         'clean:implDefinitions',
         'replace'

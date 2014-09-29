@@ -1,48 +1,61 @@
 /// <reference path="../reference.ts"/>
-
 module SimpleLayout.layout {
     export class VerticalLayout extends BasicLayout {
 
+        /**
+         * @class SimpleLayout.layout.VerticalLayout
+         * @augments SimpleLayout.layout.BasicLayout
+         * @classdesc The VerticalLayout will divide the given space vertically to all his LayoutItems equally, unless there
+         * are children who ask for a specific height. All the LayoutItems will then get moved to the left/center/right of
+         * their space according to the LayoutItem's horizontal align.
+         */
         constructor() {
             super();
         }
 
+        /**
+         * There are several Layouts, and they all inherit from the BasicLayout. This is a simple way to get the
+         * Layout type class name, in this case it will return the string "VerticalLayout".
+         *
+         * @method SimpleLayout.layout.VerticalLayout#getLayoutType
+         * @returns {String} "VerticalLayout"
+         */
         public getLayoutType():string {
-            return 'vertical';
+            return 'VerticalLayout';
         }
 
         public fitChildrenInto(targetContainer:LayoutContainer, w:number, h:number):void {
-            if (targetContainer==null || targetContainer.countLayoutItems==0)
+            if (targetContainer == null || targetContainer.countLayoutItems == 0)
                 return;
 
-            var paddingTopVal       : number = h * this.paddingTop;
-            var paddingBottomVal    : number = h * this.paddingBottom;
-            var paddingLeftVal      : number = w * this.paddingLeft;
-            var paddingRightVal     : number = w * this.paddingRight;
-            var gapVal				: number = h * this.gap;
+            var paddingTopVal:number = h * this.paddingTop;
+            var paddingBottomVal:number = h * this.paddingBottom;
+            var paddingLeftVal:number = w * this.paddingLeft;
+            var paddingRightVal:number = w * this.paddingRight;
+            var gapVal:number = h * this.gap;
 
-            var totalItemsGap		: number;
-            var totalVPadding		: number;
-            var totalHPadding		: number;
-            var totalGaps			: number;
-            var spaceForItems		: number;
-            var targetWidth			: number;
-            var targetHeight		: number;
-            var targetGap			: number;
-            var currentY			: number;
-            var layoutItem			: LayoutItem;
-            var displayObject		: displayObject.IDisplayObject;
-            var i					: number;
+            var totalItemsGap:number;
+            var totalVPadding:number;
+            var totalHPadding:number;
+            var totalGaps:number;
+            var spaceForItems:number;
+            var targetWidth:number;
+            var targetHeight:number;
+            var targetGap:number;
+            var currentY:number;
+            var layoutItem:LayoutItem;
+            var displayObject:displayObject.IDisplayObject;
+            var i:number;
 
             if (this.layoutVisualizer)
                 this.layoutVisualizer.setDebugPadding(w, h, paddingTopVal, paddingBottomVal, paddingLeftVal, paddingRightVal);
 
-            totalItemsGap = gapVal*(targetContainer.countLayoutItems-1);
-            totalVPadding = paddingTopVal+paddingBottomVal;
-            totalHPadding = paddingLeftVal+paddingRightVal;
+            totalItemsGap = gapVal * (targetContainer.countLayoutItems - 1);
+            totalVPadding = paddingTopVal + paddingBottomVal;
+            totalHPadding = paddingLeftVal + paddingRightVal;
             totalGaps = totalItemsGap + totalVPadding;
-            spaceForItems = h-totalGaps;
-            targetWidth = w-totalHPadding;
+            spaceForItems = h - totalGaps;
+            targetWidth = w - totalHPadding;
             targetGap = gapVal;
 
             // not space for items left
@@ -58,44 +71,40 @@ module SimpleLayout.layout {
             }
 
             // find out how much space left for each item (The ones that didn't request for specific height)
-            var unRequestedHeightPercent : number = 1.0;
-            var countRequestedItems		 : number = 0;
-            for (i=0; i<targetContainer.countLayoutItems; i++)
-            {
+            var unRequestedHeightPercent:number = 1.0;
+            var countRequestedItems:number = 0;
+            for (i = 0; i < targetContainer.countLayoutItems; i++) {
                 layoutItem = targetContainer.getLayoutItemAt(i);
-                if (layoutItem.requestedHeightPercent>0)
-                {
+                if (layoutItem.requestedHeightPercent > 0) {
                     countRequestedItems++;
                     unRequestedHeightPercent = unRequestedHeightPercent - layoutItem.requestedHeightPercent;
                 }
             }
 
             // round it up
-            unRequestedHeightPercent = Math.round(unRequestedHeightPercent*100)/100;
+            unRequestedHeightPercent = Math.round(unRequestedHeightPercent * 100) / 100;
 
             // not good at all!
-            if (unRequestedHeightPercent<0.0) {
+            if (unRequestedHeightPercent < 0.0) {
                 this.lastError = "Too much space was requested from the vertical layout";
                 return;
             }
 
-            var heightPercentForUnrequested : number = 0.0;
-            if (countRequestedItems<targetContainer.countLayoutItems)
-            {
-                heightPercentForUnrequested = unRequestedHeightPercent/(targetContainer.countLayoutItems-countRequestedItems);
+            var heightPercentForUnrequested:number = 0.0;
+            if (countRequestedItems < targetContainer.countLayoutItems) {
+                heightPercentForUnrequested = unRequestedHeightPercent / (targetContainer.countLayoutItems - countRequestedItems);
             }
 
             currentY = paddingTopVal;
-            for (i=0; i<targetContainer.countLayoutItems; i++)
-            {
+            for (i = 0; i < targetContainer.countLayoutItems; i++) {
                 layoutItem = targetContainer.getLayoutItemAt(i);
-                if (layoutItem.requestedHeightPercent>0.0)
-                    targetHeight = spaceForItems*layoutItem.requestedHeightPercent;
+                if (layoutItem.requestedHeightPercent > 0.0)
+                    targetHeight = spaceForItems * layoutItem.requestedHeightPercent;
                 else
-                    targetHeight = spaceForItems*heightPercentForUnrequested;
+                    targetHeight = spaceForItems * heightPercentForUnrequested;
 
                 // snap to pixels?
-                if (this.snapToPixels==true)
+                if (this.snapToPixels == true)
                     targetHeight = Math.round(targetHeight);
 
                 layoutItem.fitInto(targetWidth, targetHeight);
@@ -104,17 +113,16 @@ module SimpleLayout.layout {
                 if (displayObject) {
 
                     // alignment
-                    var hAlignment : string;
-                    if (layoutItem.horizontalAlign!=enums.HorizontalAlignEnum.H_ALIGN_TYPE_NONE)
+                    var hAlignment:string;
+                    if (layoutItem.horizontalAlign != enums.HorizontalAlignEnum.H_ALIGN_TYPE_NONE)
                         hAlignment = layoutItem.horizontalAlign;
                     else
                         hAlignment = this.horizontalAlign;
 
-                    switch(hAlignment)
-                    {
+                    switch (hAlignment) {
                         case enums.HorizontalAlignEnum.H_ALIGN_TYPE_CENTER:
                         {
-                            displayObject.x = paddingLeftVal + ((targetWidth-displayObject.width)/2);
+                            displayObject.x = paddingLeftVal + ((targetWidth - displayObject.width) / 2);
                             break;
                         }
 
@@ -126,19 +134,18 @@ module SimpleLayout.layout {
 
                         case enums.HorizontalAlignEnum.H_ALIGN_TYPE_RIGHT:
                         {
-                            displayObject.x = paddingLeftVal + (targetWidth-displayObject.width);
+                            displayObject.x = paddingLeftVal + (targetWidth - displayObject.width);
                             break;
                         }
                     }
 
-                    var vAlignment : string;
-                    if (layoutItem.verticalAlign!=enums.VerticalAlignEnum.V_ALIGN_TYPE_NONE)
+                    var vAlignment:string;
+                    if (layoutItem.verticalAlign != enums.VerticalAlignEnum.V_ALIGN_TYPE_NONE)
                         vAlignment = layoutItem.verticalAlign;
                     else
                         vAlignment = this.verticalAlign;
 
-                    switch(vAlignment)
-                    {
+                    switch (vAlignment) {
                         case enums.VerticalAlignEnum.V_ALIGN_TYPE_TOP:
                         {
                             displayObject.y = currentY;
@@ -147,22 +154,22 @@ module SimpleLayout.layout {
 
                         case enums.VerticalAlignEnum.V_ALIGN_TYPE_MIDDLE:
                         {
-                            displayObject.y = currentY + ((targetHeight-displayObject.height)/2);
+                            displayObject.y = currentY + ((targetHeight - displayObject.height) / 2);
                             break;
                         }
 
                         case enums.VerticalAlignEnum.V_ALIGN_TYPE_BOTTOM:
                         {
-                            displayObject.y = currentY + (targetHeight-displayObject.height);
+                            displayObject.y = currentY + (targetHeight - displayObject.height);
                             break;
                         }
                     }
 
                     // snap to pixels?
-                    if (this.snapToPixels==true)
+                    if (this.snapToPixels == true)
                         displayObject.x = Math.round(displayObject.x);
 
-                    if (this.snapToPixels==true)
+                    if (this.snapToPixels == true)
                         displayObject.y = Math.round(displayObject.y);
                 }
 
@@ -172,8 +179,8 @@ module SimpleLayout.layout {
                 // move on
                 currentY = currentY + targetHeight;
 
-                if (this.layoutVisualizer && i<targetContainer.countLayoutItems-1)
-                    this.layoutVisualizer.setDebugGap(paddingLeftVal, currentY, w-totalHPadding, targetGap);
+                if (this.layoutVisualizer && i < targetContainer.countLayoutItems - 1)
+                    this.layoutVisualizer.setDebugGap(paddingLeftVal, currentY, w - totalHPadding, targetGap);
 
                 currentY = currentY + targetGap;
             }

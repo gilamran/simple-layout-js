@@ -1,19 +1,47 @@
 /// <reference path="reference.ts"/>
 
 module SimpleLayout {
+    export interface ILayoutContainerData extends ILayoutItemData {
+        layout          : layout.ILayout;
+        layoutItems     : LayoutItem[];
+    }
+
     export class LayoutContainer extends LayoutItem {
 
         public layout          : layout.ILayout;
         private m_layoutItems  : LayoutItem[];
 
+        /**
+         * @class SimpleLayout.LayoutContainer
+         * @augments SimpleLayout.LayoutItem
+         * @classdesc The LayoutContainer class is the a holder of LayoutItems. its displayObject property actually
+         * holds a displayObjectContainer. It doesn't have a regular displayObject (A graphical entity).
+         */
         constructor() {
             super();
             this.m_layoutItems = [];
-            this.layoutItemType = 'LayoutContainer';
         }
 
-        public toJson():any {
-            var result = super.toJson();
+        /**
+         * This is an override to LayoutItem.layoutItemType, and this function returns the string "LayoutContainer"
+         *
+         * @member SimpleLayout.LayoutContainer#layoutItemType
+         * @type string
+         * @readonly
+         */
+        public get layoutItemType():string {
+            return 'LayoutContainer';
+        }
+
+
+        /**
+         * This is an override to LayoutItem.toJson
+         *
+         * @method SimpleLayout.LayoutContainer#toJson
+         * @returns {Object} A Json object that fully describe this LayoutContainer
+         */
+        public toJson():ILayoutContainerData {
+            var result : ILayoutContainerData = <ILayoutContainerData>super.toJson();
             var layoutItems = [];
             for (var i:number=0; i<this.m_layoutItems.length; i++) {
                 layoutItems.push(this.m_layoutItems[i].toJson());
@@ -27,13 +55,50 @@ module SimpleLayout {
             return result;
         }
 
-        public fromJson(json:any):any {
+
+        /**
+         * A factory function to create a LayoutContainer or LayoutItem according the to the <b>layoutItemType</b> in
+         * the given json object.
+         * This function is being used internally when calling the LayoutContainer.fromJson function.
+         *
+         * @method SimpleLayout.LayoutContainer#itemFromJson
+         * @static
+         * @returns {Object} a LayoutItem or a LayoutContainer Depends on the <b>layoutItemType</b> in the given json
+         * object.
+         */
+        public static itemFromJson(json:any):LayoutItem {
+            var result : LayoutItem;
+
+            switch (json.layoutItemType) {
+                case 'LayoutItem' :
+                    result = new LayoutItem();
+                    break;
+
+                case 'LayoutContainer' :
+                    result = new LayoutContainer();
+                    break;
+
+                default :
+                    throw 'Bad JSON, unknown layoutItemType:' + json.layoutItemType;
+            }
+
+            result.fromJson(json);
+            return result;
+        }
+
+        /**
+         * This is an override to LayoutItem.fromJson
+         *
+         * @method SimpleLayout.LayoutContainer#fromJson
+         * @param json {Object} object that fully describe this LayoutContainer and its children.
+         */
+        public fromJson(json:ILayoutContainerData):void {
             super.fromJson(json);
 
             // layout items
             var layoutItems = json.layoutItems;
             for (var i:number=0; i<layoutItems.length; i++) {
-                var layoutItem : LayoutItem = LayoutView.itemFromJson(layoutItems[i]);
+                var layoutItem : LayoutItem = LayoutContainer.itemFromJson(layoutItems[i]);
                 layoutItem.parent = this;
                 this.layoutItems.push(layoutItem);
             }
@@ -53,6 +118,13 @@ module SimpleLayout {
             }
         }
 
+        /**
+         * An array of all the child LayoutItems of this LayoutContainer.
+         *
+         * @member SimpleLayout.LayoutContainer#layoutItems
+         * @readonly
+         * @type LayoutItem[]
+         */
         get layoutItems():LayoutItem[] {
             return this.m_layoutItems;
         }
@@ -86,20 +158,23 @@ module SimpleLayout {
             }
         }
 
+        /**
+         * A shortcut to <b>container.layoutItems[index]</b>
+         *
+         * @method SimpleLayout.LayoutContainer#getLayoutItemAt
+         * @param index {Number}
+         * @returns {LayoutItem} The LayoutItem as the given index.
+         */
         public getLayoutItemAt(index:number):LayoutItem {
             return this.m_layoutItems[index];
         }
 
-        private removeAllDisplayObjects():void {
-            this.displayObjectContainer.removeAllChildren();
-            for (var i:number=0; i<this.m_layoutItems.length; i++) {
-                var layoutItem : LayoutItem = this.m_layoutItems[i];
-
-                if (layoutItem.layoutItemType == 'LayoutContainer')
-                    (<LayoutContainer>layoutItem).removeAllDisplayObjects();
-            }
-        }
-
+        /**
+         * Removes all the assets from the stage and re-adds them again. This is useful if you moved a LayoutItem in the
+         * z-order, and want the Layout to rearrange the layout items.
+         *
+         * @method SimpleLayout.LayoutContainer#rearrangeLayoutItems
+         */
         public rearrangeLayoutItems():void {
             if (!this.displayObjectContainer)
                 return;
@@ -114,11 +189,19 @@ module SimpleLayout {
                 if (layoutItem.displayObject)
                     this.displayObjectContainer.addChild(layoutItem.displayObject);
 
-                if (layoutItem.layoutItemType == 'LayoutContainer')
+                if (layoutItem.layoutItemType === 'LayoutContainer')
                     (<LayoutContainer>layoutItem).rearrangeLayoutItems();
             }
         }
 
+        /**
+         * Adds a given LayoutItem as a child to this LayoutContainer.
+         *
+         * @method SimpleLayout.LayoutContainer#addLayoutItem
+         * @param layoutItem {LayoutItem} The new LayoutItem.
+         * @param index {number} the position to add the given LayoutItem (Default is to add it last)
+         * @returns {LayoutItem} the added LayoutItem.
+         */
         public addLayoutItem(layoutItem:LayoutItem, index:number=-1):LayoutItem {
             if (layoutItem == null)
                 throw "Can not add a null layoutItem";
@@ -141,6 +224,13 @@ module SimpleLayout {
             }
         }
 
+        /**
+         * Removes the given LayoutItem from this LayoutContainer's children.
+         *
+         * @method SimpleLayout.LayoutContainer#removeLayoutItem
+         * @param layoutItem {LayoutItem} the LayoutItem to be removed
+         * @returns {LayoutItem} The removed LayoutItem
+         */
         public removeLayoutItem(layoutItem:LayoutItem):LayoutItem {
             if (layoutItem == null)
                 return null;
@@ -160,13 +250,34 @@ module SimpleLayout {
             }
         }
 
+        /**
+         * Removes the LayoutContainer's children.
+         *
+         * @method SimpleLayout.LayoutContainer#removeAllLayoutItems
+         */
         public removeAllLayoutItems():void {
             while (this.m_layoutItems.length > 0)
                 this.removeLayoutItem(this.m_layoutItems[0]);
         }
 
+        /**
+         * The number of LayoutItems this LayoutContainer has.
+         *
+         * @member SimpleLayout.LayoutContainer#countLayoutItems
+         * @readonly
+         */
         public get countLayoutItems():number {
             return this.m_layoutItems.length;
+        }
+
+        private removeAllDisplayObjects():void {
+            this.displayObjectContainer.removeAllChildren();
+            for (var i:number=0; i<this.m_layoutItems.length; i++) {
+                var layoutItem : LayoutItem = this.m_layoutItems[i];
+
+                if (layoutItem.layoutItemType === 'LayoutContainer')
+                    (<LayoutContainer>layoutItem).removeAllDisplayObjects();
+            }
         }
 
         public dispose():void {

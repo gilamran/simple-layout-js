@@ -1,38 +1,51 @@
 /// <reference path="../reference.ts"/>
-
 module SimpleLayout.layout {
     export class HorizontalLayout extends BasicLayout {
 
+        /**
+         * @class SimpleLayout.layout.HorizontalLayout
+         * @augments SimpleLayout.layout.BasicLayout
+         * @classdesc The HorizontalLayout will divide the given space horizontally to all his LayoutItems equally, unless there
+         * are children who ask for a specific width. All the LayoutItems will then get moved to the top/middle/bottom of
+         * their space according to the LayoutItem's vertical align.
+         */
         constructor() {
             super();
         }
 
+        /**
+         * There are several Layouts, and they all inherit from the BasicLayout. This is a simple way to get the
+         * Layout type class name, in this case it will return the string "HorizontalLayout".
+         *
+         * @method SimpleLayout.layout.HorizontalLayout#getLayoutType
+         * @returns {String} "HorizontalLayout"
+         */
         public getLayoutType():string {
-            return 'horizontal';
+            return 'HorizontalLayout';
         }
 
         public fitChildrenInto(targetContainer:LayoutContainer, w:number, h:number):void {
             if (targetContainer == null || targetContainer.countLayoutItems == 0)
                 return;
 
-            var paddingTopVal       : number = h * this.paddingTop;
-            var paddingBottomVal    : number = h * this.paddingBottom;
-            var paddingLeftVal      : number = w * this.paddingLeft;
-            var paddingRightVal     : number = w * this.paddingRight;
-            var gapVal				: number = w * this.gap;
+            var paddingTopVal:number = h * this.paddingTop;
+            var paddingBottomVal:number = h * this.paddingBottom;
+            var paddingLeftVal:number = w * this.paddingLeft;
+            var paddingRightVal:number = w * this.paddingRight;
+            var gapVal:number = w * this.gap;
 
-            var totalItemsGap       : number;
-            var totalVPadding       : number;
-            var totalHPadding       : number;
-            var totalGaps           : number;
-            var spaceForItems       : number;
-            var targetWidth         : number;
-            var targetHeight        : number;
-            var targetGap           : number;
-            var currentX            : number;
-            var layoutItem          : LayoutItem;
-            var displayObject       : displayObject.IDisplayObject;
-            var i                   : number;
+            var totalItemsGap:number;
+            var totalVPadding:number;
+            var totalHPadding:number;
+            var totalGaps:number;
+            var spaceForItems:number;
+            var targetWidth:number;
+            var targetHeight:number;
+            var targetGap:number;
+            var currentX:number;
+            var layoutItem:LayoutItem;
+            var displayObject:displayObject.IDisplayObject;
+            var i:number;
 
             if (this.layoutVisualizer)
                 this.layoutVisualizer.setDebugPadding(w, h, paddingTopVal, paddingBottomVal, paddingLeftVal, paddingRightVal);
@@ -165,8 +178,8 @@ module SimpleLayout.layout {
                 // move on
                 currentX = currentX + targetWidth;
 
-                if (this.layoutVisualizer && i<targetContainer.countLayoutItems-1)
-                    this.layoutVisualizer.setDebugGap(currentX, paddingTopVal, targetGap, h-totalVPadding);
+                if (this.layoutVisualizer && i < targetContainer.countLayoutItems - 1)
+                    this.layoutVisualizer.setDebugGap(currentX, paddingTopVal, targetGap, h - totalVPadding);
 
                 currentX = currentX + targetGap;
             }
