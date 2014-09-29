@@ -119,8 +119,8 @@ module.exports = function (grunt) {
             },
             dev: {
                 files: [
-                    {expand: true, cwd: 'defs/simple-layout-js', src: ['*.d.ts'], dest: '../simple-layout-js-examples/app/defs/simple-layout-js/', flatten: true, filter: 'isFile'},
-                    {expand: true, cwd: 'build', src: ['*.*'], dest: '../simple-layout-js-examples/bower_components/simple-layout-js/build', flatten: true, filter: 'isFile'}
+                    {expand: true, cwd: 'defs/simple-layout-js', src: ['*.d.ts'], dest: '../simple-layout-editor/app/defs/simple-layout-js/', flatten: true, filter: 'isFile'},
+                    {expand: true, cwd: 'build', src: ['*.*'], dest: '../simple-layout-editor/bower_components/simple-layout-js/build', flatten: true, filter: 'isFile'}
                 ]
             }
         },
