@@ -1,6 +1,6 @@
 simple-layout-js
 ================
-Simple-Layout is a lightweight yet powerfull layout engine for canvas based games and apps.
+Simple-Layout is a lightweight yet powerful layout engine for canvas based games and apps.
 The engine will help you fit your game/app to any device resolution, it uses percent based width and height.
 
 And, yea! it was built using the amazing [TypeScript!](https://github.com/Microsoft/TypeScript)
