@@ -49,8 +49,11 @@ IAssetsFactory
 --------------------
 In your exported json, you've mentioned the asset id for each asset in your ui, if you want Simple-Layout to created your assets (Mostly known as DisplayObject or Sprite), you can call createAssets, while passing an AssetsFactory. AssetsFactory is an object that implemets a simple interface:
 ```TypeScript
-createDisplayObject(assetId: string): SimpleLayout.displayObject.IDisplayObject;
-createDisplayObjectContainer(): SimpleLayout.displayObject.IDisplayObjectContainer;
+// The IAssetsFactory interface //
+{
+  createDisplayObject(assetId: string): SimpleLayout.displayObject.IDisplayObject;
+  createDisplayObjectContainer(): SimpleLayout.displayObject.IDisplayObjectContainer;
+}
 ```
 Your assets factory should be able to create and return any asset that was used while building the layout.
 
@@ -60,13 +63,13 @@ The IDisplayObject and IDisplayObjectContainer interfaces are what makes Simple-
 Currently Simple-Layout comes with CreateJs and PIXI implementations of these interfaces. More to come soon.
 
 ```TypeScript
-// IPoint interface //
+// The IPoint interface //
 {
   x : number;
   y : number;
 }
 
-// IDisplayObject interface //
+// The IDisplayObject interface //
 {
   width                       : number;
   height                      : number;
@@ -80,7 +83,7 @@ Currently Simple-Layout comes with CreateJs and PIXI implementations of these in
   dispose()                   : void;
 }
 
-// IDisplayObjectContainer interface (extends IDisplayObject) //
+// The IDisplayObjectContainer interface (extends IDisplayObject) //
 {
   addChild(child:IDisplayObject):void;
   removeChild(child:IDisplayObject):void;
