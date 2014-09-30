@@ -1,13 +1,11 @@
 simple-layout-js
 ================
-<img align="left" width="180" src="http://simple-layout.com/images/logo.svg">
-Simple-Layout is a lightweight yet powerfull layout engine for canvas based games and apps.
+<div style="float:left;margin:0 10px 10px 0" markdown="1">
+    <img align="left" width="180" src="http://simple-layout.com/images/logo.svg">
+</div>
+Simple-Layout is a lightweight yet powerfull generic layout engine for canvas based games and apps.
 The engine will help you fit your game/app to any device resolution, it uses percent based width and height.
 
-
---------------------
-Take it for a spin!
---------------------
 Checkout the [Layout-Editor](http://www.simple-layout.com/#/layout-editor) to experience the engine's abilities.
 
 
