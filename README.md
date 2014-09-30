@@ -45,6 +45,11 @@ myLayout.createAssets(myAssetsFactory);
 myLayout.fitInto(this.m_canvasElement.offsetWidth, this.m_canvasElement.offsetHeight);
 ```
 
+The API
+--------------------
+The code was written with JSDoc, so it should be fairly easy to understand each and every class/function/param.
+There's also a web version of the api [HERE](http://www.simple-layout.com/#/docs).
+
 IAssetsFactory
 --------------------
 In your exported json, you've mentioned the asset id for each asset in your ui, if you want Simple-Layout to created your assets (Mostly known as DisplayObject or Sprite), you can call createAssets, while passing an AssetsFactory. AssetsFactory is an object that implemets a simple interface:
