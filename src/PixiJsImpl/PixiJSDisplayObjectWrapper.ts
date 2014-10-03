@@ -53,6 +53,14 @@ module SimpleLayout.PixiJSImpl {
             (<any>this.m_wrappedDispObj).height = value;
         }
 
+        public set visible(value:boolean) {
+            this.m_wrappedDispObj.visible = value;
+        }
+
+        public get visible():boolean {
+            return this.m_wrappedDispObj.visible;
+        }
+
         public set x(value:number) {
             this.m_wrappedDispObj.x = value;
         }

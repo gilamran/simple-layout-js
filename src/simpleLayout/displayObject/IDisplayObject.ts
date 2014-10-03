@@ -12,6 +12,7 @@ module SimpleLayout.displayObject {
         x                           : number;
         y                           : number;
         name                        : string;
+        visible                     : boolean;
         getConcreteDisplayObject()  : Object;
         getGlobalPos()              : IPoint;
         getPivotPoint()             : IPoint;

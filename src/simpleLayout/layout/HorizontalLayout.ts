@@ -25,7 +25,7 @@ module SimpleLayout.layout {
         }
 
         public fitChildrenInto(targetContainer:LayoutContainer, w:number, h:number):void {
-            if (targetContainer == null || targetContainer.countLayoutItems == 0)
+            if (targetContainer == null || targetContainer.visible == false || targetContainer.countLayoutItems == 0)
                 return;
 
             var paddingTopVal:number = h * this.paddingTop;
@@ -98,6 +98,9 @@ module SimpleLayout.layout {
             currentX = paddingLeftVal;
             for (i = 0; i < targetContainer.countLayoutItems; i++) {
                 layoutItem = targetContainer.getLayoutItemAt(i);
+                if (layoutItem.visible === false)
+                    continue;
+
                 if (layoutItem.requestedWidthPercent > 0.0)
                     targetWidth = spaceForItems * layoutItem.requestedWidthPercent;
                 else

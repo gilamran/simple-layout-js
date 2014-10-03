@@ -77,6 +77,7 @@ Currently Simple-Layout comes with CreateJs and PIXI implementations of these in
   x                           : number;
   y                           : number;
   name                        : string;
+  visible                     : boolean;
   getConcreteDisplayObject()  : Object;
   getGlobalPos()              : IPoint;
   getPivotPoint()             : IPoint;

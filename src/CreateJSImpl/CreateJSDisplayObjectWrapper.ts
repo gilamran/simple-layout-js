@@ -53,6 +53,14 @@ module SimpleLayout.CreateJSImpl {
             this.m_wrappedDispObj.scaleY = 1;
         }
 
+        public set visible(value:boolean) {
+            this.m_wrappedDispObj.visible = value;
+        }
+
+        public get visible():boolean {
+            return this.m_wrappedDispObj.visible;
+        }
+
         public set x(value:number) {
             this.m_wrappedDispObj.x = value;
         }

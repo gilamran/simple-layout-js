@@ -106,10 +106,10 @@ module SimpleLayout {
                 var layoutJson = json.layout;
                 var layout;
                 switch (layoutJson['layoutType']) {
-                    case 'basic'        : layout = new SimpleLayout.layout.BasicLayout(); break;
-                    case 'horizontal'   : layout = new SimpleLayout.layout.HorizontalLayout(); break;
-                    case 'vertical'     : layout = new SimpleLayout.layout.VerticalLayout(); break;
-                    default             : throw 'Bad Json, unknown layoutType';
+                    case 'BasicLayout'        : layout = new SimpleLayout.layout.BasicLayout(); break;
+                    case 'HorizontalLayout'   : layout = new SimpleLayout.layout.HorizontalLayout(); break;
+                    case 'VerticalLayout'     : layout = new SimpleLayout.layout.VerticalLayout(); break;
+                    default                   : throw 'Bad Json, unknown layoutType ' + layoutJson['layoutType'];
                 }
 
                 layout.fromJson(layoutJson);
@@ -266,7 +266,7 @@ module SimpleLayout {
          * @readonly
          */
         public get countLayoutItems():number {
-            return this.m_layoutItems.length;
+            return this.m_layoutItems.filter((layoutItem:LayoutItem) => {return layoutItem.visible;}).length;
         }
 
         private removeAllDisplayObjects():void {

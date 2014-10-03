@@ -191,7 +191,7 @@ module SimpleLayout.layout {
          * @param h {number} the Height (In pixels) that was given to this layout
          */
         public fitChildrenInto(targetContainer:LayoutContainer, w:number, h:number):void {
-            if (targetContainer == null || targetContainer.countLayoutItems == 0)
+            if (targetContainer == null || targetContainer.visible == false || targetContainer.countLayoutItems == 0)
                 return;
 
             var HspaceForItems:number;
@@ -226,6 +226,9 @@ module SimpleLayout.layout {
 
             for (var i:number = 0; i < targetContainer.countLayoutItems; i++) {
                 layoutItem = targetContainer.getLayoutItemAt(i);
+                if (layoutItem.visible === false)
+                    continue;
+
                 if (layoutItem.requestedWidthPercent > 0.0)
                     targetWidth = HspaceForItems * layoutItem.requestedWidthPercent;
                 else

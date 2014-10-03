@@ -1,20 +1,21 @@
-/// <reference path='../pixi/pixi.d.ts' />
+/// <reference path="../pixi/pixi.d.ts" />
 declare module SimpleLayout.PixiJSImpl {
     class PixiJSDisplayObjectWrapper implements displayObject.IDisplayObject {
         private m_wrappedDispObj;
         private m_name;
         constructor(pixiJSDisplayObject: PIXI.DisplayObject);
-        getPivotPoint(): displayObject.IPoint;
-        getGlobalPos(): displayObject.IPoint;
-        allowResize: boolean;
-        getConcreteDisplayObject(): Object;
-        width: number;
-        height: number;
-        x: number;
-        resetScaling(): void;
-        y: number;
-        name: string;
-        dispose(): void;
+        public getPivotPoint(): displayObject.IPoint;
+        public getGlobalPos(): displayObject.IPoint;
+        public allowResize : boolean;
+        public getConcreteDisplayObject(): Object;
+        public width : number;
+        public height : number;
+        public visible : boolean;
+        public resetScaling(): void;
+        public x : number;
+        public y : number;
+        public name : string;
+        public dispose(): void;
     }
 }
 declare module SimpleLayout.PixiJSImpl {
@@ -22,26 +23,26 @@ declare module SimpleLayout.PixiJSImpl {
         private m_givenWidth;
         private m_givenHeight;
         constructor(pixiJSContainer: PIXI.DisplayObjectContainer);
-        width: number;
-        height: number;
-        displayObjectContainer: PIXI.DisplayObjectContainer;
-        addChild(child: displayObject.IDisplayObject): void;
-        removeChild(child: displayObject.IDisplayObject): void;
-        removeAllChildren(): void;
+        public width : number;
+        public height : number;
+        public displayObjectContainer : PIXI.DisplayObjectContainer;
+        public addChild(child: displayObject.IDisplayObject): void;
+        public removeChild(child: displayObject.IDisplayObject): void;
+        public removeAllChildren(): void;
     }
 }
 declare module SimpleLayout.PixiJSImpl {
     class PixiJSLayoutVisualizer extends PIXI.Graphics implements visualizer.ILayoutVisualizer {
-        attachedTo: layout.ILayout;
-        highlightedLayoutItem: LayoutItem;
+        public attachedTo: layout.ILayout;
+        public highlightedLayoutItem: LayoutItem;
         constructor();
-        setDebugFitAreaSize(w: number, h: number): void;
-        setDebugPadding(w: number, h: number, topPadding: number, bottomPadding: number, leftPadding: number, rightPadding: number): void;
-        setDebugGap(x: number, y: number, width: number, height: number): void;
-        setDebugItem(layoutItem: LayoutItem, x: number, y: number, width: number, height: number): void;
-        setAlpha(alpha: number): void;
-        setPosition(point: displayObject.IPoint): void;
-        update(): void;
-        dispose(): void;
+        public setDebugFitAreaSize(w: number, h: number): void;
+        public setDebugPadding(w: number, h: number, topPadding: number, bottomPadding: number, leftPadding: number, rightPadding: number): void;
+        public setDebugGap(x: number, y: number, width: number, height: number): void;
+        public setDebugItem(layoutItem: LayoutItem, x: number, y: number, width: number, height: number): void;
+        public setAlpha(alpha: number): void;
+        public setPosition(point: displayObject.IPoint): void;
+        public update(): void;
+        public dispose(): void;
     }
 }
