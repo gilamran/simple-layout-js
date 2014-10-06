@@ -77,6 +77,14 @@ module SimpleLayout.CreateJSImpl {
             return this.m_wrappedDispObj.y;
         }
 
+        public set rotation(value:number) {
+            this.m_wrappedDispObj.rotation = value;
+        }
+
+        public get rotation():number {
+            return this.m_wrappedDispObj.rotation;
+        }
+
         public set name(value:string) {
             this.m_wrappedDispObj.name = value;
         }

@@ -73,10 +73,10 @@ var SimpleLayout;
                 configurable: true
             });
 
-
             PixiJSDisplayObjectWrapper.prototype.resetScaling = function () {
                 this.m_wrappedDispObj.scale = new PIXI.Point(1, 1);
             };
+
 
             Object.defineProperty(PixiJSDisplayObjectWrapper.prototype, "x", {
                 get: function () {
@@ -96,6 +96,18 @@ var SimpleLayout;
                 },
                 set: function (value) {
                     this.m_wrappedDispObj.y = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+
+            Object.defineProperty(PixiJSDisplayObjectWrapper.prototype, "rotation", {
+                get: function () {
+                    return this.m_wrappedDispObj.rotation;
+                },
+                set: function (value) {
+                    this.m_wrappedDispObj.rotation = value;
                 },
                 enumerable: true,
                 configurable: true

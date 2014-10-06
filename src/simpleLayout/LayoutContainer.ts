@@ -132,28 +132,25 @@ module SimpleLayout {
             return <displayObject.IDisplayObjectContainer>this.displayObject;
         }
 
-        public executeLayout():void {
+        public executeLayout(width:number, height:number):void {
             if (this.layout) {
                 var layoutVisualizer : visualizer.ILayoutVisualizer = this.layout.getLayoutVisualizer();
                 if (layoutVisualizer) {
                     layoutVisualizer.clear();
                     if (this.displayObject)
-                        layoutVisualizer.setDebugItem(this, 0, 0, this.fittedIntoWidth, this.fittedIntoHeight);
+                        layoutVisualizer.setDebugItem(this, 0, 0, width, height);
                 }
 
-                this.layout.fitChildrenInto(this, this.fittedIntoWidth, this.fittedIntoHeight);
-                this.displayObject.width = this.fittedIntoWidth;
-                this.displayObject.height = this.fittedIntoHeight;
+                this.layout.fitChildrenInto(this, width, height);
+                this.displayObject.width = width;
+                this.displayObject.height = height;
 
                 if (layoutVisualizer) {
                     if (this.displayObject)
                         layoutVisualizer.setPosition(this.displayObject.getGlobalPos());
-                    layoutVisualizer.setDebugFitAreaSize(this.fittedIntoWidth, this.fittedIntoHeight);
+                    layoutVisualizer.setDebugFitAreaSize(width, height);
                     layoutVisualizer.update();
                 }
-            }
-            else {
-                super.executeLayout();
             }
         }
 

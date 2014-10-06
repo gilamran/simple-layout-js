@@ -100,6 +100,18 @@ var SimpleLayout;
             });
 
 
+            Object.defineProperty(CreateJSDisplayObjectWrapper.prototype, "rotation", {
+                get: function () {
+                    return this.m_wrappedDispObj.rotation;
+                },
+                set: function (value) {
+                    this.m_wrappedDispObj.rotation = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+
+
             Object.defineProperty(CreateJSDisplayObjectWrapper.prototype, "name", {
                 get: function () {
                     return this.m_wrappedDispObj.name;

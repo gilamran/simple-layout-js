@@ -11,6 +11,7 @@ module SimpleLayout {
         requestedHeightPercent   : number;
         horizontalAlign          : string;
         verticalAlign            : string;
+        visible                  : boolean;
         fittedIntoWidth          : number;
         fittedIntoHeight         : number;
         keepAspectRatio          : boolean;
@@ -19,6 +20,8 @@ module SimpleLayout {
     }
 
     export class LayoutItem {
+        private m_visible               : boolean;
+
         public parent                   : LayoutContainer;
         public displayObject            : displayObject.IDisplayObject;
 
@@ -39,6 +42,8 @@ module SimpleLayout {
          * @param displayObject {Object} An object that implements the <b>IDisplayObject</b> interface.
          */
         constructor(displayObject?:displayObject.IDisplayObject) {
+            this.m_visible = true;
+
             this.parent = null;
             this.displayObject = displayObject;
 
@@ -83,9 +88,21 @@ module SimpleLayout {
                 this.displayObject = displayObject;
 
                 // and let the parent get the new display object
-                if (this.displayObject && this.parent && this.parent.displayObjectContainer)
+                if (this.displayObject && this.parent && this.parent.displayObjectContainer) {
                     this.parent.displayObjectContainer.addChild(this.displayObject);
+                    this.displayObject.visible = this.visible;
+                }
             }
+        }
+
+        public set visible(value:boolean) {
+            this.m_visible = value;
+            if (this.displayObject)
+                this.displayObject.visible = value;
+        }
+
+        public get visible():boolean {
+            return this.m_visible;
         }
 
         /**
@@ -94,16 +111,33 @@ module SimpleLayout {
          *
          * @method SimpleLayout.LayoutItem#executeLayout
          */
-        public executeLayout():void {
+        public executeLayout(width:number, height:number):void {
             if (this.displayObject) {
                 if (this.keepAspectRatio) {
-                    this.fitToSize(this.displayObject, this.fittedIntoWidth, this.fittedIntoHeight);
+                    this.fitToSize(this.displayObject, width, height);
                 }
                 else {
-                    this.displayObject.width = this.fittedIntoWidth;
-                    this.displayObject.height = this.fittedIntoHeight;
+                    this.displayObject.width = width;
+                    this.displayObject.height = height;
                 }
             }
+        }
+
+        /**
+         * This function will be called by a <b>Layout</b> object.
+         *
+         * @method SimpleLayout.LayoutItem#fitInto
+         * @param width {Number} A specific width that this LayoutItem takes
+         * @param height {Number} A specific height that this LayoutItem takes
+         */
+        public fitInto(width:number, height:number):void {
+            if (this.displayObject == null)
+                return;
+
+            width = Math.max(1, Math.abs(width));
+            height = Math.max(1, Math.abs(height));
+
+            this.executeLayout(width, height);
         }
 
         /**
@@ -120,6 +154,7 @@ module SimpleLayout {
                 requestedHeightPercent : this.requestedHeightPercent,
                 horizontalAlign        : this.horizontalAlign,
                 verticalAlign          : this.verticalAlign,
+                visible                : this.visible,
                 fittedIntoWidth        : this.fittedIntoWidth,
                 fittedIntoHeight       : this.fittedIntoHeight,
                 keepAspectRatio        : this.keepAspectRatio,
@@ -139,28 +174,12 @@ module SimpleLayout {
             this.requestedHeightPercent = json.requestedHeightPercent;
             this.horizontalAlign        = json.horizontalAlign;
             this.verticalAlign          = json.verticalAlign;
+            this.visible                = json.visible;
             this.fittedIntoWidth        = json.fittedIntoWidth;
             this.fittedIntoHeight       = json.fittedIntoHeight;
             this.keepAspectRatio        = json.keepAspectRatio;
             this.name                   = json.name;
             this.assetId                = json.assetId;
-        }
-
-        /**
-         * This function will be called by a <b>Layout</b> object.
-         *
-         * @method SimpleLayout.LayoutItem#fitInto
-         * @param width {Number} A specific width that this LayoutItem takes
-         * @param height {Number} A specific height that this LayoutItem takes
-         */
-        public fitInto(width:number, height:number):void {
-            if (this.displayObject == null)
-                return;
-
-            this.fittedIntoWidth = Math.max(1, Math.abs(width));
-            this.fittedIntoHeight = Math.max(1, Math.abs(height));
-
-            this.executeLayout();
         }
 
 

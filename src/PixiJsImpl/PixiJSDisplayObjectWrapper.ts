@@ -61,12 +61,12 @@ module SimpleLayout.PixiJSImpl {
             return this.m_wrappedDispObj.visible;
         }
 
-        public set x(value:number) {
-            this.m_wrappedDispObj.x = value;
-        }
-
         public resetScaling():void {
             this.m_wrappedDispObj.scale = new PIXI.Point(1, 1);
+        }
+
+        public set x(value:number) {
+            this.m_wrappedDispObj.x = value;
         }
 
         public get x():number {
@@ -79,6 +79,14 @@ module SimpleLayout.PixiJSImpl {
 
         public get y():number {
             return this.m_wrappedDispObj.y;
+        }
+
+        public set rotation(value:number) {
+            this.m_wrappedDispObj.rotation = value;
+        }
+
+        public get rotation():number {
+            return this.m_wrappedDispObj.rotation;
         }
 
         public set name(value:string) {

@@ -11,6 +11,7 @@ module SimpleLayout.displayObject {
         height                      : number;
         x                           : number;
         y                           : number;
+        rotation                    : number;
         name                        : string;
         visible                     : boolean;
         getConcreteDisplayObject()  : Object;

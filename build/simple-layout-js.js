@@ -13,6 +13,8 @@ var SimpleLayout;
         * @param displayObject {Object} An object that implements the <b>IDisplayObject</b> interface.
         */
         function LayoutItem(displayObject) {
+            this.m_visible = true;
+
             this.parent = null;
             this.displayObject = displayObject;
 
@@ -20,7 +22,6 @@ var SimpleLayout;
             this.fittedIntoHeight = 0.0;
             this.horizontalAlign = SimpleLayout.enums.HorizontalAlignEnum.H_ALIGN_TYPE_NONE;
             this.verticalAlign = SimpleLayout.enums.VerticalAlignEnum.V_ALIGN_TYPE_NONE;
-            this.visible = true;
             this.keepAspectRatio = true;
             this.requestedWidthPercent = 0.0;
             this.requestedHeightPercent = 0.0;
@@ -38,20 +39,6 @@ var SimpleLayout;
         LayoutItem.prototype.getLayoutItemType = function () {
             return 'LayoutItem';
         };
-
-
-        Object.defineProperty(LayoutItem.prototype, "visible", {
-            get: function () {
-                return this.m_visible;
-            },
-            set: function (value) {
-                this.m_visible = value;
-                if (this.displayObject)
-                    this.displayObject.visible = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
 
         /**
         * Sets this LayoutItem's display object that it represents in the layout.
@@ -78,21 +65,52 @@ var SimpleLayout;
             }
         };
 
+
+        Object.defineProperty(LayoutItem.prototype, "visible", {
+            get: function () {
+                return this.m_visible;
+            },
+            set: function (value) {
+                this.m_visible = value;
+                if (this.displayObject)
+                    this.displayObject.visible = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         /**
         * In a LayoutItem this function will fit the LayoutItem's <b>displayObject</b> into its given width and height.
         * This function is called by the LayoutContainer on all its children LayoutItems (And containers)
         *
         * @method SimpleLayout.LayoutItem#executeLayout
         */
-        LayoutItem.prototype.executeLayout = function () {
+        LayoutItem.prototype.executeLayout = function (width, height) {
             if (this.displayObject) {
                 if (this.keepAspectRatio) {
-                    this.fitToSize(this.displayObject, this.fittedIntoWidth, this.fittedIntoHeight);
+                    this.fitToSize(this.displayObject, width, height);
                 } else {
-                    this.displayObject.width = this.fittedIntoWidth;
-                    this.displayObject.height = this.fittedIntoHeight;
+                    this.displayObject.width = width;
+                    this.displayObject.height = height;
                 }
             }
+        };
+
+        /**
+        * This function will be called by a <b>Layout</b> object.
+        *
+        * @method SimpleLayout.LayoutItem#fitInto
+        * @param width {Number} A specific width that this LayoutItem takes
+        * @param height {Number} A specific height that this LayoutItem takes
+        */
+        LayoutItem.prototype.fitInto = function (width, height) {
+            if (this.displayObject == null)
+                return;
+
+            width = Math.max(1, Math.abs(width));
+            height = Math.max(1, Math.abs(height));
+
+            this.executeLayout(width, height);
         };
 
         /**
@@ -125,9 +143,6 @@ var SimpleLayout;
         * @param json {Object} object that fully describe this LayoutItem
         */
         LayoutItem.prototype.fromJson = function (json) {
-            if (!json.visible)
-                json.visible = true;
-
             this.requestedWidthPercent = json.requestedWidthPercent;
             this.requestedHeightPercent = json.requestedHeightPercent;
             this.horizontalAlign = json.horizontalAlign;
@@ -138,23 +153,6 @@ var SimpleLayout;
             this.keepAspectRatio = json.keepAspectRatio;
             this.name = json.name;
             this.assetId = json.assetId;
-        };
-
-        /**
-        * This function will be called by a <b>Layout</b> object.
-        *
-        * @method SimpleLayout.LayoutItem#fitInto
-        * @param width {Number} A specific width that this LayoutItem takes
-        * @param height {Number} A specific height that this LayoutItem takes
-        */
-        LayoutItem.prototype.fitInto = function (width, height) {
-            if (this.displayObject == null)
-                return;
-
-            this.fittedIntoWidth = Math.max(1, Math.abs(width));
-            this.fittedIntoHeight = Math.max(1, Math.abs(height));
-
-            this.executeLayout();
         };
 
         /**
@@ -334,27 +332,25 @@ var SimpleLayout;
             configurable: true
         });
 
-        LayoutContainer.prototype.executeLayout = function () {
+        LayoutContainer.prototype.executeLayout = function (width, height) {
             if (this.layout) {
                 var layoutVisualizer = this.layout.getLayoutVisualizer();
                 if (layoutVisualizer) {
                     layoutVisualizer.clear();
                     if (this.displayObject)
-                        layoutVisualizer.setDebugItem(this, 0, 0, this.fittedIntoWidth, this.fittedIntoHeight);
+                        layoutVisualizer.setDebugItem(this, 0, 0, width, height);
                 }
 
-                this.layout.fitChildrenInto(this, this.fittedIntoWidth, this.fittedIntoHeight);
-                this.displayObject.width = this.fittedIntoWidth;
-                this.displayObject.height = this.fittedIntoHeight;
+                this.layout.fitChildrenInto(this, width, height);
+                this.displayObject.width = width;
+                this.displayObject.height = height;
 
                 if (layoutVisualizer) {
                     if (this.displayObject)
                         layoutVisualizer.setPosition(this.displayObject.getGlobalPos());
-                    layoutVisualizer.setDebugFitAreaSize(this.fittedIntoWidth, this.fittedIntoHeight);
+                    layoutVisualizer.setDebugFitAreaSize(width, height);
                     layoutVisualizer.update();
                 }
-            } else {
-                _super.prototype.executeLayout.call(this);
             }
         };
 
