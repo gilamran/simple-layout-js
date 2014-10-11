@@ -4,10 +4,14 @@ module SimpleLayout {
     export interface ILayoutContainerData extends ILayoutItemData {
         layout          : layout.ILayout;
         layoutItems     : LayoutItem[];
+        customWidth     : number;
+        customHeight    : number;
     }
 
     export class LayoutContainer extends LayoutItem {
 
+        public customWidth     : number;
+        public customHeight    : number;
         public layout          : layout.ILayout;
         private m_layoutItems  : LayoutItem[];
 
@@ -21,6 +25,8 @@ module SimpleLayout {
             super();
             this.fillArea = true;
             this.m_layoutItems = [];
+            this.customWidth = 0;
+            this.customHeight = 0;
         }
 
         /**
@@ -52,6 +58,8 @@ module SimpleLayout {
             if (this.layout)
                 result.layout = this.layout.toJson();
 
+            result.customWidth = this.customWidth;
+            result.customHeight = this.customHeight;
             return result;
         }
 
@@ -116,6 +124,15 @@ module SimpleLayout {
                 layout.fromJson(layoutJson);
                 this.layout = layout;
             }
+
+            if (json.hasOwnProperty('customWidth') === false) {
+                this.customWidth  = json.customWidth;
+            }
+
+            if (json.hasOwnProperty('customHeight') === false) {
+                this.customHeight = json.customHeight;
+            }
+
         }
 
         /**
@@ -162,8 +179,17 @@ module SimpleLayout {
          * @override
          */
         public getAssetSize():ISize {
-            // a LayoutContainer never has a graphical size, like a LayoutItem, so override it and return null
-            return null;
+            // were we asked for a custom size?
+            if (this.customWidth>0 && this.customHeight>0) {
+                return {
+                    width  : this.customWidth,
+                    height : this.customHeight
+                }
+            }
+            else {
+                // If we don't have a custom size, return null and it will fill the area
+                return null;
+            }
         }
 
         /**

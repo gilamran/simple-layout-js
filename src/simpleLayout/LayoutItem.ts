@@ -14,8 +14,6 @@ module SimpleLayout {
         layoutItemType           : string;
         requestedWidthPercent    : number;
         requestedHeightPercent   : number;
-        customWidth              : number;
-        customHeight             : number;
         horizontalAlign          : string;
         verticalAlign            : string;
         visible                  : boolean;
@@ -34,8 +32,6 @@ module SimpleLayout {
 
         public requestedWidthPercent    : number;
         public requestedHeightPercent   : number;
-        public customWidth              : number;
-        public customHeight             : number;
         public horizontalAlign          : string;
         public verticalAlign            : string;
         public fittedIntoWidth          : number;
@@ -63,8 +59,6 @@ module SimpleLayout {
             this.fillArea = false;
             this.requestedWidthPercent = 0.0;
             this.requestedHeightPercent = 0.0;
-            this.customWidth = 0;
-            this.customHeight = 0;
             this.name = "";
             this.assetId = "";
         }
@@ -138,41 +132,29 @@ module SimpleLayout {
          * @param height {Number} A specific height that this LayoutItem takes
          */
         public fitInto(width:number, height:number):void {
-            // as default we'll take was was given to us (Fit into the full given area)
+            // as default we'll take the area that was given to us (Fit into the full given area)
             var itemWidth  : number = width;
             var itemHeight : number = height;
 
-            // Unless we have an item size (True for LayoutItems with graphical assets)
-            var itemSize : ISize = this.getAssetSize();
-            if (itemSize !== null) {
-                itemWidth  = itemSize.width;
-                itemHeight = itemSize.height;
-            }
+            // If we're asked not to fill the all area?
+            if (this.fillArea === false) {
+                // Do we have an item size?
+                // For LayoutItems with graphical assets it will return the asset size
+                // and for LayoutContainer a requested custom size (If provided)
+                var itemSize : ISize = this.getAssetSize();
+                if (itemSize !== null) {
+                    itemWidth  = itemSize.width;
+                    itemHeight = itemSize.height;
+                }
 
-            // were we asked for a custom size? (Override the displayObject's width and height?)
-            if (this.customWidth>0 && this.customHeight>0) {
-                itemWidth  = this.customWidth;
-                itemHeight = this.customHeight;
-            }
-
-            // make sure that we don't allow values less than 1.
-            itemWidth  = Math.max(1, itemWidth);
-            itemHeight = Math.max(1, itemHeight);
-
-            width  = Math.max(1, width);
-            height = Math.max(1, height);
-
-            // keep aspect ratio?
-            if (this.fillArea) {
-                itemWidth  = width;
-                itemHeight = height;
-            }
-            else {
                 itemSize = this.fitToSize(width, height, itemWidth, itemHeight);
                 itemWidth  = itemSize.width;
                 itemHeight = itemSize.height;
             }
 
+            // make sure that we don't allow values less than 1.
+            itemWidth  = Math.max(1, itemWidth);
+            itemHeight = Math.max(1, itemHeight);
             this.executeLayout(itemWidth, itemHeight);
         }
 
@@ -205,8 +187,6 @@ module SimpleLayout {
                 layoutItemType         : this.getLayoutItemType(),
                 requestedWidthPercent  : this.requestedWidthPercent,
                 requestedHeightPercent : this.requestedHeightPercent,
-                customWidth            : this.customWidth,
-                customHeight           : this.customHeight,
                 horizontalAlign        : this.horizontalAlign,
                 verticalAlign          : this.verticalAlign,
                 visible                : this.visible,
@@ -225,18 +205,8 @@ module SimpleLayout {
          * @param json {Object} object that fully describe this LayoutItem
          */
         public fromJson(json:ILayoutItemData):void {
-            if (json.hasOwnProperty('customWidth') === false) {
-                json.customWidth = 0;
-            }
-
-            if (json.hasOwnProperty('customHeight') === false) {
-                json.customHeight = 0;
-            }
-
             this.requestedWidthPercent  = json.requestedWidthPercent;
             this.requestedHeightPercent = json.requestedHeightPercent;
-            this.customWidth            = json.customWidth;
-            this.customHeight           = json.customHeight;
             this.horizontalAlign        = json.horizontalAlign;
             this.verticalAlign          = json.verticalAlign;
             this.visible                = json.visible;
