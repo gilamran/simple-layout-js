@@ -5,16 +5,23 @@
  */
 module SimpleLayout {
 
+    export interface ISize {
+        width   : number;
+        height  : number;
+    }
+
     export interface ILayoutItemData {
         layoutItemType           : string;
         requestedWidthPercent    : number;
         requestedHeightPercent   : number;
+        customWidth              : number;
+        customHeight             : number;
         horizontalAlign          : string;
         verticalAlign            : string;
         visible                  : boolean;
         fittedIntoWidth          : number;
         fittedIntoHeight         : number;
-        keepAspectRatio          : boolean;
+        fillArea                 : boolean;
         name                     : string;
         assetId                  : string;
     }
@@ -27,11 +34,13 @@ module SimpleLayout {
 
         public requestedWidthPercent    : number;
         public requestedHeightPercent   : number;
+        public customWidth              : number;
+        public customHeight             : number;
         public horizontalAlign          : string;
         public verticalAlign            : string;
         public fittedIntoWidth          : number;
         public fittedIntoHeight         : number;
-        public keepAspectRatio          : boolean;
+        public fillArea                 : boolean;
         public name                     : string;
         public assetId                  : string;
 
@@ -51,9 +60,11 @@ module SimpleLayout {
             this.fittedIntoHeight = 0.0;
             this.horizontalAlign = enums.HorizontalAlignEnum.H_ALIGN_TYPE_NONE;
             this.verticalAlign = enums.VerticalAlignEnum.V_ALIGN_TYPE_NONE;
-            this.keepAspectRatio = true;
+            this.fillArea = false;
             this.requestedWidthPercent = 0.0;
             this.requestedHeightPercent = 0.0;
+            this.customWidth = 0;
+            this.customHeight = 0;
             this.name = "";
             this.assetId = "";
         }
@@ -110,16 +121,12 @@ module SimpleLayout {
          * This function is called by the LayoutContainer on all its children LayoutItems (And containers)
          *
          * @method SimpleLayout.LayoutItem#executeLayout
+         * @protected
          */
         public executeLayout(width:number, height:number):void {
             if (this.displayObject) {
-                if (this.keepAspectRatio) {
-                    this.fitToSize(this.displayObject, width, height);
-                }
-                else {
-                    this.displayObject.width = width;
-                    this.displayObject.height = height;
-                }
+                this.displayObject.width = width;
+                this.displayObject.height = height;
             }
         }
 
@@ -131,13 +138,59 @@ module SimpleLayout {
          * @param height {Number} A specific height that this LayoutItem takes
          */
         public fitInto(width:number, height:number):void {
-            if (this.displayObject == null)
-                return;
+            // as default we'll take was was given to us (Fit into the full given area)
+            var itemWidth  : number = width;
+            var itemHeight : number = height;
 
-            width = Math.max(1, Math.abs(width));
-            height = Math.max(1, Math.abs(height));
+            // Unless we have an item size (True for LayoutItems with graphical assets)
+            var itemSize : ISize = this.getAssetSize();
+            if (itemSize !== null) {
+                itemWidth  = itemSize.width;
+                itemHeight = itemSize.height;
+            }
 
-            this.executeLayout(width, height);
+            // were we asked for a custom size? (Override the displayObject's width and height?)
+            if (this.customWidth>0 && this.customHeight>0) {
+                itemWidth  = this.customWidth;
+                itemHeight = this.customHeight;
+            }
+
+            // make sure that we don't allow values less than 1.
+            itemWidth  = Math.max(1, itemWidth);
+            itemHeight = Math.max(1, itemHeight);
+
+            width  = Math.max(1, width);
+            height = Math.max(1, height);
+
+            // keep aspect ratio?
+            if (this.fillArea) {
+                itemWidth  = width;
+                itemHeight = height;
+            }
+            else {
+                itemSize = this.fitToSize(width, height, itemWidth, itemHeight);
+                itemWidth  = itemSize.width;
+                itemHeight = itemSize.height;
+            }
+
+            this.executeLayout(itemWidth, itemHeight);
+        }
+
+
+        /**
+         * @protected
+         */
+        public getAssetSize():ISize {
+            if (this.displayObject) {
+                this.displayObject.resetScaling();
+                return {
+                    width  : this.displayObject.width,
+                    height : this.displayObject.height
+                }
+            }
+            else {
+                return null;
+            }
         }
 
         /**
@@ -152,12 +205,14 @@ module SimpleLayout {
                 layoutItemType         : this.getLayoutItemType(),
                 requestedWidthPercent  : this.requestedWidthPercent,
                 requestedHeightPercent : this.requestedHeightPercent,
+                customWidth            : this.customWidth,
+                customHeight           : this.customHeight,
                 horizontalAlign        : this.horizontalAlign,
                 verticalAlign          : this.verticalAlign,
                 visible                : this.visible,
                 fittedIntoWidth        : this.fittedIntoWidth,
                 fittedIntoHeight       : this.fittedIntoHeight,
-                keepAspectRatio        : this.keepAspectRatio,
+                fillArea               : this.fillArea,
                 name                   : this.name,
                 assetId                : this.assetId
             }
@@ -170,14 +225,24 @@ module SimpleLayout {
          * @param json {Object} object that fully describe this LayoutItem
          */
         public fromJson(json:ILayoutItemData):void {
+            if (json.hasOwnProperty('customWidth') === false) {
+                json.customWidth = 0;
+            }
+
+            if (json.hasOwnProperty('customHeight') === false) {
+                json.customHeight = 0;
+            }
+
             this.requestedWidthPercent  = json.requestedWidthPercent;
             this.requestedHeightPercent = json.requestedHeightPercent;
+            this.customWidth            = json.customWidth;
+            this.customHeight           = json.customHeight;
             this.horizontalAlign        = json.horizontalAlign;
             this.verticalAlign          = json.verticalAlign;
             this.visible                = json.visible;
             this.fittedIntoWidth        = json.fittedIntoWidth;
             this.fittedIntoHeight       = json.fittedIntoHeight;
-            this.keepAspectRatio        = json.keepAspectRatio;
+            this.fillArea               = json.fillArea;
             this.name                   = json.name;
             this.assetId                = json.assetId;
         }
@@ -197,18 +262,21 @@ module SimpleLayout {
             }
         }
 
-        private fitToSize(dispObj:displayObject.IDisplayObject, w:number = 0.0, h:number = 0.0):void {
-            dispObj.resetScaling();
-            var imageRatio:number = dispObj.width / dispObj.height;
-            var containerRatio:number = w / h;
+        private fitToSize(givenWidth:number, givenHeight:number, itemWidth:number, itemHeight:number):ISize {
+            var itemRatio       : number = itemWidth / itemHeight;
+            var containerRatio  : number = givenWidth / givenHeight;
 
-            if (containerRatio > imageRatio) {
-                dispObj.height = h;
-                dispObj.width = imageRatio * dispObj.height;
+            if (containerRatio > itemRatio) {
+                return {
+                    height : givenHeight,
+                    width  : itemRatio * givenHeight
+                };
             }
             else {
-                dispObj.width = w;
-                dispObj.height = dispObj.width / imageRatio;
+                return {
+                    width  : givenWidth,
+                    height : givenWidth / itemRatio
+                };
             }
         }
     }

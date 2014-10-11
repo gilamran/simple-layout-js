@@ -19,6 +19,7 @@ module SimpleLayout {
          */
         constructor() {
             super();
+            this.fillArea = true;
             this.m_layoutItems = [];
         }
 
@@ -142,8 +143,10 @@ module SimpleLayout {
                 }
 
                 this.layout.fitChildrenInto(this, width, height);
-                this.displayObject.width = width;
-                this.displayObject.height = height;
+                if (this.displayObject) {
+                    this.displayObject.width = width;
+                    this.displayObject.height = height;
+                }
 
                 if (layoutVisualizer) {
                     if (this.displayObject)
@@ -152,6 +155,15 @@ module SimpleLayout {
                     layoutVisualizer.update();
                 }
             }
+        }
+
+        /**
+         * @protected
+         * @override
+         */
+        public getAssetSize():ISize {
+            // a LayoutContainer never has a graphical size, like a LayoutItem, so override it and return null
+            return null;
         }
 
         /**
