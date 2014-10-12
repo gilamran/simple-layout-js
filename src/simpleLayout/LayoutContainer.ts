@@ -125,11 +125,11 @@ module SimpleLayout {
                 this.layout = layout;
             }
 
-            if (json.hasOwnProperty('customWidth') === false) {
+            if (json.hasOwnProperty('customWidth')) {
                 this.customWidth  = json.customWidth;
             }
 
-            if (json.hasOwnProperty('customHeight') === false) {
+            if (json.hasOwnProperty('customHeight')) {
                 this.customHeight = json.customHeight;
             }
 
