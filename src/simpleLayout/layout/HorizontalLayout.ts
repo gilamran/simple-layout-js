@@ -25,7 +25,7 @@ module SimpleLayout.layout {
         }
 
         public fitChildrenInto(targetContainer:LayoutContainer, w:number, h:number):void {
-            if (targetContainer == null || targetContainer.visible == false || targetContainer.countLayoutItems == 0)
+            if (targetContainer == null || targetContainer.countLayoutItems == 0)
                 return;
 
             var paddingTopVal:number = h * this.paddingTop;
@@ -98,8 +98,6 @@ module SimpleLayout.layout {
             currentX = paddingLeftVal;
             for (i = 0; i < targetContainer.countLayoutItems; i++) {
                 layoutItem = targetContainer.getLayoutItemAt(i);
-                if (layoutItem.visible === false)
-                    continue;
 
                 if (layoutItem.requestedWidthPercent > 0.0)
                     targetWidth = spaceForItems * layoutItem.requestedWidthPercent;
@@ -111,72 +109,75 @@ module SimpleLayout.layout {
                     targetWidth = Math.round(targetWidth);
 
                 layoutItem.fitInto(targetWidth, targetHeight);
-                displayObject = layoutItem.displayObject;
 
-                if (displayObject) {
-                    // alignment
-                    var hAlignment:string;
-                    if (layoutItem.horizontalAlign != enums.HorizontalAlignEnum.H_ALIGN_TYPE_NONE)
-                        hAlignment = layoutItem.horizontalAlign;
-                    else
-                        hAlignment = this.horizontalAlign;
+                if (layoutItem.visible) {
+                    displayObject = layoutItem.displayObject;
 
-                    switch (hAlignment) {
-                        case enums.HorizontalAlignEnum.H_ALIGN_TYPE_CENTER:
-                        {
-                            displayObject.x = currentX + ((targetWidth - displayObject.width) / 2);
-                            break;
+                    if (displayObject) {
+                        // alignment
+                        var hAlignment:string;
+                        if (layoutItem.horizontalAlign != enums.HorizontalAlignEnum.H_ALIGN_TYPE_NONE)
+                            hAlignment = layoutItem.horizontalAlign;
+                        else
+                            hAlignment = this.horizontalAlign;
+
+                        switch (hAlignment) {
+                            case enums.HorizontalAlignEnum.H_ALIGN_TYPE_CENTER:
+                            {
+                                displayObject.x = currentX + ((targetWidth - displayObject.width) / 2);
+                                break;
+                            }
+
+                            case enums.HorizontalAlignEnum.H_ALIGN_TYPE_LEFT:
+                            {
+                                displayObject.x = currentX;
+                                break;
+                            }
+
+                            case enums.HorizontalAlignEnum.H_ALIGN_TYPE_RIGHT:
+                            {
+                                displayObject.x = currentX + (targetWidth - displayObject.width);
+                                break;
+                            }
                         }
 
-                        case enums.HorizontalAlignEnum.H_ALIGN_TYPE_LEFT:
-                        {
-                            displayObject.x = currentX;
-                            break;
+                        var vAlignment:string;
+                        if (layoutItem.verticalAlign != enums.VerticalAlignEnum.V_ALIGN_TYPE_NONE)
+                            vAlignment = layoutItem.verticalAlign;
+                        else
+                            vAlignment = this.verticalAlign;
+
+                        switch (vAlignment) {
+                            case enums.VerticalAlignEnum.V_ALIGN_TYPE_MIDDLE:
+                            {
+                                displayObject.y = paddingTopVal + ((targetHeight - displayObject.height) / 2);
+                                break;
+                            }
+
+                            case enums.VerticalAlignEnum.V_ALIGN_TYPE_TOP:
+                            {
+                                displayObject.y = paddingTopVal;
+                                break;
+                            }
+
+                            case enums.VerticalAlignEnum.V_ALIGN_TYPE_BOTTOM:
+                            {
+                                displayObject.y = paddingTopVal + (targetHeight - displayObject.height);
+                                break;
+                            }
                         }
 
-                        case enums.HorizontalAlignEnum.H_ALIGN_TYPE_RIGHT:
-                        {
-                            displayObject.x = currentX + (targetWidth - displayObject.width);
-                            break;
-                        }
+                        // snap to pixels?
+                        if (this.snapToPixels == true)
+                            displayObject.x = Math.round(displayObject.x);
+
+                        if (this.snapToPixels == true)
+                            displayObject.y = Math.round(displayObject.y);
                     }
-
-                    var vAlignment:string;
-                    if (layoutItem.verticalAlign != enums.VerticalAlignEnum.V_ALIGN_TYPE_NONE)
-                        vAlignment = layoutItem.verticalAlign;
-                    else
-                        vAlignment = this.verticalAlign;
-
-                    switch (vAlignment) {
-                        case enums.VerticalAlignEnum.V_ALIGN_TYPE_MIDDLE:
-                        {
-                            displayObject.y = paddingTopVal + ((targetHeight - displayObject.height) / 2);
-                            break;
-                        }
-
-                        case enums.VerticalAlignEnum.V_ALIGN_TYPE_TOP:
-                        {
-                            displayObject.y = paddingTopVal;
-                            break;
-                        }
-
-                        case enums.VerticalAlignEnum.V_ALIGN_TYPE_BOTTOM:
-                        {
-                            displayObject.y = paddingTopVal + (targetHeight - displayObject.height);
-                            break;
-                        }
-                    }
-
-                    // snap to pixels?
-                    if (this.snapToPixels == true)
-                        displayObject.x = Math.round(displayObject.x);
-
-                    if (this.snapToPixels == true)
-                        displayObject.y = Math.round(displayObject.y);
                 }
-
+{
                 if (this.layoutVisualizer)
-                    this.layoutVisualizer.setDebugItem(layoutItem, currentX, paddingTopVal, targetWidth, targetHeight);
+                    this.layoutVisualizer.setDebugItem(layoutItem, currentX, paddingTopVal, targetWidth, targetHeight);}
 
                 // move on
                 currentX = currentX + targetWidth;
