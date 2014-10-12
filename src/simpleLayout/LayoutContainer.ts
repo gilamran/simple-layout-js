@@ -301,7 +301,7 @@ module SimpleLayout {
          * @readonly
          */
         public get countLayoutItems():number {
-            return this.m_layoutItems.filter((layoutItem:LayoutItem) => {return layoutItem.visible;}).length;
+            return this.m_layoutItems.length;
         }
 
         private removeAllDisplayObjects():void {
