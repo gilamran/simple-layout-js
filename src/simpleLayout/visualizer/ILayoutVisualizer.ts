@@ -3,7 +3,9 @@
 module SimpleLayout.visualizer {
     export interface ILayoutVisualizer {
         highlightedLayoutItem : LayoutItem;
-        attachedTo : layout.ILayout;
+        getAttachedToLayout(): layout.ILayout;
+        attachToLayout(layout:layout.ILayout):void;
+        unAttachLayout():void;
         setDebugFitAreaSize(w:number, h:number):void;
         setDebugPadding(w:number, h:number, topPadding:number, bottomPadding:number, leftPadding:number, rightPadding:number):void;
         setDebugGap(x:number, y:number, width:number, height:number):void;

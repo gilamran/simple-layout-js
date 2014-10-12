@@ -155,16 +155,19 @@ module SimpleLayout.layout {
          */
         public setLayoutVisualizer(value:visualizer.ILayoutVisualizer):void {
             if (this.layoutVisualizer !== value) {
-                // un attach the previous layout, if it's not null
-                if (value && value.attachedTo) {
-                    value.attachedTo.setLayoutVisualizer(null);
-                }
-
                 this.layoutVisualizer = value;
+
+                // un attach the previous layout, if it's not null
+                if (value) {
+                    var attachedTo = value.getAttachedToLayout();
+                    if (attachedTo) {
+                        attachedTo.setLayoutVisualizer(null);
+                    }
+                }
 
                 // attach the new layout, if it's not null
                 if (this.layoutVisualizer) {
-                    this.layoutVisualizer.attachedTo = this;
+                    this.layoutVisualizer.attachToLayout(this);
                 }
             }
         }
