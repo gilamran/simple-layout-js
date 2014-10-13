@@ -3,15 +3,19 @@
 module SimpleLayout.CreateJSImpl {
     export class CreateJSLayoutVisualizer extends createjs.Shape implements visualizer.ILayoutVisualizer {
 
+        public isActive                   : Boolean;
         public filterByLayoutItem:LayoutItem;
         public filterByLayoutContainer:LayoutContainer;
 
         constructor() {
             super();
+            this.isActive = true;
+            this.filterByLayoutItem = null;
+            this.filterByLayoutContainer = null;
         }
 
         public setDebugLayoutItem(layoutContainer:LayoutContainer, layoutItem:LayoutItem, x:number, y:number, width:number, height:number):void {
-            if (this.filterByLayoutContainer === layoutContainer && this.filterByLayoutItem === layoutItem) {
+            if (this.isActive && this.filterByLayoutContainer === layoutContainer && this.filterByLayoutItem === layoutItem) {
                 this.graphics.beginFill("#8ab3bf");
                 this.graphics.drawRect(x, y, width, height);
                 this.graphics.endFill();
@@ -19,7 +23,7 @@ module SimpleLayout.CreateJSImpl {
         }
 
         public setDebugLayoutContainer(layoutContainer:LayoutContainer, w:number, h:number):void {
-            if (this.filterByLayoutContainer === layoutContainer) {
+            if (this.isActive && this.filterByLayoutContainer === layoutContainer) {
                 w = Math.max(1, Math.abs(w));
                 h = Math.max(1, Math.abs(h));
                 this.graphics.beginFill("#000000");
@@ -32,7 +36,7 @@ module SimpleLayout.CreateJSImpl {
         }
 
         public setDebugPadding(layoutContainer:LayoutContainer, w:number, h:number, topPadding:number, bottomPadding:number, leftPadding:number, rightPadding:number):void {
-            if (this.filterByLayoutContainer === layoutContainer) {
+            if (this.isActive && this.filterByLayoutContainer === layoutContainer) {
                 this.graphics.beginFill("#ffff00");
                 this.graphics.drawRect(0, 0, w, topPadding);
                 this.graphics.drawRect(0, topPadding, leftPadding, h - topPadding - bottomPadding);
@@ -43,7 +47,7 @@ module SimpleLayout.CreateJSImpl {
         }
 
         public setDebugGap(layoutContainer:LayoutContainer, x:number, y:number, width:number, height:number):void {
-            if (this.filterByLayoutContainer === layoutContainer) {
+            if (this.isActive && this.filterByLayoutContainer === layoutContainer) {
                 this.graphics.beginFill("#bbbb00");
                 this.graphics.drawRect(x, y, width, height);
                 this.graphics.endFill();

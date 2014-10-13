@@ -182,16 +182,19 @@ var SimpleLayout;
             __extends(CreateJSLayoutVisualizer, _super);
             function CreateJSLayoutVisualizer() {
                 _super.call(this);
+                this.isActive = true;
+                this.filterByLayoutItem = null;
+                this.filterByLayoutContainer = null;
             }
             CreateJSLayoutVisualizer.prototype.setDebugLayoutItem = function (layoutContainer, layoutItem, x, y, width, height) {
-                if (this.filterByLayoutContainer === layoutContainer && this.filterByLayoutItem === layoutItem) {
+                if (this.isActive && this.filterByLayoutContainer === layoutContainer && this.filterByLayoutItem === layoutItem) {
                     this.graphics.beginFill("#8ab3bf");
                     this.graphics.drawRect(x, y, width, height);
                     this.graphics.endFill();
                 }
             };
             CreateJSLayoutVisualizer.prototype.setDebugLayoutContainer = function (layoutContainer, w, h) {
-                if (this.filterByLayoutContainer === layoutContainer) {
+                if (this.isActive && this.filterByLayoutContainer === layoutContainer) {
                     w = Math.max(1, Math.abs(w));
                     h = Math.max(1, Math.abs(h));
                     this.graphics.beginFill("#000000");
@@ -203,7 +206,7 @@ var SimpleLayout;
                 }
             };
             CreateJSLayoutVisualizer.prototype.setDebugPadding = function (layoutContainer, w, h, topPadding, bottomPadding, leftPadding, rightPadding) {
-                if (this.filterByLayoutContainer === layoutContainer) {
+                if (this.isActive && this.filterByLayoutContainer === layoutContainer) {
                     this.graphics.beginFill("#ffff00");
                     this.graphics.drawRect(0, 0, w, topPadding);
                     this.graphics.drawRect(0, topPadding, leftPadding, h - topPadding - bottomPadding);
@@ -213,7 +216,7 @@ var SimpleLayout;
                 }
             };
             CreateJSLayoutVisualizer.prototype.setDebugGap = function (layoutContainer, x, y, width, height) {
-                if (this.filterByLayoutContainer === layoutContainer) {
+                if (this.isActive && this.filterByLayoutContainer === layoutContainer) {
                     this.graphics.beginFill("#bbbb00");
                     this.graphics.drawRect(x, y, width, height);
                     this.graphics.endFill();

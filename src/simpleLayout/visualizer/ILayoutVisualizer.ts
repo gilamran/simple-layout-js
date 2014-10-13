@@ -2,6 +2,7 @@
 
 module SimpleLayout.visualizer {
     export interface ILayoutVisualizer {
+        isActive:Boolean;
         filterByLayoutItem : LayoutItem;
         filterByLayoutContainer : LayoutContainer;
         setDebugLayoutItem(layoutContainer:LayoutContainer, layoutItem:LayoutItem, x:number, y:number, width:number, height:number):void;

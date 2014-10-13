@@ -3,17 +3,19 @@
 module SimpleLayout.PixiJSImpl {
     export class PixiJSLayoutVisualizer extends PIXI.Graphics implements visualizer.ILayoutVisualizer {
 
+        public isActive                   : Boolean;
         public filterByLayoutItem         : LayoutItem;
         public filterByLayoutContainer    : LayoutContainer;
 
         constructor() {
             super();
+            this.isActive = true;
             this.filterByLayoutItem = null;
             this.filterByLayoutContainer = null;
         }
 
         public setDebugLayoutItem(layoutContainer:LayoutContainer, layoutItem:LayoutItem, x:number, y:number, width:number, height:number):void {
-            if (this.filterByLayoutContainer === layoutContainer && this.filterByLayoutItem === layoutItem) {
+            if (this.isActive && this.filterByLayoutContainer === layoutContainer && this.filterByLayoutItem === layoutItem) {
                 this.beginFill(0xff0000);
                 this.drawRect(x, y, width, height);
                 this.endFill();
@@ -21,7 +23,7 @@ module SimpleLayout.PixiJSImpl {
         }
 
         public setDebugLayoutContainer(layoutContainer:LayoutContainer, w:number, h:number):void {
-            if (this.filterByLayoutContainer === layoutContainer) {
+            if (this.isActive && this.filterByLayoutContainer === layoutContainer) {
                 w = Math.max(1, Math.abs(w));
                 h = Math.max(1, Math.abs(h));
                 this.beginFill(0x000000);
@@ -34,7 +36,7 @@ module SimpleLayout.PixiJSImpl {
         }
 
         public setDebugPadding(layoutContainer:LayoutContainer, w:number, h:number, topPadding:number, bottomPadding:number, leftPadding:number, rightPadding:number):void {
-            if (this.filterByLayoutContainer === layoutContainer) {
+            if (this.isActive && this.filterByLayoutContainer === layoutContainer) {
                 this.beginFill(0xffff00);
                 this.drawRect(0, 0, w, topPadding);
                 this.drawRect(0, topPadding, leftPadding, h-topPadding-bottomPadding);
@@ -45,7 +47,7 @@ module SimpleLayout.PixiJSImpl {
         }
 
         public setDebugGap(layoutContainer:LayoutContainer, x:number, y:number, width:number, height:number):void {
-            if (this.filterByLayoutContainer === layoutContainer) {
+            if (this.isActive && this.filterByLayoutContainer === layoutContainer) {
                 this.beginFill(0xbbbb00);
                 this.drawRect(x, y, width, height);
                 this.endFill();

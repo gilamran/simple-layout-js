@@ -185,18 +185,19 @@ var SimpleLayout;
             __extends(PixiJSLayoutVisualizer, _super);
             function PixiJSLayoutVisualizer() {
                 _super.call(this);
+                this.isActive = true;
                 this.filterByLayoutItem = null;
                 this.filterByLayoutContainer = null;
             }
             PixiJSLayoutVisualizer.prototype.setDebugLayoutItem = function (layoutContainer, layoutItem, x, y, width, height) {
-                if (this.filterByLayoutContainer === layoutContainer && this.filterByLayoutItem === layoutItem) {
+                if (this.isActive && this.filterByLayoutContainer === layoutContainer && this.filterByLayoutItem === layoutItem) {
                     this.beginFill(0xff0000);
                     this.drawRect(x, y, width, height);
                     this.endFill();
                 }
             };
             PixiJSLayoutVisualizer.prototype.setDebugLayoutContainer = function (layoutContainer, w, h) {
-                if (this.filterByLayoutContainer === layoutContainer) {
+                if (this.isActive && this.filterByLayoutContainer === layoutContainer) {
                     w = Math.max(1, Math.abs(w));
                     h = Math.max(1, Math.abs(h));
                     this.beginFill(0x000000);
@@ -208,7 +209,7 @@ var SimpleLayout;
                 }
             };
             PixiJSLayoutVisualizer.prototype.setDebugPadding = function (layoutContainer, w, h, topPadding, bottomPadding, leftPadding, rightPadding) {
-                if (this.filterByLayoutContainer === layoutContainer) {
+                if (this.isActive && this.filterByLayoutContainer === layoutContainer) {
                     this.beginFill(0xffff00);
                     this.drawRect(0, 0, w, topPadding);
                     this.drawRect(0, topPadding, leftPadding, h - topPadding - bottomPadding);
@@ -218,7 +219,7 @@ var SimpleLayout;
                 }
             };
             PixiJSLayoutVisualizer.prototype.setDebugGap = function (layoutContainer, x, y, width, height) {
-                if (this.filterByLayoutContainer === layoutContainer) {
+                if (this.isActive && this.filterByLayoutContainer === layoutContainer) {
                     this.beginFill(0xbbbb00);
                     this.drawRect(x, y, width, height);
                     this.endFill();
