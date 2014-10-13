@@ -185,55 +185,59 @@ var SimpleLayout;
             __extends(PixiJSLayoutVisualizer, _super);
             function PixiJSLayoutVisualizer() {
                 _super.call(this);
-                this.attachedTo = null;
+                this.filterByLayoutItem = null;
+                this.filterByLayoutContainer = null;
             }
-            PixiJSLayoutVisualizer.prototype.setDebugFitAreaSize = function (w, h) {
-                w = Math.max(1, Math.abs(w));
-                h = Math.max(1, Math.abs(h));
-                this.beginFill(0x000000);
-                this.drawRect(0, 0, w, 1);
-                this.drawRect(0, 0, 1, h);
-                this.drawRect(0, h - 1, w, 1);
-                this.drawRect(w - 1, 0, 1, h);
-                this.endFill();
-            };
-            PixiJSLayoutVisualizer.prototype.setDebugPadding = function (w, h, topPadding, bottomPadding, leftPadding, rightPadding) {
-                this.beginFill(0xffff00);
-                this.drawRect(0, 0, w, topPadding);
-                this.drawRect(0, topPadding, leftPadding, h - topPadding - bottomPadding);
-                this.drawRect(w - rightPadding, topPadding, rightPadding, h - topPadding - bottomPadding);
-                this.drawRect(0, h - bottomPadding, w, bottomPadding);
-                this.endFill();
-            };
-            PixiJSLayoutVisualizer.prototype.setDebugGap = function (x, y, width, height) {
-                this.beginFill(0xbbbb00);
-                this.drawRect(x, y, width, height);
-                this.endFill();
-            };
-            PixiJSLayoutVisualizer.prototype.setDebugItem = function (layoutItem, x, y, width, height) {
-                if (this.highlightedLayoutItem == layoutItem) {
+            PixiJSLayoutVisualizer.prototype.setDebugLayoutItem = function (layoutContainer, layoutItem, x, y, width, height) {
+                if (this.filterByLayoutContainer === layoutContainer && this.filterByLayoutItem === layoutItem) {
                     this.beginFill(0xff0000);
                     this.drawRect(x, y, width, height);
                     this.endFill();
                 }
             };
-            PixiJSLayoutVisualizer.prototype.setAlpha = function (alpha) {
-                this.alpha = alpha;
+            PixiJSLayoutVisualizer.prototype.setDebugLayoutContainer = function (layoutContainer, w, h) {
+                if (this.filterByLayoutContainer === layoutContainer) {
+                    w = Math.max(1, Math.abs(w));
+                    h = Math.max(1, Math.abs(h));
+                    this.beginFill(0x000000);
+                    this.drawRect(0, 0, w, 1);
+                    this.drawRect(0, 0, 1, h);
+                    this.drawRect(0, h - 1, w, 1);
+                    this.drawRect(w - 1, 0, 1, h);
+                    this.endFill();
+                }
+            };
+            PixiJSLayoutVisualizer.prototype.setDebugPadding = function (layoutContainer, w, h, topPadding, bottomPadding, leftPadding, rightPadding) {
+                if (this.filterByLayoutContainer === layoutContainer) {
+                    this.beginFill(0xffff00);
+                    this.drawRect(0, 0, w, topPadding);
+                    this.drawRect(0, topPadding, leftPadding, h - topPadding - bottomPadding);
+                    this.drawRect(w - rightPadding, topPadding, rightPadding, h - topPadding - bottomPadding);
+                    this.drawRect(0, h - bottomPadding, w, bottomPadding);
+                    this.endFill();
+                }
+            };
+            PixiJSLayoutVisualizer.prototype.setDebugGap = function (layoutContainer, x, y, width, height) {
+                if (this.filterByLayoutContainer === layoutContainer) {
+                    this.beginFill(0xbbbb00);
+                    this.drawRect(x, y, width, height);
+                    this.endFill();
+                }
             };
             PixiJSLayoutVisualizer.prototype.setPosition = function (point) {
                 this.x = point.x;
                 this.y = point.y;
+            };
+            PixiJSLayoutVisualizer.prototype.setAlpha = function (alpha) {
+                this.alpha = alpha;
             };
             PixiJSLayoutVisualizer.prototype.update = function () {
             };
             PixiJSLayoutVisualizer.prototype.dispose = function () {
                 this.clear();
                 this.update();
-                this.highlightedLayoutItem = null;
-                if (this.attachedTo) {
-                    this.attachedTo.setLayoutVisualizer(null);
-                    this.attachedTo = null;
-                }
+                this.filterByLayoutItem = null;
+                this.filterByLayoutContainer = null;
             };
             return PixiJSLayoutVisualizer;
         })(PIXI.Graphics);

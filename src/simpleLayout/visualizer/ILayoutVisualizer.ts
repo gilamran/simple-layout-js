@@ -2,14 +2,12 @@
 
 module SimpleLayout.visualizer {
     export interface ILayoutVisualizer {
-        highlightedLayoutItem : LayoutItem;
-        getAttachedToLayout(): layout.ILayout;
-        attachToLayout(layout:layout.ILayout):void;
-        unAttachLayout():void;
-        setDebugFitAreaSize(w:number, h:number):void;
-        setDebugPadding(w:number, h:number, topPadding:number, bottomPadding:number, leftPadding:number, rightPadding:number):void;
-        setDebugGap(x:number, y:number, width:number, height:number):void;
-        setDebugItem(layoutItem:LayoutItem, x:number, y:number, width:number, height:number):void;
+        filterByLayoutItem : LayoutItem;
+        filterByLayoutContainer : LayoutContainer;
+        setDebugLayoutItem(layoutContainer:LayoutContainer, layoutItem:LayoutItem, x:number, y:number, width:number, height:number):void;
+        setDebugLayoutContainer(layoutContainer:LayoutContainer, w:number, h:number):void;
+        setDebugPadding(layoutContainer:LayoutContainer, w:number, h:number, topPadding:number, bottomPadding:number, leftPadding:number, rightPadding:number):void;
+        setDebugGap(layoutContainer:LayoutContainer, x:number, y:number, width:number, height:number):void;
         setAlpha(alpha:number):void;
         setPosition(point:displayObject.IPoint):void;
         update():void;

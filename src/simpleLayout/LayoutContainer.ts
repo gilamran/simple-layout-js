@@ -152,24 +152,10 @@ module SimpleLayout {
 
         public executeLayout(width:number, height:number):void {
             if (this.layout) {
-                var layoutVisualizer : visualizer.ILayoutVisualizer = this.layout.getLayoutVisualizer();
-                if (layoutVisualizer) {
-                    layoutVisualizer.clear();
-                    if (this.displayObject)
-                        layoutVisualizer.setDebugItem(this, 0, 0, width, height);
-                }
-
                 this.layout.fitChildrenInto(this, width, height);
                 if (this.displayObject) {
                     this.displayObject.width = width;
                     this.displayObject.height = height;
-                }
-
-                if (layoutVisualizer) {
-                    if (this.displayObject)
-                        layoutVisualizer.setPosition(this.displayObject.getGlobalPos());
-                    layoutVisualizer.setDebugFitAreaSize(width, height);
-                    layoutVisualizer.update();
                 }
             }
         }

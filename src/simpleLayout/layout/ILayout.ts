@@ -11,10 +11,9 @@ module SimpleLayout.layout {
         paddingLeft:number;
         paddingRight:number;
         snapToPixels:boolean;
+        layoutVisualizer:visualizer.ILayoutVisualizer;
 
         fitChildrenInto(targetContainer:LayoutContainer, w:number, h:number):void;
-        setLayoutVisualizer(value:visualizer.ILayoutVisualizer):void;
-        getLayoutVisualizer():visualizer.ILayoutVisualizer;
         getLayoutType():string;
         toJson():any;
         dispose():void;

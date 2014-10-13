@@ -3,31 +3,25 @@
 module SimpleLayout.PixiJSImpl {
     export class PixiJSLayoutVisualizer extends PIXI.Graphics implements visualizer.ILayoutVisualizer {
 
-        private m_attachedToLayout      : layout.ILayout;
-        public highlightedLayoutItem    : LayoutItem;
+        public filterByLayoutItem         : LayoutItem;
+        public filterByLayoutContainer    : LayoutContainer;
 
         constructor() {
             super();
-            this.m_attachedToLayout = null;
+            this.filterByLayoutItem = null;
+            this.filterByLayoutContainer = null;
         }
 
-        public getAttachedToLayout(): layout.ILayout {
-            return this.m_attachedToLayout;
-        }
-
-        public attachToLayout(layout:layout.ILayout):void {
-            this.m_attachedToLayout = layout;
-        }
-
-        public unAttachLayout():void {
-            if (this.m_attachedToLayout) {
-                this.m_attachedToLayout.setLayoutVisualizer(null);
+        public setDebugLayoutItem(layoutContainer:LayoutContainer, layoutItem:LayoutItem, x:number, y:number, width:number, height:number):void {
+            if (this.filterByLayoutContainer === layoutContainer && this.filterByLayoutItem === layoutItem) {
+                this.beginFill(0xff0000);
+                this.drawRect(x, y, width, height);
+                this.endFill();
             }
-            this.m_attachedToLayout = null;
         }
 
-        public setDebugFitAreaSize(w:number, h:number):void {
-            if (this.m_attachedToLayout) {
+        public setDebugLayoutContainer(layoutContainer:LayoutContainer, w:number, h:number):void {
+            if (this.filterByLayoutContainer === layoutContainer) {
                 w = Math.max(1, Math.abs(w));
                 h = Math.max(1, Math.abs(h));
                 this.beginFill(0x000000);
@@ -39,8 +33,8 @@ module SimpleLayout.PixiJSImpl {
             }
         }
 
-        public setDebugPadding(w:number, h:number, topPadding:number, bottomPadding:number, leftPadding:number, rightPadding:number):void {
-            if (this.m_attachedToLayout) {
+        public setDebugPadding(layoutContainer:LayoutContainer, w:number, h:number, topPadding:number, bottomPadding:number, leftPadding:number, rightPadding:number):void {
+            if (this.filterByLayoutContainer === layoutContainer) {
                 this.beginFill(0xffff00);
                 this.drawRect(0, 0, w, topPadding);
                 this.drawRect(0, topPadding, leftPadding, h-topPadding-bottomPadding);
@@ -50,27 +44,17 @@ module SimpleLayout.PixiJSImpl {
             }
         }
 
-        public setDebugGap(x:number, y:number, width:number, height:number):void {
-            if (this.m_attachedToLayout) {
+        public setDebugGap(layoutContainer:LayoutContainer, x:number, y:number, width:number, height:number):void {
+            if (this.filterByLayoutContainer === layoutContainer) {
                 this.beginFill(0xbbbb00);
                 this.drawRect(x, y, width, height);
                 this.endFill();
             }
         }
 
-        public setDebugItem(layoutItem:LayoutItem, x:number, y:number, width:number, height:number):void {
-            if (this.highlightedLayoutItem==layoutItem) {
-                this.beginFill(0xff0000);
-                this.drawRect(x, y, width, height);
-                this.endFill();
-            }
-        }
-
         public setPosition(point:displayObject.IPoint):void {
-            if (this.m_attachedToLayout) {
-                this.x = point.x;
-                this.y = point.y;
-            }
+            this.x = point.x;
+            this.y = point.y;
         }
 
         public setAlpha(alpha:number):void {
@@ -83,8 +67,8 @@ module SimpleLayout.PixiJSImpl {
         public dispose():void {
             this.clear();
             this.update();
-            this.unAttachLayout();
-            this.highlightedLayoutItem = null;
+            this.filterByLayoutItem = null;
+            this.filterByLayoutContainer = null;
         }
     }
 }

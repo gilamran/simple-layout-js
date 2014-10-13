@@ -182,44 +182,49 @@ var SimpleLayout;
             __extends(CreateJSLayoutVisualizer, _super);
             function CreateJSLayoutVisualizer() {
                 _super.call(this);
-                this.attachedTo = null;
             }
-            CreateJSLayoutVisualizer.prototype.setDebugFitAreaSize = function (w, h) {
-                w = Math.max(1, Math.abs(w));
-                h = Math.max(1, Math.abs(h));
-                this.graphics.beginFill("#000000");
-                this.graphics.drawRect(0, 0, w, 1);
-                this.graphics.drawRect(0, 0, 1, h);
-                this.graphics.drawRect(0, h - 1, w, 1);
-                this.graphics.drawRect(w - 1, 0, 1, h);
-                this.graphics.endFill();
-            };
-            CreateJSLayoutVisualizer.prototype.setDebugPadding = function (w, h, topPadding, bottomPadding, leftPadding, rightPadding) {
-                this.graphics.beginFill("#ffff00");
-                this.graphics.drawRect(0, 0, w, topPadding);
-                this.graphics.drawRect(0, topPadding, leftPadding, h - topPadding - bottomPadding);
-                this.graphics.drawRect(w - rightPadding, topPadding, rightPadding, h - topPadding - bottomPadding);
-                this.graphics.drawRect(0, h - bottomPadding, w, bottomPadding);
-                this.graphics.endFill();
-            };
-            CreateJSLayoutVisualizer.prototype.setDebugGap = function (x, y, width, height) {
-                this.graphics.beginFill("#bbbb00");
-                this.graphics.drawRect(x, y, width, height);
-                this.graphics.endFill();
-            };
-            CreateJSLayoutVisualizer.prototype.setDebugItem = function (layoutItem, x, y, width, height) {
-                if (this.highlightedLayoutItem == layoutItem) {
+            CreateJSLayoutVisualizer.prototype.setDebugLayoutItem = function (layoutContainer, layoutItem, x, y, width, height) {
+                if (this.filterByLayoutContainer === layoutContainer && this.filterByLayoutItem === layoutItem) {
                     this.graphics.beginFill("#8ab3bf");
                     this.graphics.drawRect(x, y, width, height);
                     this.graphics.endFill();
                 }
             };
-            CreateJSLayoutVisualizer.prototype.setAlpha = function (alpha) {
-                this.alpha = alpha;
+            CreateJSLayoutVisualizer.prototype.setDebugLayoutContainer = function (layoutContainer, w, h) {
+                if (this.filterByLayoutContainer === layoutContainer) {
+                    w = Math.max(1, Math.abs(w));
+                    h = Math.max(1, Math.abs(h));
+                    this.graphics.beginFill("#000000");
+                    this.graphics.drawRect(0, 0, w, 1);
+                    this.graphics.drawRect(0, 0, 1, h);
+                    this.graphics.drawRect(0, h - 1, w, 1);
+                    this.graphics.drawRect(w - 1, 0, 1, h);
+                    this.graphics.endFill();
+                }
+            };
+            CreateJSLayoutVisualizer.prototype.setDebugPadding = function (layoutContainer, w, h, topPadding, bottomPadding, leftPadding, rightPadding) {
+                if (this.filterByLayoutContainer === layoutContainer) {
+                    this.graphics.beginFill("#ffff00");
+                    this.graphics.drawRect(0, 0, w, topPadding);
+                    this.graphics.drawRect(0, topPadding, leftPadding, h - topPadding - bottomPadding);
+                    this.graphics.drawRect(w - rightPadding, topPadding, rightPadding, h - topPadding - bottomPadding);
+                    this.graphics.drawRect(0, h - bottomPadding, w, bottomPadding);
+                    this.graphics.endFill();
+                }
+            };
+            CreateJSLayoutVisualizer.prototype.setDebugGap = function (layoutContainer, x, y, width, height) {
+                if (this.filterByLayoutContainer === layoutContainer) {
+                    this.graphics.beginFill("#bbbb00");
+                    this.graphics.drawRect(x, y, width, height);
+                    this.graphics.endFill();
+                }
             };
             CreateJSLayoutVisualizer.prototype.setPosition = function (point) {
                 this.x = point.x;
                 this.y = point.y;
+            };
+            CreateJSLayoutVisualizer.prototype.setAlpha = function (alpha) {
+                this.alpha = alpha;
             };
             CreateJSLayoutVisualizer.prototype.clear = function () {
                 this.graphics.clear();
@@ -229,11 +234,8 @@ var SimpleLayout;
             CreateJSLayoutVisualizer.prototype.dispose = function () {
                 this.clear();
                 this.update();
-                this.highlightedLayoutItem = null;
-                if (this.attachedTo) {
-                    this.attachedTo.setLayoutVisualizer(null);
-                    this.attachedTo = null;
-                }
+                this.filterByLayoutItem = null;
+                this.filterByLayoutContainer = null;
             };
             return CreateJSLayoutVisualizer;
         })(createjs.Shape);
