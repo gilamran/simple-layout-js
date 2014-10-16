@@ -717,6 +717,12 @@ var SimpleLayout;
                     var displayObject;
                     displayObject = layoutItem.displayObject;
                     if (displayObject) {
+                        // add Pivot
+                        var pivotPoint = displayObject.getPivotPoint();
+                        if (pivotPoint) {
+                            startX = startX + (pivotPoint.x * displayObject.scaleX);
+                            startY = startY + (pivotPoint.y * displayObject.scaleY);
+                        }
                         // alignment
                         var hAlignment;
                         if (layoutItem.horizontalAlign != SimpleLayout.enums.HorizontalAlignEnum.H_ALIGN_TYPE_NONE)

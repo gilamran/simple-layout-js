@@ -10,7 +10,7 @@ var SimpleLayout;
                 this.m_wrappedDispObj = pixiJSDisplayObject;
             }
             PixiJSDisplayObjectWrapper.prototype.getPivotPoint = function () {
-                return { x: 0, y: 0 };
+                return { x: this.m_wrappedDispObj.pivot.x, y: this.m_wrappedDispObj.pivot.y };
             };
             PixiJSDisplayObjectWrapper.prototype.getGlobalPos = function () {
                 var point;
@@ -53,6 +53,26 @@ var SimpleLayout;
                 enumerable: true,
                 configurable: true
             });
+            Object.defineProperty(PixiJSDisplayObjectWrapper.prototype, "scaleX", {
+                get: function () {
+                    return this.m_wrappedDispObj.scale.x;
+                },
+                set: function (value) {
+                    this.m_wrappedDispObj.scale.x = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(PixiJSDisplayObjectWrapper.prototype, "scaleY", {
+                get: function () {
+                    return this.m_wrappedDispObj.scale.y;
+                },
+                set: function (value) {
+                    this.m_wrappedDispObj.scale.y = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
             Object.defineProperty(PixiJSDisplayObjectWrapper.prototype, "visible", {
                 get: function () {
                     return this.m_wrappedDispObj.visible;
@@ -88,10 +108,12 @@ var SimpleLayout;
             });
             Object.defineProperty(PixiJSDisplayObjectWrapper.prototype, "rotation", {
                 get: function () {
-                    return this.m_wrappedDispObj.rotation;
+                    var degree = this.m_wrappedDispObj.rotation * 180 / Math.PI;
+                    return degree;
                 },
                 set: function (value) {
-                    this.m_wrappedDispObj.rotation = value;
+                    var radians = value * Math.PI / 180;
+                    this.m_wrappedDispObj.rotation = radians;
                 },
                 enumerable: true,
                 configurable: true

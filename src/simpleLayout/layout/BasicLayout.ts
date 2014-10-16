@@ -154,6 +154,13 @@ module SimpleLayout.layout {
                 displayObject = layoutItem.displayObject;
 
                 if (displayObject) {
+                    // add Pivot
+                    var pivotPoint : displayObject.IPoint = displayObject.getPivotPoint();
+                    if (pivotPoint) {
+                        startX = startX + (pivotPoint.x * displayObject.scaleX);
+                        startY = startY + (pivotPoint.y * displayObject.scaleY);
+                    }
+
                     // alignment
                     var hAlignment:string;
                     if (layoutItem.horizontalAlign != enums.HorizontalAlignEnum.H_ALIGN_TYPE_NONE)

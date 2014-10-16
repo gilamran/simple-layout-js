@@ -20,7 +20,7 @@ var SimpleLayout;
                 return this.m_wrappedDispObj;
             };
             CreateJSDisplayObjectWrapper.prototype.getPivotPoint = function () {
-                return { x: 0, y: 0 };
+                return { x: this.m_wrappedDispObj.regX, y: this.m_wrappedDispObj.regY };
             };
             CreateJSDisplayObjectWrapper.prototype.getGlobalPos = function () {
                 var point = this.m_wrappedDispObj.localToGlobal(0, 0);
@@ -46,6 +46,26 @@ var SimpleLayout;
                 set: function (value) {
                     var bounds = this.m_wrappedDispObj.getBounds();
                     this.m_wrappedDispObj.scaleY = value / bounds.height;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(CreateJSDisplayObjectWrapper.prototype, "scaleX", {
+                get: function () {
+                    return this.m_wrappedDispObj.scaleX;
+                },
+                set: function (value) {
+                    this.m_wrappedDispObj.scaleX = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(CreateJSDisplayObjectWrapper.prototype, "scaleY", {
+                get: function () {
+                    return this.m_wrappedDispObj.scaleY;
+                },
+                set: function (value) {
+                    this.m_wrappedDispObj.scaleY = value;
                 },
                 enumerable: true,
                 configurable: true
