@@ -1,18 +1,17 @@
 /// <reference path="reference.ts"/>
 var SimpleLayout;
 (function (SimpleLayout) {
+    var PixiJSImpl;
     (function (PixiJSImpl) {
         var PixiJSDisplayObjectWrapper = (function () {
             function PixiJSDisplayObjectWrapper(pixiJSDisplayObject) {
                 if (pixiJSDisplayObject == null)
                     throw "pixiJSDisplayObject is null";
-
                 this.m_wrappedDispObj = pixiJSDisplayObject;
             }
             PixiJSDisplayObjectWrapper.prototype.getPivotPoint = function () {
-                return { x: 0, y: 0 };
+                return { x: this.m_wrappedDispObj.pivot.x, y: this.m_wrappedDispObj.pivot.y };
             };
-
             PixiJSDisplayObjectWrapper.prototype.getGlobalPos = function () {
                 var point;
                 var currentObj = this.m_wrappedDispObj;
@@ -24,7 +23,6 @@ var SimpleLayout;
                 }
                 return { x: point.x, y: point.y };
             };
-
             Object.defineProperty(PixiJSDisplayObjectWrapper.prototype, "allowResize", {
                 get: function () {
                     return true;
@@ -32,11 +30,9 @@ var SimpleLayout;
                 enumerable: true,
                 configurable: true
             });
-
             PixiJSDisplayObjectWrapper.prototype.getConcreteDisplayObject = function () {
                 return this.m_wrappedDispObj;
             };
-
             Object.defineProperty(PixiJSDisplayObjectWrapper.prototype, "width", {
                 get: function () {
                     return this.m_wrappedDispObj.width;
@@ -47,8 +43,6 @@ var SimpleLayout;
                 enumerable: true,
                 configurable: true
             });
-
-
             Object.defineProperty(PixiJSDisplayObjectWrapper.prototype, "height", {
                 get: function () {
                     return this.m_wrappedDispObj.height;
@@ -59,13 +53,39 @@ var SimpleLayout;
                 enumerable: true,
                 configurable: true
             });
-
-
-
+            Object.defineProperty(PixiJSDisplayObjectWrapper.prototype, "scaleX", {
+                get: function () {
+                    return this.m_wrappedDispObj.scale.x;
+                },
+                set: function (value) {
+                    this.m_wrappedDispObj.scale.x = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(PixiJSDisplayObjectWrapper.prototype, "scaleY", {
+                get: function () {
+                    return this.m_wrappedDispObj.scale.y;
+                },
+                set: function (value) {
+                    this.m_wrappedDispObj.scale.y = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(PixiJSDisplayObjectWrapper.prototype, "visible", {
+                get: function () {
+                    return this.m_wrappedDispObj.visible;
+                },
+                set: function (value) {
+                    this.m_wrappedDispObj.visible = value;
+                },
+                enumerable: true,
+                configurable: true
+            });
             PixiJSDisplayObjectWrapper.prototype.resetScaling = function () {
                 this.m_wrappedDispObj.scale = new PIXI.Point(1, 1);
             };
-
             Object.defineProperty(PixiJSDisplayObjectWrapper.prototype, "x", {
                 get: function () {
                     return this.m_wrappedDispObj.x;
@@ -76,8 +96,6 @@ var SimpleLayout;
                 enumerable: true,
                 configurable: true
             });
-
-
             Object.defineProperty(PixiJSDisplayObjectWrapper.prototype, "y", {
                 get: function () {
                     return this.m_wrappedDispObj.y;
@@ -88,8 +106,18 @@ var SimpleLayout;
                 enumerable: true,
                 configurable: true
             });
-
-
+            Object.defineProperty(PixiJSDisplayObjectWrapper.prototype, "rotation", {
+                get: function () {
+                    var degree = this.m_wrappedDispObj.rotation * 180 / Math.PI;
+                    return degree;
+                },
+                set: function (value) {
+                    var radians = value * Math.PI / 180;
+                    this.m_wrappedDispObj.rotation = radians;
+                },
+                enumerable: true,
+                configurable: true
+            });
             Object.defineProperty(PixiJSDisplayObjectWrapper.prototype, "name", {
                 get: function () {
                     return this.m_name;
@@ -100,15 +128,13 @@ var SimpleLayout;
                 enumerable: true,
                 configurable: true
             });
-
             PixiJSDisplayObjectWrapper.prototype.dispose = function () {
                 this.m_wrappedDispObj = null;
             };
             return PixiJSDisplayObjectWrapper;
         })();
         PixiJSImpl.PixiJSDisplayObjectWrapper = PixiJSDisplayObjectWrapper;
-    })(SimpleLayout.PixiJSImpl || (SimpleLayout.PixiJSImpl = {}));
-    var PixiJSImpl = SimpleLayout.PixiJSImpl;
+    })(PixiJSImpl = SimpleLayout.PixiJSImpl || (SimpleLayout.PixiJSImpl = {}));
 })(SimpleLayout || (SimpleLayout = {}));
 /// <reference path="reference.ts"/>
 var __extends = this.__extends || function (d, b) {
@@ -119,6 +145,7 @@ var __extends = this.__extends || function (d, b) {
 };
 var SimpleLayout;
 (function (SimpleLayout) {
+    var PixiJSImpl;
     (function (PixiJSImpl) {
         var PixiJSContainerWrapper = (function (_super) {
             __extends(PixiJSContainerWrapper, _super);
@@ -127,7 +154,6 @@ var SimpleLayout;
                 this.m_givenHeight = 0;
                 if (pixiJSContainer == null)
                     throw "pixiJSContainer is null";
-
                 _super.call(this, pixiJSContainer);
             }
             Object.defineProperty(PixiJSContainerWrapper.prototype, "width", {
@@ -140,8 +166,6 @@ var SimpleLayout;
                 enumerable: true,
                 configurable: true
             });
-
-
             Object.defineProperty(PixiJSContainerWrapper.prototype, "height", {
                 get: function () {
                     return this.m_givenHeight;
@@ -152,8 +176,6 @@ var SimpleLayout;
                 enumerable: true,
                 configurable: true
             });
-
-
             Object.defineProperty(PixiJSContainerWrapper.prototype, "displayObjectContainer", {
                 get: function () {
                     return this.getConcreteDisplayObject();
@@ -161,15 +183,12 @@ var SimpleLayout;
                 enumerable: true,
                 configurable: true
             });
-
             PixiJSContainerWrapper.prototype.addChild = function (child) {
                 this.displayObjectContainer.addChild(child.getConcreteDisplayObject());
             };
-
             PixiJSContainerWrapper.prototype.removeChild = function (child) {
                 this.displayObjectContainer.removeChild(child.getConcreteDisplayObject());
             };
-
             PixiJSContainerWrapper.prototype.removeAllChildren = function () {
                 while (this.displayObjectContainer.children.length > 0)
                     this.displayObjectContainer.removeChild(this.displayObjectContainer.children[0]);
@@ -177,84 +196,77 @@ var SimpleLayout;
             return PixiJSContainerWrapper;
         })(PixiJSImpl.PixiJSDisplayObjectWrapper);
         PixiJSImpl.PixiJSContainerWrapper = PixiJSContainerWrapper;
-    })(SimpleLayout.PixiJSImpl || (SimpleLayout.PixiJSImpl = {}));
-    var PixiJSImpl = SimpleLayout.PixiJSImpl;
+    })(PixiJSImpl = SimpleLayout.PixiJSImpl || (SimpleLayout.PixiJSImpl = {}));
 })(SimpleLayout || (SimpleLayout = {}));
 /// <reference path="reference.ts"/>
 var SimpleLayout;
 (function (SimpleLayout) {
+    var PixiJSImpl;
     (function (PixiJSImpl) {
         var PixiJSLayoutVisualizer = (function (_super) {
             __extends(PixiJSLayoutVisualizer, _super);
             function PixiJSLayoutVisualizer() {
                 _super.call(this);
-                this.attachedTo = null;
+                this.isActive = true;
+                this.filterByLayoutItem = null;
+                this.filterByLayoutContainer = null;
             }
-            PixiJSLayoutVisualizer.prototype.setDebugFitAreaSize = function (w, h) {
-                w = Math.max(1, Math.abs(w));
-                h = Math.max(1, Math.abs(h));
-                this.beginFill(0x000000);
-                this.drawRect(0, 0, w, 1);
-                this.drawRect(0, 0, 1, h);
-                this.drawRect(0, h - 1, w, 1);
-                this.drawRect(w - 1, 0, 1, h);
-                this.endFill();
-            };
-
-            PixiJSLayoutVisualizer.prototype.setDebugPadding = function (w, h, topPadding, bottomPadding, leftPadding, rightPadding) {
-                this.beginFill(0xffff00);
-                this.drawRect(0, 0, w, topPadding);
-                this.drawRect(0, topPadding, leftPadding, h - topPadding - bottomPadding);
-                this.drawRect(w - rightPadding, topPadding, rightPadding, h - topPadding - bottomPadding);
-                this.drawRect(0, h - bottomPadding, w, bottomPadding);
-                this.endFill();
-            };
-
-            PixiJSLayoutVisualizer.prototype.setDebugGap = function (x, y, width, height) {
-                this.beginFill(0xbbbb00);
-                this.drawRect(x, y, width, height);
-                this.endFill();
-            };
-
-            PixiJSLayoutVisualizer.prototype.setDebugItem = function (layoutItem, x, y, width, height) {
-                if (this.highlightedLayoutItem == layoutItem) {
+            PixiJSLayoutVisualizer.prototype.setDebugLayoutItem = function (layoutContainer, layoutItem, x, y, width, height) {
+                if (this.isActive && this.filterByLayoutContainer === layoutContainer && this.filterByLayoutItem === layoutItem) {
                     this.beginFill(0xff0000);
                     this.drawRect(x, y, width, height);
                     this.endFill();
                 }
             };
-
-            PixiJSLayoutVisualizer.prototype.setAlpha = function (alpha) {
-                this.alpha = alpha;
+            PixiJSLayoutVisualizer.prototype.setDebugLayoutContainer = function (layoutContainer, w, h) {
+                if (this.isActive && this.filterByLayoutContainer === layoutContainer) {
+                    w = Math.max(1, Math.abs(w));
+                    h = Math.max(1, Math.abs(h));
+                    this.beginFill(0x000000);
+                    this.drawRect(0, 0, w, 1);
+                    this.drawRect(0, 0, 1, h);
+                    this.drawRect(0, h - 1, w, 1);
+                    this.drawRect(w - 1, 0, 1, h);
+                    this.endFill();
+                }
             };
-
+            PixiJSLayoutVisualizer.prototype.setDebugPadding = function (layoutContainer, w, h, topPadding, bottomPadding, leftPadding, rightPadding) {
+                if (this.isActive && this.filterByLayoutContainer === layoutContainer) {
+                    this.beginFill(0xffff00);
+                    this.drawRect(0, 0, w, topPadding);
+                    this.drawRect(0, topPadding, leftPadding, h - topPadding - bottomPadding);
+                    this.drawRect(w - rightPadding, topPadding, rightPadding, h - topPadding - bottomPadding);
+                    this.drawRect(0, h - bottomPadding, w, bottomPadding);
+                    this.endFill();
+                }
+            };
+            PixiJSLayoutVisualizer.prototype.setDebugGap = function (layoutContainer, x, y, width, height) {
+                if (this.isActive && this.filterByLayoutContainer === layoutContainer) {
+                    this.beginFill(0xbbbb00);
+                    this.drawRect(x, y, width, height);
+                    this.endFill();
+                }
+            };
             PixiJSLayoutVisualizer.prototype.setPosition = function (point) {
                 this.x = point.x;
                 this.y = point.y;
             };
-
+            PixiJSLayoutVisualizer.prototype.setAlpha = function (alpha) {
+                this.alpha = alpha;
+            };
             PixiJSLayoutVisualizer.prototype.update = function () {
             };
-
             PixiJSLayoutVisualizer.prototype.dispose = function () {
                 this.clear();
                 this.update();
-                this.highlightedLayoutItem = null;
-                if (this.attachedTo) {
-                    this.attachedTo.setLayoutVisualizer(null);
-                    this.attachedTo = null;
-                }
+                this.filterByLayoutItem = null;
+                this.filterByLayoutContainer = null;
             };
             return PixiJSLayoutVisualizer;
         })(PIXI.Graphics);
         PixiJSImpl.PixiJSLayoutVisualizer = PixiJSLayoutVisualizer;
-    })(SimpleLayout.PixiJSImpl || (SimpleLayout.PixiJSImpl = {}));
-    var PixiJSImpl = SimpleLayout.PixiJSImpl;
+    })(PixiJSImpl = SimpleLayout.PixiJSImpl || (SimpleLayout.PixiJSImpl = {}));
 })(SimpleLayout || (SimpleLayout = {}));
 /// <reference path="../../defs/tsd.d.ts" />
 /// <reference path="PixiJSDisplayObjectWrapper.ts" />
-//grunt-start
-/// <reference path="PixiJSContainerWrapper.ts" />
-/// <reference path="PixiJSLayoutVisualizer.ts" />
-//grunt-end
 //# sourceMappingURL=simple-layout-for-pixijs.js.map

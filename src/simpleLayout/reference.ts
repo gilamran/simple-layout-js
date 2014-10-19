@@ -3,6 +3,7 @@
 
 //grunt-start
 /// <reference path="assetsFactory/IAssetsFactory.ts" />
+/// <reference path="assetsFactory/IManagedAssetsFactory.ts" />
 /// <reference path="displayObject/IDisplayObject.ts" />
 /// <reference path="displayObject/IDisplayObjectContainer.ts" />
 /// <reference path="enums/HorizontalAlignEnum.ts" />

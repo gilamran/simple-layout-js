@@ -4,10 +4,14 @@ module SimpleLayout {
     export interface ILayoutContainerData extends ILayoutItemData {
         layout          : layout.ILayout;
         layoutItems     : LayoutItem[];
+        customWidth     : number;
+        customHeight    : number;
     }
 
     export class LayoutContainer extends LayoutItem {
 
+        public customWidth     : number;
+        public customHeight    : number;
         public layout          : layout.ILayout;
         private m_layoutItems  : LayoutItem[];
 
@@ -19,7 +23,10 @@ module SimpleLayout {
          */
         constructor() {
             super();
+            this.fillArea = true;
             this.m_layoutItems = [];
+            this.customWidth = 0;
+            this.customHeight = 0;
         }
 
         /**
@@ -51,6 +58,8 @@ module SimpleLayout {
             if (this.layout)
                 result.layout = this.layout.toJson();
 
+            result.customWidth = this.customWidth;
+            result.customHeight = this.customHeight;
             return result;
         }
 
@@ -109,12 +118,21 @@ module SimpleLayout {
                     case 'BasicLayout'        : layout = new SimpleLayout.layout.BasicLayout(); break;
                     case 'HorizontalLayout'   : layout = new SimpleLayout.layout.HorizontalLayout(); break;
                     case 'VerticalLayout'     : layout = new SimpleLayout.layout.VerticalLayout(); break;
-                    default                   : throw 'Bad Json, unknown layoutType - ' + layoutJson['layoutType'];
+                    default                   : throw 'Bad Json, unknown layoutType ' + layoutJson['layoutType'];
                 }
 
                 layout.fromJson(layoutJson);
                 this.layout = layout;
             }
+
+            if (json.hasOwnProperty('customWidth')) {
+                this.customWidth  = json.customWidth;
+            }
+
+            if (json.hasOwnProperty('customHeight')) {
+                this.customHeight = json.customHeight;
+            }
+
         }
 
         /**
@@ -132,28 +150,31 @@ module SimpleLayout {
             return <displayObject.IDisplayObjectContainer>this.displayObject;
         }
 
-        public executeLayout():void {
+        public executeLayout(width:number, height:number):void {
             if (this.layout) {
-                var layoutVisualizer : visualizer.ILayoutVisualizer = this.layout.getLayoutVisualizer();
-                if (layoutVisualizer) {
-                    layoutVisualizer.clear();
-                    if (this.displayObject)
-                        layoutVisualizer.setDebugItem(this, 0, 0, this.fittedIntoWidth, this.fittedIntoHeight);
+                this.layout.fitChildrenInto(this, width, height);
+                if (this.displayObject) {
+                    this.displayObject.width = width;
+                    this.displayObject.height = height;
                 }
+            }
+        }
 
-                this.layout.fitChildrenInto(this, this.fittedIntoWidth, this.fittedIntoHeight);
-                this.displayObject.width = this.fittedIntoWidth;
-                this.displayObject.height = this.fittedIntoHeight;
-
-                if (layoutVisualizer) {
-                    if (this.displayObject)
-                        layoutVisualizer.setPosition(this.displayObject.getGlobalPos());
-                    layoutVisualizer.setDebugFitAreaSize(this.fittedIntoWidth, this.fittedIntoHeight);
-                    layoutVisualizer.update();
+        /**
+         * @protected
+         * @override
+         */
+        public getAssetSize():ISize {
+            // were we asked for a custom size?
+            if (this.customWidth>0 && this.customHeight>0) {
+                return {
+                    width  : this.customWidth,
+                    height : this.customHeight
                 }
             }
             else {
-                super.executeLayout();
+                // If we don't have a custom size, return null and it will fill the area
+                return null;
             }
         }
 

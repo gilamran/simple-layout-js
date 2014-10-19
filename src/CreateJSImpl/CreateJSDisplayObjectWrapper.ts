@@ -20,7 +20,7 @@ module SimpleLayout.CreateJSImpl {
         }
 
         public getPivotPoint():displayObject.IPoint {
-            return {x:0, y:0};
+            return {x:this.m_wrappedDispObj.regX, y:this.m_wrappedDispObj.regY};
         }
 
         public getGlobalPos():displayObject.IPoint {
@@ -48,9 +48,33 @@ module SimpleLayout.CreateJSImpl {
             this.m_wrappedDispObj.scaleY = value/bounds.height;
         }
 
+        public get scaleX():number {
+            return this.m_wrappedDispObj.scaleX;
+        }
+
+        public set scaleX(value:number) {
+            this.m_wrappedDispObj.scaleX = value;
+        }
+
+        public get scaleY():number {
+            return this.m_wrappedDispObj.scaleY;
+        }
+
+        public set scaleY(value:number) {
+            this.m_wrappedDispObj.scaleY = value;
+        }
+
         public resetScaling():void {
             this.m_wrappedDispObj.scaleX = 1;
             this.m_wrappedDispObj.scaleY = 1;
+        }
+
+        public set visible(value:boolean) {
+            this.m_wrappedDispObj.visible = value;
+        }
+
+        public get visible():boolean {
+            return this.m_wrappedDispObj.visible;
         }
 
         public set x(value:number) {
@@ -67,6 +91,14 @@ module SimpleLayout.CreateJSImpl {
 
         public get y():number {
             return this.m_wrappedDispObj.y;
+        }
+
+        public set rotation(value:number) {
+            this.m_wrappedDispObj.rotation = value;
+        }
+
+        public get rotation():number {
+            return this.m_wrappedDispObj.rotation;
         }
 
         public set name(value:string) {

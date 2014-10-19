@@ -148,34 +148,80 @@ module SimpleLayout.layout {
             return 'BasicLayout';
         }
 
-        /**
-         * Use this function to set the layout visualizer.
-         * @method SimpleLayout.layout.BasicLayout#setLayoutVisualizer
-         * @param value {visualizer.ILayoutVisualizer} an object that implements the ILayoutVisualizer interface.
-         */
-        public setLayoutVisualizer(value:visualizer.ILayoutVisualizer):void {
-            if (this.layoutVisualizer !== value) {
-                // un attach the previous layout, if it's not null
-                if (value && value.attachedTo) {
-                    value.attachedTo.setLayoutVisualizer(null);
-                }
+        public alignLayoutItem(layoutItem:LayoutItem, startX:number, startY:number, givenWidth:number, givenHeight:number):void {
+            if (layoutItem.visible) {
+                var displayObject:displayObject.IDisplayObject;
+                displayObject = layoutItem.displayObject;
 
-                this.layoutVisualizer = value;
+                if (displayObject) {
+                    // add Pivot
+                    var pivotPoint : displayObject.IPoint = displayObject.getPivotPoint();
+                    if (pivotPoint) {
+                        startX = startX + (pivotPoint.x * displayObject.scaleX);
+                        startY = startY + (pivotPoint.y * displayObject.scaleY);
+                    }
 
-                // attach the new layout, if it's not null
-                if (this.layoutVisualizer) {
-                    this.layoutVisualizer.attachedTo = this;
+                    // alignment
+                    var hAlignment:string;
+                    if (layoutItem.horizontalAlign != enums.HorizontalAlignEnum.H_ALIGN_TYPE_NONE)
+                        hAlignment = layoutItem.horizontalAlign;
+                    else
+                        hAlignment = this.horizontalAlign;
+
+                    switch (hAlignment) {
+                        case enums.HorizontalAlignEnum.H_ALIGN_TYPE_CENTER:
+                        {
+                            displayObject.x = startX + ((givenWidth - displayObject.width) / 2);
+                            break;
+                        }
+
+                        case enums.HorizontalAlignEnum.H_ALIGN_TYPE_LEFT:
+                        {
+                            displayObject.x = startX;
+                            break;
+                        }
+
+                        case enums.HorizontalAlignEnum.H_ALIGN_TYPE_RIGHT:
+                        {
+                            displayObject.x = startX + (givenWidth - displayObject.width);
+                            break;
+                        }
+                    }
+
+                    var vAlignment:string;
+                    if (layoutItem.verticalAlign != enums.VerticalAlignEnum.V_ALIGN_TYPE_NONE)
+                        vAlignment = layoutItem.verticalAlign;
+                    else
+                        vAlignment = this.verticalAlign;
+
+                    switch (vAlignment) {
+                        case enums.VerticalAlignEnum.V_ALIGN_TYPE_TOP:
+                        {
+                            displayObject.y = startY;
+                            break;
+                        }
+
+                        case enums.VerticalAlignEnum.V_ALIGN_TYPE_MIDDLE:
+                        {
+                            displayObject.y = startY + ((givenHeight - displayObject.height) / 2);
+                            break;
+                        }
+
+                        case enums.VerticalAlignEnum.V_ALIGN_TYPE_BOTTOM:
+                        {
+                            displayObject.y = startY + (givenHeight - displayObject.height);
+                            break;
+                        }
+                    }
+
+                    // snap to pixels?
+                    if (this.snapToPixels == true)
+                        displayObject.x = Math.round(displayObject.x);
+
+                    if (this.snapToPixels == true)
+                        displayObject.y = Math.round(displayObject.y);
                 }
             }
-        }
-
-        /**
-         * Use this function to get the layout visualizer.
-         * @method SimpleLayout.layout.BasicLayout#getLayoutVisualizer
-         * @returns {visualizer.ILayoutVisualizer}
-         */
-        public getLayoutVisualizer():visualizer.ILayoutVisualizer {
-            return this.layoutVisualizer;
         }
 
         /**
@@ -191,14 +237,14 @@ module SimpleLayout.layout {
          * @param h {number} the Height (In pixels) that was given to this layout
          */
         public fitChildrenInto(targetContainer:LayoutContainer, w:number, h:number):void {
-            if (targetContainer == null || targetContainer.countLayoutItems == 0)
+            if (targetContainer == null)
                 return;
 
             var HspaceForItems:number;
             var VspaceForItems:number;
             var targetWidth:number;
             var targetHeight:number;
-            var displayObject:displayObject.IDisplayObject;
+
             var layoutItem:LayoutItem;
 
             var paddingTopVal:number = h * this.paddingTop;
@@ -206,8 +252,10 @@ module SimpleLayout.layout {
             var paddingLeftVal:number = w * this.paddingLeft;
             var paddingRightVal:number = w * this.paddingRight;
 
-            if (this.layoutVisualizer)
-                this.layoutVisualizer.setDebugPadding(w, h, paddingTopVal, paddingBottomVal, paddingLeftVal, paddingRightVal);
+            if (this.layoutVisualizer) {
+                this.layoutVisualizer.setDebugLayoutContainer(targetContainer, w, h);
+                this.layoutVisualizer.setDebugPadding(targetContainer, w, h, paddingTopVal, paddingBottomVal, paddingLeftVal, paddingRightVal);
+            }
 
             HspaceForItems = w - (paddingLeftVal + paddingRightVal);
             VspaceForItems = h - (paddingTopVal + paddingBottomVal);
@@ -226,6 +274,7 @@ module SimpleLayout.layout {
 
             for (var i:number = 0; i < targetContainer.countLayoutItems; i++) {
                 layoutItem = targetContainer.getLayoutItemAt(i);
+
                 if (layoutItem.requestedWidthPercent > 0.0)
                     targetWidth = HspaceForItems * layoutItem.requestedWidthPercent;
                 else
@@ -243,72 +292,10 @@ module SimpleLayout.layout {
                 }
 
                 layoutItem.fitInto(targetWidth, targetHeight);
-                displayObject = layoutItem.displayObject;
-
-                if (displayObject) {
-                    // alignment
-                    var hAlignment:string;
-                    if (layoutItem.horizontalAlign != enums.HorizontalAlignEnum.H_ALIGN_TYPE_NONE)
-                        hAlignment = layoutItem.horizontalAlign;
-                    else
-                        hAlignment = this.horizontalAlign;
-
-                    switch (hAlignment) {
-                        case enums.HorizontalAlignEnum.H_ALIGN_TYPE_CENTER:
-                        {
-                            displayObject.x = paddingLeftVal + ((HspaceForItems - displayObject.width) / 2);
-                            break;
-                        }
-
-                        case enums.HorizontalAlignEnum.H_ALIGN_TYPE_LEFT:
-                        {
-                            displayObject.x = paddingLeftVal;
-                            break;
-                        }
-
-                        case enums.HorizontalAlignEnum.H_ALIGN_TYPE_RIGHT:
-                        {
-                            displayObject.x = paddingLeftVal + (HspaceForItems - displayObject.width);
-                            break;
-                        }
-                    }
-
-                    var vAlignment:string;
-                    if (layoutItem.verticalAlign != enums.VerticalAlignEnum.V_ALIGN_TYPE_NONE)
-                        vAlignment = layoutItem.verticalAlign;
-                    else
-                        vAlignment = this.verticalAlign;
-
-                    switch (vAlignment) {
-                        case enums.VerticalAlignEnum.V_ALIGN_TYPE_TOP:
-                        {
-                            displayObject.y = paddingTopVal;
-                            break;
-                        }
-
-                        case enums.VerticalAlignEnum.V_ALIGN_TYPE_MIDDLE:
-                        {
-                            displayObject.y = paddingTopVal + ((VspaceForItems - displayObject.height) / 2);
-                            break;
-                        }
-
-                        case enums.VerticalAlignEnum.V_ALIGN_TYPE_BOTTOM:
-                        {
-                            displayObject.y = paddingTopVal + (VspaceForItems - displayObject.height);
-                            break;
-                        }
-                    }
-
-                    // snap to pixels?
-                    if (this.snapToPixels == true)
-                        displayObject.x = Math.round(displayObject.x);
-
-                    if (this.snapToPixels == true)
-                        displayObject.y = Math.round(displayObject.y);
-                }
+                this.alignLayoutItem(layoutItem, paddingLeftVal, paddingTopVal, HspaceForItems, VspaceForItems);
 
                 if (this.layoutVisualizer)
-                    this.layoutVisualizer.setDebugItem(layoutItem, paddingLeftVal, paddingTopVal, HspaceForItems, VspaceForItems);
+                    this.layoutVisualizer.setDebugLayoutItem(targetContainer, layoutItem, paddingLeftVal, paddingTopVal, HspaceForItems, VspaceForItems);
             }
 
             this.lastError = "";
@@ -320,7 +307,7 @@ module SimpleLayout.layout {
          * @method SimpleLayout.layout.BasicLayout#dispose
          */
         public dispose():void {
-            this.setLayoutVisualizer(null);
+            this.layoutVisualizer = null;
         }
 
     }

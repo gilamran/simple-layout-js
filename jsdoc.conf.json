@@ -15,7 +15,7 @@
 		"copyright"             : "",
 		"navType"               : "inline",
 		"theme"                 : "cerulean",
-		"linenums"              : true,
+		"linenums"              : false,
 		"collapseSymbols"       : false,
 		"inverseNav"            : true,
 		"highlightTutorialCode" : true,

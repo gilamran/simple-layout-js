@@ -14,7 +14,7 @@ module SimpleLayout.PixiJSImpl {
         }
 
         public getPivotPoint():displayObject.IPoint {
-            return {x:0, y:0};
+            return {x:this.m_wrappedDispObj.pivot.x, y:this.m_wrappedDispObj.pivot.y};
         }
 
         public getGlobalPos():displayObject.IPoint {
@@ -53,12 +53,36 @@ module SimpleLayout.PixiJSImpl {
             (<any>this.m_wrappedDispObj).height = value;
         }
 
-        public set x(value:number) {
-            this.m_wrappedDispObj.x = value;
+        public get scaleX():number {
+            return this.m_wrappedDispObj.scale.x;
+        }
+
+        public set scaleX(value:number) {
+            this.m_wrappedDispObj.scale.x = value;
+        }
+
+        public get scaleY():number {
+            return this.m_wrappedDispObj.scale.y;
+        }
+
+        public set scaleY(value:number) {
+            this.m_wrappedDispObj.scale.y = value;
+        }
+
+        public set visible(value:boolean) {
+            this.m_wrappedDispObj.visible = value;
+        }
+
+        public get visible():boolean {
+            return this.m_wrappedDispObj.visible;
         }
 
         public resetScaling():void {
             this.m_wrappedDispObj.scale = new PIXI.Point(1, 1);
+        }
+
+        public set x(value:number) {
+            this.m_wrappedDispObj.x = value;
         }
 
         public get x():number {
@@ -71,6 +95,16 @@ module SimpleLayout.PixiJSImpl {
 
         public get y():number {
             return this.m_wrappedDispObj.y;
+        }
+
+        public set rotation(value:number) {
+            var radians = value * Math.PI / 180;
+            this.m_wrappedDispObj.rotation = radians;
+        }
+
+        public get rotation():number {
+            var degree = this.m_wrappedDispObj.rotation * 180 / Math.PI;
+            return degree;
         }
 
         public set name(value:string) {

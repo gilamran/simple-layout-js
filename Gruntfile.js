@@ -12,7 +12,7 @@ module.exports = function (grunt) {
 
         jsdoc : {
             dist : {
-                src: ['docs_src/**/*.js'],
+                src: ['docs_src/**/*.js', 'README.md'],
                 options: {
                     destination: '../simple-layout-editor/app/docs',
                     template : "node_modules/grunt-jsdoc/node_modules/ink-docstrap/template",

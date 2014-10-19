@@ -1,7 +1,7 @@
 simple-layout-js
 ================
 <img align="right" width="180" src="http://simple-layout.com/images/logo.svg">
-Simple-Layout is a lightweight yet powerfull generic layout engine for canvas based games and apps.
+Simple-Layout is a lightweight yet powerful generic layout engine for canvas based games and apps.
 The engine will help you fit your game/app to any device resolution, it uses percent based width and height.
 
 Checkout the [Layout-Editor](http://www.simple-layout.com/#/layout-editor) to experience the engine's abilities.
@@ -77,6 +77,7 @@ Currently Simple-Layout comes with CreateJs and PIXI implementations of these in
   x                           : number;
   y                           : number;
   name                        : string;
+  visible                     : boolean;
   getConcreteDisplayObject()  : Object;
   getGlobalPos()              : IPoint;
   getPivotPoint()             : IPoint;
