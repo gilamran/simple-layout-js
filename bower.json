@@ -1,6 +1,6 @@
 {
     "name": "simple-layout-js",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "main": "build/simple-layout-js.js",
     "homepage": "https://github.com/gilamran/simple-layout-js",
     "authors": [
@@ -16,6 +16,7 @@
         "tsd.json",
         "Gruntfile.js",
         "package.json",
+        "jsdoc.conf.json",
         "node_modules"
     ]
 }
