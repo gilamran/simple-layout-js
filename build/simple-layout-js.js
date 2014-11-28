@@ -428,7 +428,7 @@ var SimpleLayout;
          *
          * @method SimpleLayout.LayoutContainer#addNewLayoutItem
          * @param assetId {string} The new LayoutItem's assetId.
-         * @param name {string} The new LayoutItem's name
+         * @param [name] {string} The new LayoutItem's name
          * @returns {LayoutItem} the new LayoutItem.
          */
         LayoutContainer.prototype.addNewLayoutItem = function (assetId, name) {
@@ -437,8 +437,7 @@ var SimpleLayout;
             if (name) {
                 layoutItem.name = name;
             }
-            this.addLayoutItem(layoutItem);
-            return layoutItem;
+            return this.addLayoutItem(layoutItem);
         };
         /**
          * Removes the given LayoutItem from this LayoutContainer's children.

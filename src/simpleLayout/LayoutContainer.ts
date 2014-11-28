@@ -249,10 +249,10 @@ module SimpleLayout {
          *
          * @method SimpleLayout.LayoutContainer#addNewLayoutItem
          * @param assetId {string} The new LayoutItem's assetId.
-         * @param name {string} The new LayoutItem's name
+         * @param [name] {string} The new LayoutItem's name
          * @returns {LayoutItem} the new LayoutItem.
          */
-        public addNewLayoutItem(assetId:string, name:string):LayoutItem {
+        public addNewLayoutItem(assetId:string, name?:string):LayoutItem {
             var layoutItem = new SimpleLayout.LayoutItem();
 
             layoutItem.assetId = assetId;
@@ -260,8 +260,7 @@ module SimpleLayout {
                 layoutItem.name = name;
             }
 
-            this.addLayoutItem(layoutItem);
-            return layoutItem;
+            return this.addLayoutItem(layoutItem);
         }
 
         /**
