@@ -260,6 +260,7 @@ module SimpleLayout {
                 layoutItem.name = name;
             }
 
+            this.addLayoutItem(layoutItem);
             return layoutItem;
         }
 
