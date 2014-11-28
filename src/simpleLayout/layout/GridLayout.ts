@@ -1,13 +1,41 @@
 /// <reference path="../reference.ts"/>
 module SimpleLayout.layout {
-    export class HorizontalLayout extends BasicLayout {
+    export class GridLayout extends BasicLayout {
 
         /**
-         * @class SimpleLayout.layout.HorizontalLayout
+         * The number of columns this grid will have.
+         * @default 1
+         * @member SimpleLayout.layout.GridLayout#columns
+         */
+        public columns:number = 1;
+
+        /**
+         * The number of rows this grid will have.
+         * @default 1
+         * @member SimpleLayout.layout.GridLayout#rows
+         */
+        public rows:number = 1;
+
+        /**
+         * The horizontal gap property is the gap that will be used when laying out items in the grid columns.
+         * @default 0
+         * @member SimpleLayout.layout.GridLayout#horizontalGap
+         */
+        horizontalGap:number = 0;
+
+        /**
+         * The vertical gap property is the gap that will be used when laying out items in the grid rows.
+         * @default 0
+         * @member SimpleLayout.layout.GridLayout#verticalGap
+         */
+        verticalGap:number = 0;
+
+        /**
+         * @class SimpleLayout.layout.GridLayout
          * @augments SimpleLayout.layout.BasicLayout
-         * @classdesc The HorizontalLayout will divide the given space horizontally to all his LayoutItems equally, unless there
-         * are children who ask for a specific width. All the LayoutItems will then get moved to the top/middle/bottom of
-         * their space according to the LayoutItem's vertical align.
+         * @classdesc The GridLayout will divide the given space horizontally and vertically to all his LayoutItems equally,
+         * any specific width or height from the item will be ignored. All the LayoutItems will then get moved
+         * to the top/middle/bottom or left/center/right of their space according to the LayoutItem's vertical/horizontal align.
          */
         constructor() {
             super();
@@ -15,13 +43,13 @@ module SimpleLayout.layout {
 
         /**
          * There are several Layouts, and they all inherit from the BasicLayout. This is a simple way to get the
-         * Layout type class name, in this case it will return the string "HorizontalLayout".
+         * Layout type class name, in this case it will return the string "GridLayout".
          *
-         * @method SimpleLayout.layout.HorizontalLayout#getLayoutType
-         * @returns {String} "HorizontalLayout"
+         * @method SimpleLayout.layout.GridLayout#getLayoutType
+         * @returns {String} "GridLayout"
          */
         public getLayoutType():string {
-            return 'HorizontalLayout';
+            return 'GridLayout';
         }
 
         public fitChildrenInto(targetContainer:LayoutContainer, w:number, h:number):void {
@@ -32,7 +60,8 @@ module SimpleLayout.layout {
             var paddingBottomVal:number = h * this.paddingBottom;
             var paddingLeftVal:number = w * this.paddingLeft;
             var paddingRightVal:number = w * this.paddingRight;
-            var gapVal:number = w * this.gap;
+            var gapHVal:number = w * this.horizontalGap;
+            var gapVVal:number = h * this.verticalGap;
 
             if (this.layoutVisualizer) {
                 this.layoutVisualizer.setDebugLayoutContainer(targetContainer, w, h);
@@ -42,89 +71,91 @@ module SimpleLayout.layout {
             if (targetContainer.countLayoutItems <= 0)
                 return;
 
-            var totalItemsGap:number;
-            var totalVPadding:number;
+            // Minimum 1 column and one row!
+            var targetColumns:number = Math.max(1, this.columns);
+            var targetRows:number = Math.max(1, this.rows);
+
+            // make sure that we have enough cells
+            if ((targetColumns * targetRows) < targetContainer.countLayoutItems) {
+                targetRows = Math.ceil(targetContainer.countLayoutItems / targetColumns);
+            }
+
+            var totalHGaps:number;
             var totalHPadding:number;
-            var totalGaps:number;
-            var spaceForItems:number;
+            var unusedHSpace:number;
+            var spaceForHItems:number;
+            var targetHGap:number;
+            var currentX:number;
+
+            var totalVGaps:number;
+            var totalVPadding:number;
+            var unusedVSpace:number;
+            var spaceForVItems:number;
+            var targetVGap:number;
+            var currentY:number;
+
             var targetWidth:number;
             var targetHeight:number;
-            var targetGap:number;
-            var currentX:number;
             var layoutItem:LayoutItem;
             var i:number;
 
-            totalItemsGap = gapVal * (targetContainer.countLayoutItems - 1);
-            totalVPadding = paddingTopVal + paddingBottomVal;
+            totalHGaps = gapHVal * (targetColumns - 1);
             totalHPadding = paddingLeftVal + paddingRightVal;
-            totalGaps = totalItemsGap + totalHPadding;
-            spaceForItems = w - totalGaps;
-            targetHeight = h - totalVPadding;
-            targetGap = gapVal;
+            unusedHSpace = totalHGaps + totalHPadding;
+            spaceForHItems = (w - unusedHSpace) / targetColumns;
+            targetHGap = gapHVal;
 
             // not space for items left
-            if (spaceForItems <= 0.0) {
-                this.lastError = "Too much gap and left/right padding was requested from the horizontal layout";
+            if (spaceForHItems <= 0) {
+                this.lastError = "Too much gap and left/right padding was requested from the grid layout";
                 return;
             }
+
+            totalVGaps = gapVVal * (targetRows - 1);
+            totalVPadding = paddingTopVal + paddingBottomVal;
+            unusedVSpace = totalVGaps + totalVPadding;
+            spaceForVItems = (h - unusedVSpace) / targetRows;
+            targetVGap = gapVVal;
 
             // too much padding
-            if (targetHeight <= 0.0) {
-                this.lastError = "Too much top/bottom padding was requested from the horizontal layout";
+            if (spaceForVItems <= 0) {
+                this.lastError = "Too much top/bottom padding was requested from the grid layout";
                 return;
             }
 
-            // find out how much space left for each item (The ones that didn't request for specific height)
-            var unRequestedWidthPercent:number = 1.0;
-            var countRequestedItems:number = 0;
+            targetWidth = spaceForHItems;
+            targetHeight = spaceForVItems;
+
+            // snap to pixels?
+            if (this.snapToPixels == true) {
+                targetWidth = Math.round(targetWidth);
+                targetHeight = Math.round(targetHeight);
+            }
+
+            var row:number = 0;
+            var column:number = 0;
             for (i = 0; i < targetContainer.countLayoutItems; i++) {
+                row = Math.floor(i / targetColumns);
+                column = i - (row * targetColumns);
                 layoutItem = targetContainer.getLayoutItemAt(i);
-                if (layoutItem.requestedWidthPercent > 0) {
-                    countRequestedItems++;
-                    unRequestedWidthPercent = unRequestedWidthPercent - layoutItem.requestedWidthPercent;
-                }
-            }
-
-            // round it up
-            unRequestedWidthPercent = Math.round(unRequestedWidthPercent * 100) / 100;
-
-            // not good at all!
-            if (unRequestedWidthPercent < 0.0) {
-                this.lastError = "Too much space was requested from the horizontal layout";
-                return;
-            }
-
-            var widthPercentForUnrequested:number = 0.0;
-            if (countRequestedItems < targetContainer.countLayoutItems) {
-                widthPercentForUnrequested = unRequestedWidthPercent / (targetContainer.countLayoutItems - countRequestedItems);
-            }
-
-            currentX = paddingLeftVal;
-            for (i = 0; i < targetContainer.countLayoutItems; i++) {
-                layoutItem = targetContainer.getLayoutItemAt(i);
-
-                if (layoutItem.requestedWidthPercent > 0.0)
-                    targetWidth = spaceForItems * layoutItem.requestedWidthPercent;
-                else
-                    targetWidth = spaceForItems * widthPercentForUnrequested;
-
-                // snap to pixels?
-                if (this.snapToPixels == true)
-                    targetWidth = Math.round(targetWidth);
-
                 layoutItem.fitInto(targetWidth, targetHeight);
-                this.alignLayoutItem(layoutItem, currentX, paddingTopVal, targetWidth, targetHeight);
 
-                if (this.layoutVisualizer)
-                    this.layoutVisualizer.setDebugLayoutItem(targetContainer, layoutItem, currentX, paddingTopVal, targetWidth, targetHeight);
+                currentX = paddingLeftVal + (targetWidth * column) + (targetHGap * column);
+                currentY = paddingTopVal + (targetHeight * row) + (targetVGap * row);
 
-                // move on
-                currentX = currentX + targetWidth;
+                this.alignLayoutItem(layoutItem, currentX, currentY, targetWidth, targetHeight);
 
-                if (this.layoutVisualizer && i < targetContainer.countLayoutItems - 1)
-                    this.layoutVisualizer.setDebugGap(targetContainer, currentX, paddingTopVal, targetGap, h - totalVPadding);
+                if (this.layoutVisualizer) {
+                    this.layoutVisualizer.setDebugLayoutItem(targetContainer, layoutItem, currentX, currentY, targetWidth, targetHeight);
 
-                currentX = currentX + targetGap;
+                    if (column < targetColumns - 1)
+                        this.layoutVisualizer.setDebugGap(targetContainer, currentX+targetWidth, currentY, targetHGap, targetHeight);
+
+                    if (column===0 && row<targetRows-1)
+                        this.layoutVisualizer.setDebugGap(targetContainer, currentX, currentY+targetHeight, (w-totalHPadding), targetVGap);
+                }
+
+
             }
 
             this.lastError = "";

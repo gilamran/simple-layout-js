@@ -14,7 +14,7 @@ module.exports = function (grunt) {
             dist : {
                 src: ['docs_src/**/*.js', 'README.md'],
                 options: {
-                    destination: '../simple-layout-editor/app/docs',
+                    destination: '../simple-layout-homepage/app/docs',
                     template : "node_modules/grunt-jsdoc/node_modules/ink-docstrap/template",
                     configure : "jsdoc.conf.json"
                 }
@@ -191,28 +191,28 @@ module.exports = function (grunt) {
     });
 
 
-    grunt.registerTask('documentation', [
-        'clean:documentation',
-        'ts:forDocs',
-        'jsdoc',
-        'clean:documentationSrc'
-    ]);
-
-    grunt.registerTask('default', [
+    grunt.registerTask('build', [
         'clean:all',
         'ts:distLib',
         'copy:libDefinitions',
         'clean:libDefinitions',
         'ts:distCreateJS',
         'ts:distPixiJS',
-        'documentation',
         'copy:implDefinitions',
         'clean:implDefinitions',
         'replace'
     ]);
 
     grunt.registerTask('dev', [
-        'default',
+        'build',
         'copy:dev'
     ]);
+
+	grunt.registerTask('documentation', [
+		'build',
+		'ts:forDocs',
+		'jsdoc',
+		'clean:documentationSrc'
+	]);
+
 };

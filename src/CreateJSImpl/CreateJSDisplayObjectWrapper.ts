@@ -11,10 +11,6 @@ module SimpleLayout.CreateJSImpl {
             this.m_wrappedDispObj = createjsDisplayObject;
         }
 
-        public get allowResize():boolean {
-            return true;
-        }
-
         public getConcreteDisplayObject():Object {
             return this.m_wrappedDispObj;
         }

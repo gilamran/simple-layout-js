@@ -29,10 +29,6 @@ module SimpleLayout.PixiJSImpl {
             return {x:point.x, y:point.y};
         }
 
-        public get allowResize():boolean {
-            return true;
-        }
-
         public getConcreteDisplayObject():Object {
             return this.m_wrappedDispObj;
         }
