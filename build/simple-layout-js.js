@@ -424,6 +424,22 @@ var SimpleLayout;
             }
         };
         /**
+         * Creates new LayoutItem and add as it as a child to this LayoutContainer.
+         *
+         * @method SimpleLayout.LayoutContainer#addNewLayoutItem
+         * @param assetId {string} The new LayoutItem's assetId.
+         * @param name {string} The new LayoutItem's name
+         * @returns {LayoutItem} the new LayoutItem.
+         */
+        LayoutContainer.prototype.addNewLayoutItem = function (assetId, name) {
+            var layoutItem = new SimpleLayout.LayoutItem();
+            layoutItem.assetId = assetId;
+            if (name) {
+                layoutItem.name = name;
+            }
+            return layoutItem;
+        };
+        /**
          * Removes the given LayoutItem from this LayoutContainer's children.
          *
          * @method SimpleLayout.LayoutContainer#removeLayoutItem
