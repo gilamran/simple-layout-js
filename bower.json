@@ -1,22 +1,22 @@
 {
-    "name": "simple-layout-js",
-    "version": "0.1.1",
-    "main": "build/simple-layout-js.js",
-    "homepage": "https://github.com/gilamran/simple-layout-js",
-    "authors": [
-        "Gil Amran <gilamran@gmail.com>"
-    ],
-    "description": "1 Phase javascript layout framework, used mostly in games",
-    "license": "GPL v2",
-    "ignore": [
-        "**/.*",
-        "*.md",
-        "src",
-        "defs",
-        "tsd.json",
-        "Gruntfile.js",
-        "package.json",
-        "jsdoc.conf.json",
-        "node_modules"
-    ]
+  "name": "simple-layout-js",
+  "version": "0.1.2",
+  "main": "build/simple-layout-js.js",
+  "homepage": "https://github.com/gilamran/simple-layout-js",
+  "authors": [
+    "Gil Amran <gilamran@gmail.com>"
+  ],
+  "description": "1 Phase javascript layout framework, used mostly in games",
+  "license": "GPL v2",
+  "ignore": [
+    "**/.*",
+    "*.md",
+    "src",
+    "defs",
+    "tsd.json",
+    "Gruntfile.js",
+    "package.json",
+    "jsdoc.conf.json",
+    "node_modules"
+  ]
 }
