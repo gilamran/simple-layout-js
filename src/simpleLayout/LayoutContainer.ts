@@ -219,7 +219,7 @@ module SimpleLayout {
          *
          * @method SimpleLayout.LayoutContainer#addLayoutItem
          * @param layoutItem {LayoutItem} The new LayoutItem.
-         * @param index {number} the position to add the given LayoutItem (Default is to add it last)
+         * @param [index] {number} the position to add the given LayoutItem (Default is to add it last)
          * @returns {LayoutItem} the added LayoutItem.
          */
         public addLayoutItem(layoutItem:LayoutItem, index:number=-1):LayoutItem {

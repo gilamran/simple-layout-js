@@ -44,7 +44,7 @@ module SimpleLayout {
          * Description of the constructor.
          * @class SimpleLayout.LayoutItem
          * @classdesc The LayoutItem class is the most basic building block for defining your UI layout
-         * @param displayObject {Object} An object that implements the <b>IDisplayObject</b> interface.
+         * @param [displayObject] {Object} An object that implements the <b>IDisplayObject</b> interface.
          */
         constructor(displayObject?:displayObject.IDisplayObject) {
             this.m_visible = true;

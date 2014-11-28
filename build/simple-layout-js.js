@@ -10,7 +10,7 @@ var SimpleLayout;
          * Description of the constructor.
          * @class SimpleLayout.LayoutItem
          * @classdesc The LayoutItem class is the most basic building block for defining your UI layout
-         * @param displayObject {Object} An object that implements the <b>IDisplayObject</b> interface.
+         * @param [displayObject] {Object} An object that implements the <b>IDisplayObject</b> interface.
          */
         function LayoutItem(displayObject) {
             this.m_visible = true;
@@ -401,7 +401,7 @@ var SimpleLayout;
          *
          * @method SimpleLayout.LayoutContainer#addLayoutItem
          * @param layoutItem {LayoutItem} The new LayoutItem.
-         * @param index {number} the position to add the given LayoutItem (Default is to add it last)
+         * @param [index] {number} the position to add the given LayoutItem (Default is to add it last)
          * @returns {LayoutItem} the added LayoutItem.
          */
         LayoutContainer.prototype.addLayoutItem = function (layoutItem, index) {
@@ -437,6 +437,7 @@ var SimpleLayout;
             if (name) {
                 layoutItem.name = name;
             }
+            this.addLayoutItem(layoutItem);
             return layoutItem;
         };
         /**
