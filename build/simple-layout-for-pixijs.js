@@ -129,13 +129,124 @@ var SimpleLayout;
         PixiJSImpl.PixiJSDisplayObjectWrapper = PixiJSDisplayObjectWrapper;
     })(PixiJSImpl = SimpleLayout.PixiJSImpl || (SimpleLayout.PixiJSImpl = {}));
 })(SimpleLayout || (SimpleLayout = {}));
-/// <reference path="reference.ts"/>
+var SimpleLayout;
+(function (SimpleLayout) {
+    var PixiJSImpl;
+    (function (PixiJSImpl) {
+        var AtlasAssetsFactory_PixiJS = (function () {
+            function AtlasAssetsFactory_PixiJS(data) {
+                this.data = data;
+            }
+            AtlasAssetsFactory_PixiJS.prototype.hasAssetsToLoad = function () {
+                return (this.data != null && this.data.atlasJson != null);
+            };
+            AtlasAssetsFactory_PixiJS.prototype.getAssetsIds = function () {
+                if (this.m_loader) {
+                    return Object.keys(this.m_loader.json.frames);
+                }
+                else {
+                    return [];
+                }
+            };
+            AtlasAssetsFactory_PixiJS.prototype.loadAssets = function (doneCallback, errorCallback, progressCallback) {
+                this.disposeAssets();
+                try {
+                    this.m_loader = new PIXI.JsonLoader(this.data.atlasImageUrl);
+                    this.m_loader.ajaxRequest = { responseText: JSON.stringify(this.data.atlasJson) };
+                    this.m_loader.addEventListener('loaded', doneCallback);
+                    this.m_loader.onJSONLoaded();
+                }
+                catch (error) {
+                    errorCallback(error.message);
+                }
+            };
+            AtlasAssetsFactory_PixiJS.prototype.disposeAssets = function () {
+                if (this.m_loader) {
+                    if (this.m_loader.texture) {
+                        var texture;
+                        // destroy the frames
+                        var frames = this.getAssetsIds();
+                        for (var i = 0; i < frames.length; i++) {
+                            var frame = frames[i];
+                            texture = PIXI.TextureCache[frame];
+                            texture.destroy(true);
+                            delete PIXI.TextureCache[frame];
+                        }
+                        // destroy the atlas image
+                        texture = this.m_loader.texture;
+                        texture.destroy(true);
+                    }
+                    this.m_loader = null;
+                }
+            };
+            AtlasAssetsFactory_PixiJS.prototype.hasAsset = function (assetId) {
+                return this.getAssetsIds().indexOf(assetId) > -1;
+            };
+            AtlasAssetsFactory_PixiJS.prototype.createDisplayObjectContainer = function () {
+                var container;
+                var displayObjectContainer;
+                container = new PIXI.DisplayObjectContainer();
+                displayObjectContainer = new SimpleLayout.PixiJSImpl.PixiJSContainerWrapper(container);
+                return displayObjectContainer;
+            };
+            AtlasAssetsFactory_PixiJS.prototype.createDisplayObject = function (assetId) {
+                if (!this.m_loader)
+                    return null;
+                var displayObject;
+                var displayObjectWrapper;
+                displayObject = PIXI.Sprite.fromFrame(assetId);
+                displayObjectWrapper = new SimpleLayout.PixiJSImpl.PixiJSDisplayObjectWrapper(displayObject);
+                return displayObjectWrapper;
+            };
+            return AtlasAssetsFactory_PixiJS;
+        })();
+        PixiJSImpl.AtlasAssetsFactory_PixiJS = AtlasAssetsFactory_PixiJS;
+    })(PixiJSImpl = SimpleLayout.PixiJSImpl || (SimpleLayout.PixiJSImpl = {}));
+})(SimpleLayout || (SimpleLayout = {}));
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
 };
+var SimpleLayout;
+(function (SimpleLayout) {
+    var PixiJSImpl;
+    (function (PixiJSImpl) {
+        var ImagesAssetsFactory_PixiJS = (function (_super) {
+            __extends(ImagesAssetsFactory_PixiJS, _super);
+            function ImagesAssetsFactory_PixiJS(imagesAssetData) {
+                _super.call(this, imagesAssetData);
+            }
+            ImagesAssetsFactory_PixiJS.prototype.createDisplayObjectContainer = function () {
+                var container;
+                var displayObjectContainer;
+                container = new PIXI.DisplayObjectContainer();
+                displayObjectContainer = new SimpleLayout.PixiJSImpl.PixiJSContainerWrapper(container);
+                return displayObjectContainer;
+            };
+            ImagesAssetsFactory_PixiJS.prototype.createDisplayObject = function (assetId) {
+                var shape;
+                var displayObject;
+                shape = this.createPixiDisplayObject(assetId);
+                displayObject = new SimpleLayout.PixiJSImpl.PixiJSDisplayObjectWrapper(shape);
+                return displayObject;
+            };
+            ImagesAssetsFactory_PixiJS.prototype.createPixiDisplayObject = function (assetId) {
+                var image = this.getAssetData(assetId).image;
+                var baseTexture = new PIXI.BaseTexture(image);
+                var texture = new PIXI.Texture(baseTexture);
+                var shape = new PIXI.Sprite(texture);
+                shape.anchor.x = 0;
+                shape.anchor.y = 0;
+                return shape;
+            };
+            return ImagesAssetsFactory_PixiJS;
+        })(SimpleLayout.assetsFactory.BaseImagesAssetsFactory);
+        PixiJSImpl.ImagesAssetsFactory_PixiJS = ImagesAssetsFactory_PixiJS;
+    })(PixiJSImpl = SimpleLayout.PixiJSImpl || (SimpleLayout.PixiJSImpl = {}));
+})(SimpleLayout || (SimpleLayout = {}));
+/// <reference path="reference.ts"/>
 var SimpleLayout;
 (function (SimpleLayout) {
     var PixiJSImpl;

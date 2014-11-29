@@ -1,18 +1,21 @@
 {
-  "version": "v4",
-  "repo": "borisyankov/DefinitelyTyped",
-  "ref": "master",
-  "path": "defs/",
-  "bundle": "defs/tsd.d.ts",
-  "installed": {
-    "easeljs/easeljs.d.ts": {
-      "commit": "bea96d9405fcac4a2bc362e9775211f6314cb093"
-    },
-    "tweenjs/tweenjs.d.ts": {
-      "commit": "bea96d9405fcac4a2bc362e9775211f6314cb093"
-    },
-    "pixi/pixi.d.ts": {
-      "commit": "bea96d9405fcac4a2bc362e9775211f6314cb093"
-    }
-  }
+	"version": "v4",
+	"repo": "borisyankov/DefinitelyTyped",
+	"ref": "master",
+	"path": "defs/",
+	"bundle": "defs/tsd.d.ts",
+	"installed": {
+		"easeljs/easeljs.d.ts": {
+			"commit": "c8df9e7b60bee6e2a784de8dd99ce6d71e4fa219"
+		},
+		"createjs-lib/createjs-lib.d.ts": {
+			"commit": "c8df9e7b60bee6e2a784de8dd99ce6d71e4fa219"
+		},
+		"tweenjs/tweenjs.d.ts": {
+			"commit": "c8df9e7b60bee6e2a784de8dd99ce6d71e4fa219"
+		},
+		"pixi/pixi.d.ts": {
+			"commit": "bea96d9405fcac4a2bc362e9775211f6314cb093"
+		}
+	}
 }

@@ -510,6 +510,271 @@ var SimpleLayout;
     })(SimpleLayout.LayoutItem);
     SimpleLayout.LayoutContainer = LayoutContainer;
 })(SimpleLayout || (SimpleLayout = {}));
+var SimpleLayout;
+(function (SimpleLayout) {
+    var assetsFactory;
+    (function (assetsFactory) {
+        var AssetsFactoriesWrapper = (function () {
+            function AssetsFactoriesWrapper(assetsFactoriesData) {
+                if (!assetsFactoriesData) {
+                    throw new Error('Could not initializer AssetsFactoriesWrapper, Bad param');
+                }
+                this.m_assetsFactories = [];
+                this.createFactory(assetsFactoriesData.atlasAssetsFactoryData);
+                this.createFactory(assetsFactoriesData.imagesAssetsFactoryData);
+                this.createFactory(assetsFactoriesData.externalAssetsFactoryData);
+            }
+            AssetsFactoriesWrapper.prototype.createFactory = function (factoryData) {
+                if (factoryData) {
+                    var factoryClass = this.getClassFromGlobalScope(factoryData.className);
+                    var factoryObj = new factoryClass(factoryData.data);
+                    if (factoryObj.hasAssetsToLoad()) {
+                        this.m_assetsFactories.push(factoryObj);
+                    }
+                    return factoryObj;
+                }
+                else {
+                    return null;
+                }
+            };
+            AssetsFactoriesWrapper.prototype.hasAssetsToLoad = function () {
+                return (this.m_assetsFactories.length > 0);
+            };
+            AssetsFactoriesWrapper.prototype.getClassFromGlobalScope = function (className) {
+                var parts = className.split('.');
+                var innerObj = window;
+                for (var i = 0, l = parts.length; i < l; i++) {
+                    var part = parts[i];
+                    if (innerObj !== null && typeof innerObj === "object" && part in innerObj) {
+                        innerObj = innerObj[part];
+                    }
+                    else {
+                        throw new Error('Could not initializer AssetsFactoriesWrapper, class "' + className + '" could not be found.');
+                    }
+                }
+                return innerObj;
+            };
+            AssetsFactoriesWrapper.prototype.loadAssets = function (doneCallback, errorCallback, progressCallback) {
+                var totalToLoad = this.m_assetsFactories.length;
+                var loaded = 0;
+                var doneCalled = false;
+                var terminated = false;
+                try {
+                    for (var i = 0; i < this.m_assetsFactories.length; i++) {
+                        var managedAssetsFactory = this.m_assetsFactories[i];
+                        managedAssetsFactory.loadAssets(function () {
+                            loaded++;
+                            if (doneCalled === false && loaded === totalToLoad && doneCallback) {
+                                doneCallback();
+                                doneCalled = true;
+                            }
+                        }, function (errorMessage) {
+                            if (terminated === false) {
+                                errorCallback(errorMessage);
+                            }
+                        }, function (percentDone) {
+                            if (terminated === false) {
+                                progressCallback(percentDone);
+                            }
+                        });
+                    }
+                    // in case that we don't have anything to load, or everything was loaded
+                    if (doneCalled === false && loaded === totalToLoad && doneCallback) {
+                        doneCallback();
+                    }
+                }
+                catch (error) {
+                    errorCallback(error.message);
+                }
+            };
+            AssetsFactoriesWrapper.prototype.getAssetsIds = function () {
+                var result = [];
+                for (var i = 0; i < this.m_assetsFactories.length; i++) {
+                    var managedAssetsFactory = this.m_assetsFactories[i];
+                    result = result.concat(managedAssetsFactory.getAssetsIds());
+                }
+                return result;
+            };
+            AssetsFactoriesWrapper.prototype.disposeAssets = function () {
+                while (this.m_assetsFactories.length > 0) {
+                    var managedAssetsFactory = this.m_assetsFactories.pop();
+                    managedAssetsFactory.disposeAssets();
+                }
+            };
+            AssetsFactoriesWrapper.prototype.hasAsset = function (assetId) {
+                return this.getAssetsIds().indexOf(assetId) > -1;
+            };
+            AssetsFactoriesWrapper.prototype.createDisplayObject = function (assetId) {
+                for (var i = 0; i < this.m_assetsFactories.length; i++) {
+                    var managedAssetsFactory = this.m_assetsFactories[i];
+                    if (managedAssetsFactory.hasAsset(assetId))
+                        return managedAssetsFactory.createDisplayObject(assetId);
+                }
+                return null;
+            };
+            AssetsFactoriesWrapper.prototype.createDisplayObjectContainer = function () {
+                if (this.m_assetsFactories.length > 0) {
+                    return this.m_assetsFactories[0].createDisplayObjectContainer();
+                }
+                else {
+                    return null;
+                }
+            };
+            return AssetsFactoriesWrapper;
+        })();
+        assetsFactory.AssetsFactoriesWrapper = AssetsFactoriesWrapper;
+    })(assetsFactory = SimpleLayout.assetsFactory || (SimpleLayout.assetsFactory = {}));
+})(SimpleLayout || (SimpleLayout = {}));
+var SimpleLayout;
+(function (SimpleLayout) {
+    var assetsFactory;
+    (function (assetsFactory) {
+        var BaseImagesAssetsFactory = (function () {
+            function BaseImagesAssetsFactory(imagesAssetData) {
+                this.m_assetsMap = {};
+                for (var i = 0; i < imagesAssetData.length; i++) {
+                    var imageAssetData = imagesAssetData[i];
+                    this.registerAsset(imageAssetData.assetId, imageAssetData.imageUrl);
+                }
+            }
+            BaseImagesAssetsFactory.prototype.hasAssetsToLoad = function () {
+                return this.getAssetsIds().length > 0;
+            };
+            BaseImagesAssetsFactory.prototype.getAssetsIds = function () {
+                return Object.keys(this.m_assetsMap);
+            };
+            BaseImagesAssetsFactory.prototype.registerAsset = function (assetId, imageUrl) {
+                if (this.m_assetsMap.hasOwnProperty(assetId) == true)
+                    throw new Error('Asset ' + assetId + ' already exist');
+                this.m_assetsMap[assetId] = { imageUrl: imageUrl, image: null };
+            };
+            BaseImagesAssetsFactory.prototype.getAssetData = function (assetId) {
+                return this.m_assetsMap[assetId];
+            };
+            BaseImagesAssetsFactory.prototype.hasAsset = function (assetId) {
+                return this.getAssetsIds().indexOf(assetId) > -1;
+            };
+            BaseImagesAssetsFactory.prototype.loadAssets = function (doneCallback, errorCallback, progressCallback) {
+                this.disposeAssets();
+                var assetsIds = this.getAssetsIds();
+                var totalAssetsToLoad = 0;
+                var assetsLoaded = 0;
+                try {
+                    for (var i = 0; i < assetsIds.length; i++) {
+                        var assetId = assetsIds[i];
+                        var assetData = this.getAssetData(assetId);
+                        var image = document.createElement('img');
+                        image.src = assetData.imageUrl;
+                        assetData.image = image;
+                        totalAssetsToLoad++;
+                        image.addEventListener('load', function () {
+                            assetsLoaded++;
+                            progressCallback(assetsLoaded / totalAssetsToLoad);
+                            if (totalAssetsToLoad === assetsLoaded) {
+                                doneCallback();
+                            }
+                        });
+                    }
+                    if (doneCallback && totalAssetsToLoad === assetsLoaded) {
+                        doneCallback();
+                    }
+                }
+                catch (error) {
+                    errorCallback(error.message);
+                }
+            };
+            BaseImagesAssetsFactory.prototype.disposeAssets = function () {
+                for (var assetId in this.m_assetsMap) {
+                    var assetData = this.m_assetsMap[assetId];
+                    var image = assetData.image;
+                    if (image) {
+                        image.src = '';
+                    }
+                    assetData.image = null;
+                }
+            };
+            BaseImagesAssetsFactory.prototype.createDisplayObjectContainer = function () {
+                throw new Error('Must override the "createDisplayObjectContainer" function');
+            };
+            BaseImagesAssetsFactory.prototype.createDisplayObject = function (assetId) {
+                throw new Error('Must override the "createDisplayObject" function');
+            };
+            return BaseImagesAssetsFactory;
+        })();
+        assetsFactory.BaseImagesAssetsFactory = BaseImagesAssetsFactory;
+    })(assetsFactory = SimpleLayout.assetsFactory || (SimpleLayout.assetsFactory = {}));
+})(SimpleLayout || (SimpleLayout = {}));
+var SimpleLayout;
+(function (SimpleLayout) {
+    var assetsFactory;
+    (function (assetsFactory) {
+        var ExternalAssetsFactory = (function () {
+            function ExternalAssetsFactory(scriptsUrls) {
+                this.scriptsUrls = scriptsUrls;
+            }
+            ExternalAssetsFactory.prototype.hasAssetsToLoad = function () {
+                return this.scriptsUrls.length > 0;
+            };
+            ExternalAssetsFactory.prototype.getAssetsIds = function () {
+                if (this.m_editorAssetFactory === null) {
+                    throw new Error('Unable to call getAssetsIds (Maybe the scripts did not load properly?)');
+                }
+                return this.m_editorAssetFactory.getAssetsIds();
+            };
+            ExternalAssetsFactory.prototype.loadAssets = function (doneCallback, errorCallback, progressCallback) {
+                var _this = this;
+                try {
+                    this.disposeAssets();
+                    this.m_scriptsLoader = new SimpleLayout.utils.ScriptsLoader();
+                    this.m_scriptsLoader.addScriptsToLoad(this.scriptsUrls);
+                    this.m_scriptsLoader.load(function () {
+                        try {
+                            _this.m_editorAssetFactory = GlobalAssetsFactory;
+                        }
+                        catch (e) {
+                            throw new Error('The script was loaded but was unable to find a global object named GlobalAssetsFactory.');
+                        }
+                        _this.m_editorAssetFactory.loadAssets(function () {
+                            doneCallback();
+                        }, function (errorDesc) {
+                            errorCallback(errorDesc);
+                        }, function (progress) {
+                            progressCallback(progress);
+                        });
+                    }, function (errorDesc) {
+                        errorCallback(errorDesc);
+                    });
+                }
+                catch (error) {
+                    errorCallback(error.message);
+                }
+            };
+            ExternalAssetsFactory.prototype.disposeAssets = function () {
+                if (this.m_scriptsLoader) {
+                    this.m_scriptsLoader.reset();
+                    this.m_scriptsLoader = null;
+                }
+            };
+            ExternalAssetsFactory.prototype.hasAsset = function (assetId) {
+                return this.getAssetsIds().indexOf(assetId) > -1;
+            };
+            ExternalAssetsFactory.prototype.createDisplayObjectContainer = function () {
+                if (this.m_editorAssetFactory === null) {
+                    throw new Error('Unable to call createDisplayObjectContainer (Maybe the scripts did not load properly?)');
+                }
+                return this.m_editorAssetFactory.createDisplayObjectContainer();
+            };
+            ExternalAssetsFactory.prototype.createDisplayObject = function (assetId) {
+                if (this.m_editorAssetFactory === null) {
+                    throw new Error('Unable to call createDisplayObject (Maybe the scripts did not load properly?)');
+                }
+                return this.m_editorAssetFactory.createDisplayObject(assetId);
+            };
+            return ExternalAssetsFactory;
+        })();
+        assetsFactory.ExternalAssetsFactory = ExternalAssetsFactory;
+    })(assetsFactory = SimpleLayout.assetsFactory || (SimpleLayout.assetsFactory = {}));
+})(SimpleLayout || (SimpleLayout = {}));
 /// <reference path="../reference.ts"/>
 /// <reference path="../reference.ts"/>
 /// <reference path="../reference.ts"/>
@@ -1302,6 +1567,66 @@ var SimpleLayout;
         return LayoutAssetsFactory;
     })();
     SimpleLayout.LayoutAssetsFactory = LayoutAssetsFactory;
+})(SimpleLayout || (SimpleLayout = {}));
+/// <reference path='../reference.ts'/>
+var SimpleLayout;
+(function (SimpleLayout) {
+    var utils;
+    (function (utils) {
+        var ScriptsLoader = (function () {
+            function ScriptsLoader() {
+                this.m_scriptsUrls = [];
+                this.m_loadedScripts = [];
+            }
+            ScriptsLoader.prototype.addScriptsToLoad = function (scriptsUrls) {
+                for (var i = 0; i < scriptsUrls.length; i++) {
+                    this.addScriptToLoad(scriptsUrls[i]);
+                }
+            };
+            ScriptsLoader.prototype.addScriptToLoad = function (scriptUrl) {
+                if (this.m_scriptsUrls.indexOf(scriptUrl) == -1) {
+                    this.m_scriptsUrls.push(scriptUrl);
+                }
+            };
+            ScriptsLoader.prototype.load = function (loadedCallback, errorCallback) {
+                var _this = this;
+                if (this.m_scriptsUrls.length == 0) {
+                    loadedCallback();
+                }
+                else {
+                    var countOfLoaded = 0;
+                    for (var i = 0; i < this.m_scriptsUrls.length; i++) {
+                        var scriptElement = document.createElement("script");
+                        scriptElement.type = "text/javascript";
+                        scriptElement.src = this.m_scriptsUrls[i];
+                        scriptElement.onload = function (event) {
+                            _this.m_loadedScripts.push(event.target);
+                            countOfLoaded++;
+                            if (countOfLoaded == _this.m_loadedScripts.length)
+                                loadedCallback();
+                        };
+                        scriptElement.onerror = function (event) {
+                            errorCallback("The script " + event.target.src + " is not accessible.");
+                        };
+                        document.getElementsByTagName("head")[0].appendChild(scriptElement);
+                    }
+                }
+            };
+            ScriptsLoader.prototype.reset = function () {
+                this.m_scriptsUrls = [];
+                for (var i = 0; i < this.m_loadedScripts.length; i++) {
+                    var scriptElement = this.m_loadedScripts[i];
+                    scriptElement.parentElement.removeChild(scriptElement);
+                }
+                this.m_loadedScripts = [];
+            };
+            ScriptsLoader.prototype.dispose = function () {
+                this.reset();
+            };
+            return ScriptsLoader;
+        })();
+        utils.ScriptsLoader = ScriptsLoader;
+    })(utils = SimpleLayout.utils || (SimpleLayout.utils = {}));
 })(SimpleLayout || (SimpleLayout = {}));
 /// <reference path="../reference.ts"/>
 /// <reference path="LayoutItem.ts" />

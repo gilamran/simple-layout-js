@@ -2,6 +2,9 @@
 /// <reference path="LayoutContainer.ts" />
 
 //grunt-start
+/// <reference path="assetsFactory/AssetsFactoriesWrapper.ts" />
+/// <reference path="assetsFactory/BaseImagesAssetsFactory.ts" />
+/// <reference path="assetsFactory/ExternalAssetsFactory.ts" />
 /// <reference path="assetsFactory/IAssetsFactory.ts" />
 /// <reference path="displayObject/IDisplayObject.ts" />
 /// <reference path="displayObject/IDisplayObjectContainer.ts" />
@@ -13,5 +16,6 @@
 /// <reference path="layout/ILayout.ts" />
 /// <reference path="layout/VerticalLayout.ts" />
 /// <reference path="layoutAssetsFactory/LayoutAssetsFactory.ts" />
+/// <reference path="utils/ScriptsLoader.ts" />
 /// <reference path="visualizer/ILayoutVisualizer.ts" />
 //grunt-end

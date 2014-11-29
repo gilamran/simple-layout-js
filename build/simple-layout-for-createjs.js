@@ -125,6 +125,67 @@ var SimpleLayout;
         CreateJSImpl.CreateJSDisplayObjectWrapper = CreateJSDisplayObjectWrapper;
     })(CreateJSImpl = SimpleLayout.CreateJSImpl || (SimpleLayout.CreateJSImpl = {}));
 })(SimpleLayout || (SimpleLayout = {}));
+var SimpleLayout;
+(function (SimpleLayout) {
+    var CreateJSImpl;
+    (function (CreateJSImpl) {
+        var AtlasAssetsFactory_CreateJS = (function () {
+            function AtlasAssetsFactory_CreateJS(data) {
+                this.data = data;
+            }
+            AtlasAssetsFactory_CreateJS.prototype.hasAssetsToLoad = function () {
+                return (this.data != null && this.data.atlasJson != null);
+            };
+            AtlasAssetsFactory_CreateJS.prototype.getAssetsIds = function () {
+                if (this.m_spriteSheet)
+                    return this.m_spriteSheet.getAnimations();
+                else
+                    return [];
+            };
+            AtlasAssetsFactory_CreateJS.prototype.loadAssets = function (doneCallback, errorCallback, progressCallback) {
+                this.disposeAssets();
+                try {
+                    this.m_spriteSheet = new createjs.SpriteSheet(this.data.atlasJson);
+                    if (this.m_spriteSheet.complete) {
+                        doneCallback();
+                    }
+                    else {
+                        this.m_spriteSheet.addEventListener('complete', function () {
+                            doneCallback();
+                        });
+                    }
+                }
+                catch (error) {
+                    errorCallback(error.message);
+                }
+            };
+            AtlasAssetsFactory_CreateJS.prototype.disposeAssets = function () {
+                this.m_spriteSheet = null;
+            };
+            AtlasAssetsFactory_CreateJS.prototype.hasAsset = function (assetId) {
+                return this.getAssetsIds().indexOf(assetId) > -1;
+            };
+            AtlasAssetsFactory_CreateJS.prototype.createDisplayObjectContainer = function () {
+                var container;
+                var displayObjectContainer;
+                container = new createjs.Container();
+                displayObjectContainer = new SimpleLayout.CreateJSImpl.CreateJSContainerWrapper(container);
+                return displayObjectContainer;
+            };
+            AtlasAssetsFactory_CreateJS.prototype.createDisplayObject = function (assetId) {
+                if (!this.m_spriteSheet)
+                    return null;
+                var displayObject;
+                var displayObjectWrapper;
+                displayObject = new createjs.Sprite(this.m_spriteSheet, assetId);
+                displayObjectWrapper = new SimpleLayout.CreateJSImpl.CreateJSDisplayObjectWrapper(displayObject);
+                return displayObjectWrapper;
+            };
+            return AtlasAssetsFactory_CreateJS;
+        })();
+        CreateJSImpl.AtlasAssetsFactory_CreateJS = AtlasAssetsFactory_CreateJS;
+    })(CreateJSImpl = SimpleLayout.CreateJSImpl || (SimpleLayout.CreateJSImpl = {}));
+})(SimpleLayout || (SimpleLayout = {}));
 /// <reference path="reference.ts"/>
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -256,6 +317,39 @@ var SimpleLayout;
             return CreateJSLayoutVisualizer;
         })(createjs.Shape);
         CreateJSImpl.CreateJSLayoutVisualizer = CreateJSLayoutVisualizer;
+    })(CreateJSImpl = SimpleLayout.CreateJSImpl || (SimpleLayout.CreateJSImpl = {}));
+})(SimpleLayout || (SimpleLayout = {}));
+var SimpleLayout;
+(function (SimpleLayout) {
+    var CreateJSImpl;
+    (function (CreateJSImpl) {
+        var ImagesAssetsFactory_CreateJS = (function (_super) {
+            __extends(ImagesAssetsFactory_CreateJS, _super);
+            function ImagesAssetsFactory_CreateJS(imagesAssetData) {
+                _super.call(this, imagesAssetData);
+            }
+            ImagesAssetsFactory_CreateJS.prototype.createDisplayObjectContainer = function () {
+                var container;
+                var displayObjectContainer;
+                container = new createjs.Container();
+                displayObjectContainer = new SimpleLayout.CreateJSImpl.CreateJSContainerWrapper(container);
+                return displayObjectContainer;
+            };
+            ImagesAssetsFactory_CreateJS.prototype.createDisplayObject = function (assetId) {
+                var shape;
+                var displayObject;
+                shape = this.createSprite(assetId);
+                displayObject = new SimpleLayout.CreateJSImpl.CreateJSDisplayObjectWrapper(shape);
+                return displayObject;
+            };
+            ImagesAssetsFactory_CreateJS.prototype.createSprite = function (assetId) {
+                var image = this.getAssetData(assetId).image;
+                var shape = new createjs.Bitmap(image);
+                return shape;
+            };
+            return ImagesAssetsFactory_CreateJS;
+        })(SimpleLayout.assetsFactory.BaseImagesAssetsFactory);
+        CreateJSImpl.ImagesAssetsFactory_CreateJS = ImagesAssetsFactory_CreateJS;
     })(CreateJSImpl = SimpleLayout.CreateJSImpl || (SimpleLayout.CreateJSImpl = {}));
 })(SimpleLayout || (SimpleLayout = {}));
 /// <reference path="../../defs/tsd.d.ts" />
