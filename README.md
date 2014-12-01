@@ -4,12 +4,12 @@ simple-layout-js
 Simple-Layout is a lightweight yet powerful generic layout engine for canvas based games and apps.
 The engine will help you fit your game/app to any device resolution, it uses percent based width and height.
 
-Checkout the [Layout-Editor](http://www.simple-layout.com/#/layout-editor) to experience the engine's abilities.
+Checkout the <a href="http://editor.simple-layout.com" target="_blank">Layout-Editor</a> to experience the engine's abilities.
 
 
 Installing
 --------------------
-Install using [bower](https://github.com/bower/bower)
+Install using <a href="https://github.com/bower/bower" target="_blank">bower</a>
 
 ```sh
 bower install simple-layout-js --save
@@ -22,19 +22,19 @@ Include the engine simple-layout-js.js
 <script src="bower_components/simple-layout-js/build/simple-layout-js.js"/>
 ```
 
-For [CreateJs](https://github.com/CreateJS/EaselJS) also include:
+For <a href="https://github.com/CreateJS/EaselJS" target="_blank">CreateJs</a> also include:
 ```html
 <script src="bower_components/simple-layout-js/build/simple-layout-for-createjs.js"/>
 ```
 
-For [PIXI](https://github.com/GoodBoyDigital/pixi.js/) also include:
+For <a href="https://github.com/GoodBoyDigital/pixi.js/" target="_blank">PIXI</a> also include:
 ```html
 <script src="bower_components/simple-layout-js/build/simple-layout-for-pixijs.js"/>
 ```
 
 Usage
 --------------------
-The easiest way to use Simple-Layout is to build your layout using the [Layout-Editor](http://www.simple-layout.com/#/layout-editor), once you are done, export to JSON, and import it in your app/game at run-time.
+The easiest way to use Simple-Layout is to build your layout using the <a href="http://editor.simple-layout.com" target="_blank">Layout-Editor</a>, once you are done, export to JSON, and import it in your app/game at run-time.
 ```JavaScript
 var myLayout = SimpleLayout.LayoutContainer.itemFromJson(exported_json);
 myLayout.createAssets(myAssetsFactory);
@@ -43,20 +43,31 @@ myLayout.fitInto(this.m_canvasElement.offsetWidth, this.m_canvasElement.offsetHe
 
 The API
 --------------------
-The code was written with JSDoc, so it should be fairly easy to understand each and every class/function/param.
-There's also a web version of the api [HERE](http://www.simple-layout.com/#/docs).
+The code of simple-layout-js is open sourced at <a href="https://github.com/gilamran/simple-layout-js" target="_blank">gitHub</a>, and was written with JSDoc, so it should be fairly easy to understand each and every class/function/param.
+There's also a web version of the api <a href="http://www.simple-layout.com/#/api" target="_blank">HERE</a>.
+
+Examples
+--------------------
+Under Simple-Layout's <a href="http://www.simple-layout.com" target="_blank">homepage</a>, you can find few <a href="http://www.simple-layout.com/#/examples" target="_blank">examples</a> to get you started.
+The most basic example can be viewed <a href="http://gilamran.github.io/simple-layout-basic-tutorial/" target="_blank">here</a>. 
 
 IAssetsFactory
 --------------------
-In your exported json, you've mentioned the asset id for each asset in your ui, if you want Simple-Layout to created your assets (Mostly known as DisplayObject or Sprite), you can call createAssets, while passing an AssetsFactory. AssetsFactory is an object that implemets a simple interface:
+In your exported json, you've mentioned the asset id for each asset in your ui, if you want Simple-Layout to created your assets (Mostly known as DisplayObject or Sprite), you can call createAssets, while passing an AssetsFactory. AssetsFactory is an object that implements a this interface:
 ```TypeScript
 // The IAssetsFactory interface //
 {
+  hasAssetsToLoad(): boolean;
+  loadAssets(doneCallback: () => void, errorCallback: (errorMessage: string) => void, progressCallback: (percentDone: number) => void): void;
+  getAssetsIds(): string[];
+  hasAsset(assetId: string): Boolean;
   createDisplayObject(assetId: string): SimpleLayout.displayObject.IDisplayObject;
   createDisplayObjectContainer(): SimpleLayout.displayObject.IDisplayObjectContainer;
+  disposeAssets(): void;
 }
 ```
 Your assets factory should be able to create and return any asset that was used while building the layout.
+simple-layout-js comes with pre-built AssetsFactories for PIXI and CreateJS.
 
 IDisplayObject and IDisplayObjectContainer
 --------------------
