@@ -10,7 +10,12 @@ var SimpleLayout;
                 this.m_wrappedDispObj = pixiJSDisplayObject;
             }
             PixiJSDisplayObjectWrapper.prototype.getPivotPoint = function () {
-                return { x: this.m_wrappedDispObj.pivot.x, y: this.m_wrappedDispObj.pivot.y };
+                if (this.m_wrappedDispObj && this.m_wrappedDispObj.pivot) {
+                    return { x: this.m_wrappedDispObj.pivot.x, y: this.m_wrappedDispObj.pivot.y };
+                }
+                else {
+                    return { x: 0, y: 0 };
+                }
             };
             PixiJSDisplayObjectWrapper.prototype.getGlobalPos = function () {
                 var point;

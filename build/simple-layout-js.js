@@ -307,6 +307,9 @@ var SimpleLayout;
                     case 'VerticalLayout':
                         layout = new SimpleLayout.layout.VerticalLayout();
                         break;
+                    case 'GridLayout':
+                        layout = new SimpleLayout.layout.GridLayout();
+                        break;
                     default:
                         throw 'Bad Json, unknown layoutType ' + layoutJson['layoutType'];
                 }

@@ -14,7 +14,12 @@ module SimpleLayout.PixiJSImpl {
         }
 
         public getPivotPoint():displayObject.IPoint {
-            return {x:this.m_wrappedDispObj.pivot.x, y:this.m_wrappedDispObj.pivot.y};
+            if (this.m_wrappedDispObj && this.m_wrappedDispObj.pivot) {
+                return {x:this.m_wrappedDispObj.pivot.x, y:this.m_wrappedDispObj.pivot.y};
+            }
+            else {
+                return {x:0, y:0};
+            }
         }
 
         public getGlobalPos():displayObject.IPoint {
