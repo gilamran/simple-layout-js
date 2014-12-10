@@ -152,12 +152,14 @@ module SimpleLayout {
         }
 
         public executeLayout(width:number, height:number):void {
-            if (this.layout) {
-                this.layout.fitChildrenInto(this, width, height);
-                if (this.displayObject) {
-                    this.displayObject.width = width;
-                    this.displayObject.height = height;
-                }
+            if (!this.layout) {
+                this.layout = new layout.BasicLayout();
+            }
+
+            this.layout.fitChildrenInto(this, width, height);
+            if (this.displayObject) {
+                this.displayObject.width = width;
+                this.displayObject.height = height;
             }
         }
 
