@@ -294,7 +294,7 @@ var SimpleLayout;
                 layoutItem.parent = this;
                 this.layoutItems.push(layoutItem);
             }
-            if (json.hasOwnProperty('layout')) {
+            if (typeof json.layout !== "undefined") {
                 var layoutJson = json.layout;
                 var layout;
                 switch (layoutJson['layoutType']) {
@@ -316,10 +316,10 @@ var SimpleLayout;
                 layout.fromJson(layoutJson);
                 this.layout = layout;
             }
-            if (json.hasOwnProperty('customWidth')) {
+            if (typeof json.customWidth !== "undefined") {
                 this.customWidth = json.customWidth;
             }
-            if (json.hasOwnProperty('customHeight')) {
+            if (typeof json.customHeight !== "undefined") {
                 this.customHeight = json.customHeight;
             }
         };
@@ -1185,6 +1185,34 @@ var SimpleLayout;
              */
             GridLayout.prototype.getLayoutType = function () {
                 return 'GridLayout';
+            };
+            /**
+             * Serialize the Layout into its properties, the result json can be use to construct a new Layout by
+             * calling fromJson function.
+             *
+             * @method SimpleLayout.layout.GridLayout#toJson
+             * @returns {Object} A Json object that fully describe this Layout
+             */
+            GridLayout.prototype.toJson = function () {
+                var resultJson = _super.prototype.toJson.call(this);
+                resultJson.columns = this.columns;
+                resultJson.rows = this.rows;
+                resultJson.horizontalGap = this.horizontalGap;
+                resultJson.verticalGap = this.verticalGap;
+                return resultJson;
+            };
+            /**
+             * Copy all the properties from the given json into this Layout.
+             *
+             * @method SimpleLayout.layout.GridLayout#fromJson
+             * @param json {Object} object that fully describe this Layout
+             */
+            GridLayout.prototype.fromJson = function (json) {
+                _super.prototype.fromJson.call(this, json);
+                this.columns = json.columns;
+                this.rows = json.rows;
+                this.horizontalGap = json.horizontalGap;
+                this.verticalGap = json.verticalGap;
             };
             GridLayout.prototype.fitChildrenInto = function (targetContainer, w, h) {
                 if (targetContainer == null)

@@ -52,6 +52,38 @@ module SimpleLayout.layout {
             return 'GridLayout';
         }
 
+
+        /**
+         * Serialize the Layout into its properties, the result json can be use to construct a new Layout by
+         * calling fromJson function.
+         *
+         * @method SimpleLayout.layout.GridLayout#toJson
+         * @returns {Object} A Json object that fully describe this Layout
+         */
+        public toJson():any {
+            var resultJson = super.toJson();
+            resultJson.columns = this.columns;
+            resultJson.rows = this.rows;
+            resultJson.horizontalGap = this.horizontalGap;
+            resultJson.verticalGap = this.verticalGap;
+
+            return resultJson;
+        }
+
+        /**
+         * Copy all the properties from the given json into this Layout.
+         *
+         * @method SimpleLayout.layout.GridLayout#fromJson
+         * @param json {Object} object that fully describe this Layout
+         */
+        public fromJson(json:any):void {
+            super.fromJson(json);
+            this.columns = json.columns;
+            this.rows = json.rows;
+            this.horizontalGap = json.horizontalGap;
+            this.verticalGap = json.verticalGap;
+        }
+
         public fitChildrenInto(targetContainer:LayoutContainer, w:number, h:number):void {
             if (targetContainer == null)
                 return;

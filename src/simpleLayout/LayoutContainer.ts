@@ -111,13 +111,14 @@ module SimpleLayout {
                 this.layoutItems.push(layoutItem);
             }
 
-            if (json.hasOwnProperty('layout')) {
+            if (typeof json.layout !== "undefined") {
                 var layoutJson = json.layout;
                 var layout;
                 switch (layoutJson['layoutType']) {
                     case 'BasicLayout'        : layout = new SimpleLayout.layout.BasicLayout(); break;
                     case 'HorizontalLayout'   : layout = new SimpleLayout.layout.HorizontalLayout(); break;
                     case 'VerticalLayout'     : layout = new SimpleLayout.layout.VerticalLayout(); break;
+                    case 'GridLayout'         : layout = new SimpleLayout.layout.GridLayout(); break;
                     default                   : throw 'Bad Json, unknown layoutType ' + layoutJson['layoutType'];
                 }
 
@@ -125,11 +126,11 @@ module SimpleLayout {
                 this.layout = layout;
             }
 
-            if (json.hasOwnProperty('customWidth')) {
+            if (typeof json.customWidth !== "undefined") {
                 this.customWidth  = json.customWidth;
             }
 
-            if (json.hasOwnProperty('customHeight')) {
+            if (typeof json.customHeight !== "undefined") {
                 this.customHeight = json.customHeight;
             }
 
