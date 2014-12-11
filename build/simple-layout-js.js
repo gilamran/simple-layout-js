@@ -137,19 +137,27 @@ var SimpleLayout;
          * @returns {Object} A Json object that fully describe this LayoutItem
          */
         LayoutItem.prototype.toJson = function () {
-            return {
-                layoutItemType: this.getLayoutItemType(),
-                requestedWidthPercent: this.requestedWidthPercent,
-                requestedHeightPercent: this.requestedHeightPercent,
-                horizontalAlign: this.horizontalAlign,
-                verticalAlign: this.verticalAlign,
-                visible: this.visible,
-                fittedIntoWidth: this.fittedIntoWidth,
-                fittedIntoHeight: this.fittedIntoHeight,
-                fillArea: this.fillArea,
-                name: this.name,
-                assetId: this.assetId
-            };
+            var result = { layoutItemType: this.getLayoutItemType() };
+            // add only the properties that are not default
+            if (this.requestedWidthPercent !== 0)
+                result.requestedWidthPercent = this.requestedWidthPercent;
+            if (this.requestedHeightPercent !== 0)
+                result.requestedHeightPercent = this.requestedHeightPercent;
+            if (this.fittedIntoWidth !== 0)
+                result.fittedIntoWidth = this.fittedIntoWidth;
+            if (this.fittedIntoHeight !== 0)
+                result.fittedIntoHeight = this.fittedIntoHeight;
+            if (this.horizontalAlign !== SimpleLayout.enums.HorizontalAlignEnum.H_ALIGN_TYPE_NONE)
+                result.horizontalAlign = this.fittedIntoHeight;
+            if (this.verticalAlign !== SimpleLayout.enums.VerticalAlignEnum.V_ALIGN_TYPE_NONE)
+                result.verticalAlign = this.verticalAlign;
+            if (this.fillArea !== false)
+                result.fillArea = this.fillArea;
+            if (this.name !== "")
+                result.name = this.name;
+            if (this.assetId !== "")
+                result.assetId = this.assetId;
+            return result;
         };
         /**
          * Copy all the properties from the given json into this LayoutItem.
@@ -158,16 +166,26 @@ var SimpleLayout;
          * @param json {Object} object that fully describe this LayoutItem
          */
         LayoutItem.prototype.fromJson = function (json) {
-            this.requestedWidthPercent = json.requestedWidthPercent;
-            this.requestedHeightPercent = json.requestedHeightPercent;
-            this.horizontalAlign = json.horizontalAlign;
-            this.verticalAlign = json.verticalAlign;
-            this.visible = json.visible;
-            this.fittedIntoWidth = json.fittedIntoWidth;
-            this.fittedIntoHeight = json.fittedIntoHeight;
-            this.fillArea = json.fillArea;
-            this.name = json.name;
-            this.assetId = json.assetId;
+            if (typeof json.requestedWidthPercent !== "undefined")
+                this.requestedWidthPercent = json.requestedWidthPercent;
+            if (typeof json.requestedHeightPercent !== "undefined")
+                this.requestedHeightPercent = json.requestedHeightPercent;
+            if (typeof json.horizontalAlign !== "undefined")
+                this.horizontalAlign = json.horizontalAlign;
+            if (typeof json.verticalAlign !== "undefined")
+                this.verticalAlign = json.verticalAlign;
+            if (typeof json.visible !== "undefined")
+                this.visible = json.visible;
+            if (typeof json.fittedIntoWidth !== "undefined")
+                this.fittedIntoWidth = json.fittedIntoWidth;
+            if (typeof json.fittedIntoHeight !== "undefined")
+                this.fittedIntoHeight = json.fittedIntoHeight;
+            if (typeof json.fillArea !== "undefined")
+                this.fillArea = json.fillArea;
+            if (typeof json.name !== "undefined")
+                this.name = json.name;
+            if (typeof json.assetId !== "undefined")
+                this.assetId = json.assetId;
         };
         /**
          * Disposing (Setting to null) all the objects that it holds, like <b>parent</b>. If a <b>displayObject</b> was
@@ -248,10 +266,17 @@ var SimpleLayout;
                 layoutItems.push(this.m_layoutItems[i].toJson());
             }
             result.layoutItems = layoutItems;
+            // first remove the LayoutItem's default fillArea
+            if (result.hasOwnProperty("fillArea"))
+                delete result.fillArea;
+            if (this.fillArea !== true)
+                result.fillArea = this.fillArea;
             if (this.layout)
                 result.layout = this.layout.toJson();
-            result.customWidth = this.customWidth;
-            result.customHeight = this.customHeight;
+            if (this.customWidth !== 0)
+                result.customWidth = this.customWidth;
+            if (this.customHeight !== 0)
+                result.customHeight = this.customHeight;
             return result;
         };
         /**
@@ -316,12 +341,10 @@ var SimpleLayout;
                 layout.fromJson(layoutJson);
                 this.layout = layout;
             }
-            if (typeof json.customWidth !== "undefined") {
+            if (typeof json.customWidth !== "undefined")
                 this.customWidth = json.customWidth;
-            }
-            if (typeof json.customHeight !== "undefined") {
+            if (typeof json.customHeight !== "undefined")
                 this.customHeight = json.customHeight;
-            }
         };
         Object.defineProperty(LayoutContainer.prototype, "layoutItems", {
             /**
@@ -345,12 +368,13 @@ var SimpleLayout;
             configurable: true
         });
         LayoutContainer.prototype.executeLayout = function (width, height) {
-            if (this.layout) {
-                this.layout.fitChildrenInto(this, width, height);
-                if (this.displayObject) {
-                    this.displayObject.width = width;
-                    this.displayObject.height = height;
-                }
+            if (!this.layout) {
+                this.layout = new SimpleLayout.layout.BasicLayout();
+            }
+            this.layout.fitChildrenInto(this, width, height);
+            if (this.displayObject) {
+                this.displayObject.width = width;
+                this.displayObject.height = height;
             }
         };
         /**
@@ -958,17 +982,25 @@ var SimpleLayout;
              * @returns {Object} A Json object that fully describe this Layout
              */
             BasicLayout.prototype.toJson = function () {
-                return {
-                    layoutType: this.getLayoutType(),
-                    paddingTop: this.paddingTop,
-                    paddingBottom: this.paddingBottom,
-                    paddingLeft: this.paddingLeft,
-                    paddingRight: this.paddingRight,
-                    gap: this.gap,
-                    snapToPixels: this.snapToPixels,
-                    horizontalAlign: this.horizontalAlign,
-                    verticalAlign: this.verticalAlign
-                };
+                var result = { layoutType: this.getLayoutType() };
+                // add only the properties that are not default
+                if (this.paddingTop !== 0)
+                    result.paddingTop = this.paddingTop;
+                if (this.paddingBottom !== 0)
+                    result.paddingBottom = this.paddingBottom;
+                if (this.paddingLeft !== 0)
+                    result.paddingLeft = this.paddingLeft;
+                if (this.paddingRight !== 0)
+                    result.paddingRight = this.paddingRight;
+                if (this.gap !== 0)
+                    result.gap = this.gap;
+                if (this.snapToPixels !== false)
+                    result.snapToPixels = this.snapToPixels;
+                if (this.horizontalAlign !== SimpleLayout.enums.HorizontalAlignEnum.H_ALIGN_TYPE_CENTER)
+                    result.horizontalAlign = this.horizontalAlign;
+                if (this.verticalAlign !== SimpleLayout.enums.VerticalAlignEnum.V_ALIGN_TYPE_MIDDLE)
+                    result.verticalAlign = this.verticalAlign;
+                return result;
             };
             /**
              * Copy all the properties from the given json into this Layout.
@@ -977,14 +1009,22 @@ var SimpleLayout;
              * @param json {Object} object that fully describe this Layout
              */
             BasicLayout.prototype.fromJson = function (json) {
-                this.paddingTop = json.paddingTop;
-                this.paddingBottom = json.paddingBottom;
-                this.paddingLeft = json.paddingLeft;
-                this.paddingRight = json.paddingRight;
-                this.gap = json.gap;
-                this.snapToPixels = json.snapToPixels;
-                this.horizontalAlign = json.horizontalAlign;
-                this.verticalAlign = json.verticalAlign;
+                if (typeof json.paddingTop !== "undefined")
+                    this.paddingTop = json.paddingTop;
+                if (typeof json.paddingBottom !== "undefined")
+                    this.paddingBottom = json.paddingBottom;
+                if (typeof json.paddingLeft !== "undefined")
+                    this.paddingLeft = json.paddingLeft;
+                if (typeof json.paddingRight !== "undefined")
+                    this.paddingRight = json.paddingRight;
+                if (typeof json.gap !== "undefined")
+                    this.gap = json.gap;
+                if (typeof json.snapToPixels !== "undefined")
+                    this.snapToPixels = json.snapToPixels;
+                if (typeof json.horizontalAlign !== "undefined")
+                    this.horizontalAlign = json.horizontalAlign;
+                if (typeof json.verticalAlign !== "undefined")
+                    this.verticalAlign = json.verticalAlign;
             };
             /**
              * There are several Layouts, and they all inherit from the BasicLayout. This is a simple way to get the
@@ -1194,12 +1234,16 @@ var SimpleLayout;
              * @returns {Object} A Json object that fully describe this Layout
              */
             GridLayout.prototype.toJson = function () {
-                var resultJson = _super.prototype.toJson.call(this);
-                resultJson.columns = this.columns;
-                resultJson.rows = this.rows;
-                resultJson.horizontalGap = this.horizontalGap;
-                resultJson.verticalGap = this.verticalGap;
-                return resultJson;
+                var result = _super.prototype.toJson.call(this);
+                if (this.columns !== 1)
+                    result.columns = this.columns;
+                if (this.rows !== 1)
+                    result.rows = this.rows;
+                if (this.horizontalGap !== 0)
+                    result.horizontalGap = this.horizontalGap;
+                if (this.verticalGap !== 0)
+                    result.verticalGap = this.verticalGap;
+                return result;
             };
             /**
              * Copy all the properties from the given json into this Layout.
@@ -1209,10 +1253,14 @@ var SimpleLayout;
              */
             GridLayout.prototype.fromJson = function (json) {
                 _super.prototype.fromJson.call(this, json);
-                this.columns = json.columns;
-                this.rows = json.rows;
-                this.horizontalGap = json.horizontalGap;
-                this.verticalGap = json.verticalGap;
+                if (typeof json.columns !== "undefined")
+                    this.columns = json.columns;
+                if (typeof json.rows !== "undefined")
+                    this.rows = json.rows;
+                if (typeof json.horizontalGap !== "undefined")
+                    this.horizontalGap = json.horizontalGap;
+                if (typeof json.verticalGap !== "undefined")
+                    this.verticalGap = json.verticalGap;
             };
             GridLayout.prototype.fitChildrenInto = function (targetContainer, w, h) {
                 if (targetContainer == null)
@@ -1423,6 +1471,7 @@ var SimpleLayout;
 })(SimpleLayout || (SimpleLayout = {}));
 /// <reference path="../reference.ts"/>
 /// <reference path="../reference.ts"/>
+/// <reference path="../reference.ts"/>
 var SimpleLayout;
 (function (SimpleLayout) {
     var layout;
@@ -1619,6 +1668,15 @@ var SimpleLayout;
                     this.m_scriptsUrls.push(scriptUrl);
                 }
             };
+            ScriptsLoader.prototype.addCacheKill = function (url) {
+                if (url.indexOf("?") === -1) {
+                    url = url + "?";
+                }
+                else {
+                    url = url + "&";
+                }
+                return url + "cacheKiller=" + Math.random();
+            };
             ScriptsLoader.prototype.load = function (loadedCallback, errorCallback) {
                 var _this = this;
                 if (this.m_scriptsUrls.length == 0) {
@@ -1629,7 +1687,7 @@ var SimpleLayout;
                     for (var i = 0; i < this.m_scriptsUrls.length; i++) {
                         var scriptElement = document.createElement("script");
                         scriptElement.type = "text/javascript";
-                        scriptElement.src = this.m_scriptsUrls[i];
+                        scriptElement.src = this.addCacheKill(this.m_scriptsUrls[i]);
                         scriptElement.onload = function (event) {
                             _this.m_loadedScripts.push(event.target);
                             countOfLoaded++;

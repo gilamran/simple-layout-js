@@ -107,17 +107,34 @@ module SimpleLayout.layout {
          * @returns {Object} A Json object that fully describe this Layout
          */
         public toJson():any {
-            return {
-                layoutType: this.getLayoutType(),
-                paddingTop: this.paddingTop,
-                paddingBottom: this.paddingBottom,
-                paddingLeft: this.paddingLeft,
-                paddingRight: this.paddingRight,
-                gap: this.gap,
-                snapToPixels: this.snapToPixels,
-                horizontalAlign: this.horizontalAlign,
-                verticalAlign: this.verticalAlign
-            }
+            var result:any = { layoutType: this.getLayoutType() };
+
+            // add only the properties that are not default
+            if (this.paddingTop !== 0)
+                result.paddingTop = this.paddingTop;
+
+            if (this.paddingBottom !== 0)
+                result.paddingBottom = this.paddingBottom;
+
+            if (this.paddingLeft !== 0)
+                result.paddingLeft = this.paddingLeft;
+
+            if (this.paddingRight !== 0)
+                result.paddingRight = this.paddingRight;
+
+            if (this.gap !== 0)
+                result.gap = this.gap;
+
+            if (this.snapToPixels !== false)
+                result.snapToPixels = this.snapToPixels;
+
+            if (this.horizontalAlign !== enums.HorizontalAlignEnum.H_ALIGN_TYPE_CENTER)
+                result.horizontalAlign = this.horizontalAlign;
+
+            if (this.verticalAlign !== enums.VerticalAlignEnum.V_ALIGN_TYPE_MIDDLE)
+                result.verticalAlign = this.verticalAlign;
+
+            return result;
         }
 
         /**
@@ -127,14 +144,29 @@ module SimpleLayout.layout {
          * @param json {Object} object that fully describe this Layout
          */
         public fromJson(json:any):void {
-            this.paddingTop = json.paddingTop;
-            this.paddingBottom = json.paddingBottom;
-            this.paddingLeft = json.paddingLeft;
-            this.paddingRight = json.paddingRight;
-            this.gap = json.gap;
-            this.snapToPixels = json.snapToPixels;
-            this.horizontalAlign = json.horizontalAlign;
-            this.verticalAlign = json.verticalAlign;
+            if (typeof json.paddingTop !== "undefined")
+                this.paddingTop = json.paddingTop;
+
+            if (typeof json.paddingBottom !== "undefined")
+                this.paddingBottom = json.paddingBottom;
+
+            if (typeof json.paddingLeft !== "undefined")
+                this.paddingLeft = json.paddingLeft;
+
+            if (typeof json.paddingRight !== "undefined")
+                this.paddingRight = json.paddingRight;
+
+            if (typeof json.gap !== "undefined")
+                this.gap = json.gap;
+
+            if (typeof json.snapToPixels !== "undefined")
+                this.snapToPixels = json.snapToPixels;
+
+            if (typeof json.horizontalAlign !== "undefined")
+                this.horizontalAlign = json.horizontalAlign;
+
+            if (typeof json.verticalAlign !== "undefined")
+                this.verticalAlign = json.verticalAlign;
         }
 
         /**
@@ -155,7 +187,7 @@ module SimpleLayout.layout {
 
                 if (displayObject) {
                     // add Pivot
-                    var pivotPoint : displayObject.IPoint = displayObject.getPivotPoint();
+                    var pivotPoint:displayObject.IPoint = displayObject.getPivotPoint();
                     if (pivotPoint) {
                         startX = startX + (pivotPoint.x * displayObject.scaleX);
                         startY = startY + (pivotPoint.y * displayObject.scaleY);

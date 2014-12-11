@@ -13,6 +13,7 @@
 /// <reference path="layout/BasicLayout.ts" />
 /// <reference path="layout/GridLayout.ts" />
 /// <reference path="layout/HorizontalLayout.ts" />
+/// <reference path="layout/IGridLayout.ts" />
 /// <reference path="layout/ILayout.ts" />
 /// <reference path="layout/VerticalLayout.ts" />
 /// <reference path="layoutAssetsFactory/LayoutAssetsFactory.ts" />

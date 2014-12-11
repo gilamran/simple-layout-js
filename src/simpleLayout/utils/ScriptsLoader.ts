@@ -21,6 +21,17 @@ module SimpleLayout.utils {
             }
         }
 
+        private addCacheKill(url:string):string {
+            if (url.indexOf("?") === -1) {
+                url = url + "?";
+            }
+            else {
+                url = url + "&";
+            }
+
+            return url + "cacheKiller=" + Math.random();
+        }
+
         public load(loadedCallback:() => void, errorCallback:(errorDesc:string) => void):void {
             if (this.m_scriptsUrls.length==0) {
                 loadedCallback();
@@ -30,7 +41,7 @@ module SimpleLayout.utils {
                 for (var i:number=0; i<this.m_scriptsUrls.length; i++) {
                     var scriptElement : HTMLScriptElement = document.createElement("script");
                     scriptElement.type = "text/javascript";
-                    scriptElement.src = this.m_scriptsUrls[i];
+                    scriptElement.src = this.addCacheKill(this.m_scriptsUrls[i]);
                     scriptElement.onload = (event: Event) => {
                         this.m_loadedScripts.push(<HTMLScriptElement>event.target);
                         countOfLoaded++;

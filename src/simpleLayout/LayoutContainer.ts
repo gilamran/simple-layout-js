@@ -55,11 +55,22 @@ module SimpleLayout {
 
             result.layoutItems = layoutItems;
 
+            // first remove the LayoutItem's default fillArea
+            if (result.hasOwnProperty("fillArea"))
+                delete result.fillArea;
+
+            if (this.fillArea !== true)
+                result.fillArea = this.fillArea;
+
             if (this.layout)
                 result.layout = this.layout.toJson();
 
-            result.customWidth = this.customWidth;
-            result.customHeight = this.customHeight;
+            if (this.customWidth !== 0)
+                result.customWidth = this.customWidth;
+
+            if (this.customHeight !== 0)
+                result.customHeight = this.customHeight;
+
             return result;
         }
 
@@ -126,14 +137,11 @@ module SimpleLayout {
                 this.layout = layout;
             }
 
-            if (typeof json.customWidth !== "undefined") {
+            if (typeof json.customWidth !== "undefined")
                 this.customWidth  = json.customWidth;
-            }
 
-            if (typeof json.customHeight !== "undefined") {
+            if (typeof json.customHeight !== "undefined")
                 this.customHeight = json.customHeight;
-            }
-
         }
 
         /**

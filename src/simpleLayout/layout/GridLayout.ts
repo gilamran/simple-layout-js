@@ -1,6 +1,6 @@
 /// <reference path="../reference.ts"/>
 module SimpleLayout.layout {
-    export class GridLayout extends BasicLayout {
+    export class GridLayout extends BasicLayout implements IGridLayout {
 
         /**
          * The number of columns this grid will have.
@@ -61,13 +61,21 @@ module SimpleLayout.layout {
          * @returns {Object} A Json object that fully describe this Layout
          */
         public toJson():any {
-            var resultJson = super.toJson();
-            resultJson.columns = this.columns;
-            resultJson.rows = this.rows;
-            resultJson.horizontalGap = this.horizontalGap;
-            resultJson.verticalGap = this.verticalGap;
+            var result = super.toJson();
 
-            return resultJson;
+            if (this.columns !== 1)
+                result.columns = this.columns;
+
+            if (this.rows !== 1)
+                result.rows = this.rows;
+
+            if (this.horizontalGap !== 0)
+                result.horizontalGap = this.horizontalGap;
+
+            if (this.verticalGap !== 0)
+                result.verticalGap = this.verticalGap;
+
+            return result;
         }
 
         /**
@@ -78,10 +86,18 @@ module SimpleLayout.layout {
          */
         public fromJson(json:any):void {
             super.fromJson(json);
-            this.columns = json.columns;
-            this.rows = json.rows;
-            this.horizontalGap = json.horizontalGap;
-            this.verticalGap = json.verticalGap;
+
+            if (typeof json.columns !== "undefined")
+                this.columns = json.columns;
+
+            if (typeof json.rows !== "undefined")
+                this.rows = json.rows;
+
+            if (typeof json.horizontalGap !== "undefined")
+                this.horizontalGap = json.horizontalGap;
+
+            if (typeof json.verticalGap !== "undefined")
+                this.verticalGap = json.verticalGap;
         }
 
         public fitChildrenInto(targetContainer:LayoutContainer, w:number, h:number):void {
@@ -181,10 +197,10 @@ module SimpleLayout.layout {
                     this.layoutVisualizer.setDebugLayoutItem(targetContainer, layoutItem, currentX, currentY, targetWidth, targetHeight);
 
                     if (column < targetColumns - 1)
-                        this.layoutVisualizer.setDebugGap(targetContainer, currentX+targetWidth, currentY, targetHGap, targetHeight);
+                        this.layoutVisualizer.setDebugGap(targetContainer, currentX + targetWidth, currentY, targetHGap, targetHeight);
 
-                    if (column===0 && row<targetRows-1)
-                        this.layoutVisualizer.setDebugGap(targetContainer, currentX, currentY+targetHeight, (w-totalHPadding), targetVGap);
+                    if (column === 0 && row < targetRows - 1)
+                        this.layoutVisualizer.setDebugGap(targetContainer, currentX, currentY + targetHeight, (w - totalHPadding), targetVGap);
                 }
 
 
