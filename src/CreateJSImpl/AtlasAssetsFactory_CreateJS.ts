@@ -21,6 +21,8 @@ module SimpleLayout.CreateJSImpl {
             this.disposeAssets();
 
             try {
+                if (this.data.atlasImageUrl)
+                    this.data.atlasJson.images = [this.data.atlasImageUrl];
                 this.m_spriteSheet = new createjs.SpriteSheet(this.data.atlasJson);
 
                 if (this.m_spriteSheet.complete) {

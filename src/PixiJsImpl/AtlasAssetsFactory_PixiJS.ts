@@ -22,7 +22,9 @@ module SimpleLayout.PixiJSImpl {
         public loadAssets(doneCallback:() => void, errorCallback:(errorMessage:string) => void, progressCallback:(percentDone:number) => void):void {
             this.disposeAssets();
             try {
-                this.m_loader = new PIXI.JsonLoader(this.data.atlasImageUrl);
+                if (this.data.atlasImageUrl)
+                    this.data.atlasJson.meta.image = this.data.atlasImageUrl;
+                this.m_loader = new PIXI.JsonLoader('');  // fake loader
                 (<any>this.m_loader).ajaxRequest = {responseText: JSON.stringify(this.data.atlasJson)};
                 this.m_loader.addEventListener('loaded', doneCallback);
                 (<any>this.m_loader).onJSONLoaded();

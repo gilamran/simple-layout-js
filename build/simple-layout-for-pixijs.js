@@ -156,7 +156,9 @@ var SimpleLayout;
             AtlasAssetsFactory_PixiJS.prototype.loadAssets = function (doneCallback, errorCallback, progressCallback) {
                 this.disposeAssets();
                 try {
-                    this.m_loader = new PIXI.JsonLoader(this.data.atlasImageUrl);
+                    if (this.data.atlasImageUrl)
+                        this.data.atlasJson.meta.image = this.data.atlasImageUrl;
+                    this.m_loader = new PIXI.JsonLoader(''); // fake loader
                     this.m_loader.ajaxRequest = { responseText: JSON.stringify(this.data.atlasJson) };
                     this.m_loader.addEventListener('loaded', doneCallback);
                     this.m_loader.onJSONLoaded();
