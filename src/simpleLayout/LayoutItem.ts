@@ -22,6 +22,8 @@ module SimpleLayout {
         fillArea                 : boolean;
         name                     : string;
         assetId                  : string;
+        minRatio                 : number;
+        maxRatio                 : number;
     }
 
     export class LayoutItem {
@@ -30,6 +32,8 @@ module SimpleLayout {
         public parent:LayoutContainer;
         public displayObject:displayObject.IDisplayObject;
 
+        public minRatio:number;
+        public maxRatio:number;
         public requestedWidthPercent:number;
         public requestedHeightPercent:number;
         public horizontalAlign:string;
@@ -59,6 +63,8 @@ module SimpleLayout {
             this.fillArea = false;
             this.requestedWidthPercent = 0.0;
             this.requestedHeightPercent = 0.0;
+            this.minRatio = 0;
+            this.maxRatio = 0;
             this.name = "";
             this.assetId = "";
         }
@@ -128,28 +134,34 @@ module SimpleLayout {
          * This function will be called by a <b>Layout</b> object.
          *
          * @method SimpleLayout.LayoutItem#fitInto
-         * @param width {Number} A specific width that this LayoutItem takes
-         * @param height {Number} A specific height that this LayoutItem takes
+         * @param givenWidth {Number} A specific width that this LayoutItem can take
+         * @param givenHeight {Number} A specific height that this LayoutItem can take
          */
-        public fitInto(width:number, height:number):void {
+        public fitInto(givenWidth:number, givenHeight:number):void {
             // as default we'll take the area that was given to us (Fit into the full given area)
-            var itemWidth:number = width;
-            var itemHeight:number = height;
+            var itemWidth:number = givenWidth;
+            var itemHeight:number = givenHeight;
 
             // If we're asked not to fill the all area?
             if (this.fillArea === false) {
                 // Do we have an item size?
                 // For LayoutItems with graphical assets it will return the asset size
-                // and for LayoutContainer a requested custom size (If provided)
-                var itemSize:ISize = this.getAssetSize();
-                if (itemSize !== null) {
-                    itemWidth = itemSize.width;
-                    itemHeight = itemSize.height;
+                // and for LayoutContainer it will return null (Nothing specific)
+                var assetSize:ISize = this.getAssetSize();
+                if (assetSize !== null) {
+                    itemWidth = assetSize.width;
+                    itemHeight = assetSize.height;
                 }
 
-                itemSize = this.fitToSize(width, height, itemWidth, itemHeight);
-                itemWidth = itemSize.width;
-                itemHeight = itemSize.height;
+                // enforce min/max ratio
+                var sizeAfterEnforce:ISize = this.enforceRatio(itemWidth, itemHeight);
+                itemWidth = sizeAfterEnforce.width;
+                itemHeight = sizeAfterEnforce.height;
+
+                // best fit
+                var sizeAfterBestFit:ISize = this.bestFitWithoutStreching(givenWidth, givenHeight, itemWidth, itemHeight);
+                itemWidth = sizeAfterBestFit.width;
+                itemHeight = sizeAfterBestFit.height;
             }
 
             // make sure that we don't allow values less than 1.
@@ -158,6 +170,27 @@ module SimpleLayout {
             this.executeLayout(itemWidth, itemHeight);
         }
 
+
+        private enforceRatio(givenWidth:number, givenHeight:number):ISize {
+            var result = {
+                width: givenWidth,
+                height: givenHeight
+            };
+
+            var currentRatio : number = givenHeight/givenWidth;
+
+            // minimum ratio is expected?
+            if (this.minRatio>0 && currentRatio<this.minRatio) {
+                result.height = this.minRatio*result.width;
+            }
+
+            // maximum ratio is expected?
+            if (this.maxRatio>0 && currentRatio>this.maxRatio) {
+                result.height = this.maxRatio*result.width;
+            }
+
+            return result;
+        }
 
         /**
          * @protected
@@ -198,8 +231,14 @@ module SimpleLayout {
             if (this.fittedIntoHeight !== 0)
                 result.fittedIntoHeight = this.fittedIntoHeight;
 
+            if (this.minRatio !== 0)
+                result.customWidth = this.minRatio;
+
+            if (this.maxRatio !== 0)
+                result.customHeightMin = this.maxRatio;
+
             if (this.horizontalAlign !== enums.HorizontalAlignEnum.H_ALIGN_TYPE_NONE)
-                result.horizontalAlign = this.fittedIntoHeight;
+                result.horizontalAlign = this.horizontalAlign;
 
             if (this.verticalAlign !== enums.VerticalAlignEnum.V_ALIGN_TYPE_NONE)
                 result.verticalAlign = this.verticalAlign;
@@ -252,6 +291,12 @@ module SimpleLayout {
 
             if (typeof json.assetId !== "undefined")
                 this.assetId = json.assetId;
+
+            if (typeof json.minRatio !== "undefined")
+                this.minRatio = json.minRatio;
+
+            if (typeof json.maxRatio !== "undefined")
+                this.maxRatio = json.maxRatio;
         }
 
 
@@ -269,7 +314,7 @@ module SimpleLayout {
             }
         }
 
-        private fitToSize(givenWidth:number, givenHeight:number, itemWidth:number, itemHeight:number):ISize {
+        private bestFitWithoutStreching(givenWidth:number, givenHeight:number, itemWidth:number, itemHeight:number):ISize {
             var itemRatio:number = itemWidth / itemHeight;
             var containerRatio:number = givenWidth / givenHeight;
 

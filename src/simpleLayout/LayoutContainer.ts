@@ -10,8 +10,6 @@ module SimpleLayout {
 
     export class LayoutContainer extends LayoutItem {
 
-        public customWidth     : number;
-        public customHeight    : number;
         public layout          : layout.ILayout;
         private m_layoutItems  : LayoutItem[];
 
@@ -25,8 +23,6 @@ module SimpleLayout {
             super();
             this.fillArea = true;
             this.m_layoutItems = [];
-            this.customWidth = 0;
-            this.customHeight = 0;
         }
 
         /**
@@ -64,12 +60,6 @@ module SimpleLayout {
 
             if (this.layout)
                 result.layout = this.layout.toJson();
-
-            if (this.customWidth !== 0)
-                result.customWidth = this.customWidth;
-
-            if (this.customHeight !== 0)
-                result.customHeight = this.customHeight;
 
             return result;
         }
@@ -136,12 +126,6 @@ module SimpleLayout {
                 layout.fromJson(layoutJson);
                 this.layout = layout;
             }
-
-            if (typeof json.customWidth !== "undefined")
-                this.customWidth  = json.customWidth;
-
-            if (typeof json.customHeight !== "undefined")
-                this.customHeight = json.customHeight;
         }
 
         /**
@@ -172,24 +156,6 @@ module SimpleLayout {
         }
 
         /**
-         * @protected
-         * @override
-         */
-        public getAssetSize():ISize {
-            // were we asked for a custom size?
-            if (this.customWidth>0 && this.customHeight>0) {
-                return {
-                    width  : this.customWidth,
-                    height : this.customHeight
-                }
-            }
-            else {
-                // If we don't have a custom size, return null and it will fill the area
-                return null;
-            }
-        }
-
-        /**
          * A shortcut to <b>container.layoutItems[index]</b>
          *
          * @method SimpleLayout.LayoutContainer#getLayoutItemAt
@@ -198,6 +164,14 @@ module SimpleLayout {
          */
         public getLayoutItemAt(index:number):LayoutItem {
             return this.m_layoutItems[index];
+        }
+
+        /**
+         * @protected
+         */
+        public getAssetSize():ISize {
+            // no specific asset size for containers
+            return null;
         }
 
         /**

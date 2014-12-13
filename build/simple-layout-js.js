@@ -23,6 +23,8 @@ var SimpleLayout;
             this.fillArea = false;
             this.requestedWidthPercent = 0.0;
             this.requestedHeightPercent = 0.0;
+            this.minRatio = 0;
+            this.maxRatio = 0;
             this.name = "";
             this.assetId = "";
         }
@@ -88,31 +90,52 @@ var SimpleLayout;
          * This function will be called by a <b>Layout</b> object.
          *
          * @method SimpleLayout.LayoutItem#fitInto
-         * @param width {Number} A specific width that this LayoutItem takes
-         * @param height {Number} A specific height that this LayoutItem takes
+         * @param givenWidth {Number} A specific width that this LayoutItem can take
+         * @param givenHeight {Number} A specific height that this LayoutItem can take
          */
-        LayoutItem.prototype.fitInto = function (width, height) {
+        LayoutItem.prototype.fitInto = function (givenWidth, givenHeight) {
             // as default we'll take the area that was given to us (Fit into the full given area)
-            var itemWidth = width;
-            var itemHeight = height;
+            var itemWidth = givenWidth;
+            var itemHeight = givenHeight;
             // If we're asked not to fill the all area?
             if (this.fillArea === false) {
                 // Do we have an item size?
                 // For LayoutItems with graphical assets it will return the asset size
-                // and for LayoutContainer a requested custom size (If provided)
-                var itemSize = this.getAssetSize();
-                if (itemSize !== null) {
-                    itemWidth = itemSize.width;
-                    itemHeight = itemSize.height;
+                // and for LayoutContainer it will return null (Nothing specific)
+                var assetSize = this.getAssetSize();
+                if (assetSize !== null) {
+                    itemWidth = assetSize.width;
+                    itemHeight = assetSize.height;
                 }
-                itemSize = this.fitToSize(width, height, itemWidth, itemHeight);
-                itemWidth = itemSize.width;
-                itemHeight = itemSize.height;
+                // enforce min/max ratio
+                var sizeAfterEnforce = this.enforceRatio(itemWidth, itemHeight);
+                itemWidth = sizeAfterEnforce.width;
+                itemHeight = sizeAfterEnforce.height;
+                // best fit
+                var sizeAfterBestFit = this.bestFitWithoutStreching(givenWidth, givenHeight, itemWidth, itemHeight);
+                itemWidth = sizeAfterBestFit.width;
+                itemHeight = sizeAfterBestFit.height;
             }
             // make sure that we don't allow values less than 1.
             itemWidth = Math.max(1, itemWidth);
             itemHeight = Math.max(1, itemHeight);
             this.executeLayout(itemWidth, itemHeight);
+        };
+        LayoutItem.prototype.enforceRatio = function (givenWidth, givenHeight) {
+            var result = {
+                width: givenWidth,
+                height: givenHeight
+            };
+            var currentRatio = givenHeight / givenWidth;
+            // minimum ratio is expected?
+            if (this.minRatio > 0 && currentRatio < this.minRatio) {
+                result.height = this.minRatio * result.width;
+            }
+            // maximum ratio is expected?
+            if (this.maxRatio > 0 && currentRatio > this.maxRatio) {
+                result.height = this.maxRatio * result.width;
+            }
+            return result;
         };
         /**
          * @protected
@@ -147,8 +170,12 @@ var SimpleLayout;
                 result.fittedIntoWidth = this.fittedIntoWidth;
             if (this.fittedIntoHeight !== 0)
                 result.fittedIntoHeight = this.fittedIntoHeight;
+            if (this.minRatio !== 0)
+                result.customWidth = this.minRatio;
+            if (this.maxRatio !== 0)
+                result.customHeightMin = this.maxRatio;
             if (this.horizontalAlign !== SimpleLayout.enums.HorizontalAlignEnum.H_ALIGN_TYPE_NONE)
-                result.horizontalAlign = this.fittedIntoHeight;
+                result.horizontalAlign = this.horizontalAlign;
             if (this.verticalAlign !== SimpleLayout.enums.VerticalAlignEnum.V_ALIGN_TYPE_NONE)
                 result.verticalAlign = this.verticalAlign;
             if (this.fillArea !== false)
@@ -186,6 +213,10 @@ var SimpleLayout;
                 this.name = json.name;
             if (typeof json.assetId !== "undefined")
                 this.assetId = json.assetId;
+            if (typeof json.minRatio !== "undefined")
+                this.minRatio = json.minRatio;
+            if (typeof json.maxRatio !== "undefined")
+                this.maxRatio = json.maxRatio;
         };
         /**
          * Disposing (Setting to null) all the objects that it holds, like <b>parent</b>. If a <b>displayObject</b> was
@@ -200,7 +231,7 @@ var SimpleLayout;
                 this.displayObject = null;
             }
         };
-        LayoutItem.prototype.fitToSize = function (givenWidth, givenHeight, itemWidth, itemHeight) {
+        LayoutItem.prototype.bestFitWithoutStreching = function (givenWidth, givenHeight, itemWidth, itemHeight) {
             var itemRatio = itemWidth / itemHeight;
             var containerRatio = givenWidth / givenHeight;
             if (containerRatio > itemRatio) {
@@ -241,8 +272,6 @@ var SimpleLayout;
             _super.call(this);
             this.fillArea = true;
             this.m_layoutItems = [];
-            this.customWidth = 0;
-            this.customHeight = 0;
         }
         /**
          * This is an override to LayoutItem.getLayoutItemType, and this function returns the string "LayoutContainer"
@@ -273,10 +302,6 @@ var SimpleLayout;
                 result.fillArea = this.fillArea;
             if (this.layout)
                 result.layout = this.layout.toJson();
-            if (this.customWidth !== 0)
-                result.customWidth = this.customWidth;
-            if (this.customHeight !== 0)
-                result.customHeight = this.customHeight;
             return result;
         };
         /**
@@ -341,10 +366,6 @@ var SimpleLayout;
                 layout.fromJson(layoutJson);
                 this.layout = layout;
             }
-            if (typeof json.customWidth !== "undefined")
-                this.customWidth = json.customWidth;
-            if (typeof json.customHeight !== "undefined")
-                this.customHeight = json.customHeight;
         };
         Object.defineProperty(LayoutContainer.prototype, "layoutItems", {
             /**
@@ -378,23 +399,6 @@ var SimpleLayout;
             }
         };
         /**
-         * @protected
-         * @override
-         */
-        LayoutContainer.prototype.getAssetSize = function () {
-            // were we asked for a custom size?
-            if (this.customWidth > 0 && this.customHeight > 0) {
-                return {
-                    width: this.customWidth,
-                    height: this.customHeight
-                };
-            }
-            else {
-                // If we don't have a custom size, return null and it will fill the area
-                return null;
-            }
-        };
-        /**
          * A shortcut to <b>container.layoutItems[index]</b>
          *
          * @method SimpleLayout.LayoutContainer#getLayoutItemAt
@@ -403,6 +407,13 @@ var SimpleLayout;
          */
         LayoutContainer.prototype.getLayoutItemAt = function (index) {
             return this.m_layoutItems[index];
+        };
+        /**
+         * @protected
+         */
+        LayoutContainer.prototype.getAssetSize = function () {
+            // no specific asset size for containers
+            return null;
         };
         /**
          * Removes all the assets from the stage and re-adds them again. This is useful if you moved a LayoutItem in the
