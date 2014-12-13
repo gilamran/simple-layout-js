@@ -27,6 +27,7 @@ module SimpleLayout.PixiJSImpl {
                 this.m_loader = new PIXI.JsonLoader('');  // fake loader
                 (<any>this.m_loader).ajaxRequest = {responseText: JSON.stringify(this.data.atlasJson)};
                 this.m_loader.addEventListener('loaded', doneCallback);
+                this.m_loader.addEventListener('error', () => {errorCallback("Unable to load atlas")});
                 (<any>this.m_loader).onJSONLoaded();
             }
             catch (error) {
