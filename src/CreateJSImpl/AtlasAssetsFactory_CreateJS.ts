@@ -32,6 +32,9 @@ module SimpleLayout.CreateJSImpl {
                     this.m_spriteSheet.addEventListener('complete', () => {
                         doneCallback();
                     });
+                    this.m_spriteSheet.addEventListener('error', () => {
+                        errorCallback('Unable to load the atlas');
+                    });
                 }
             }
             catch (error) {
