@@ -161,6 +161,9 @@ var SimpleLayout;
                     this.m_loader = new PIXI.JsonLoader(''); // fake loader
                     this.m_loader.ajaxRequest = { responseText: JSON.stringify(this.data.atlasJson) };
                     this.m_loader.addEventListener('loaded', doneCallback);
+                    this.m_loader.addEventListener('error', function () {
+                        errorCallback("Unable to load atlas");
+                    });
                     this.m_loader.onJSONLoaded();
                 }
                 catch (error) {

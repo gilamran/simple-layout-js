@@ -2,7 +2,7 @@ module SimpleLayout.assetsFactory {
 
     export interface IAssetsFactoryData {
         className   : string;
-        data        : any;
+        data?       : any;
     }
 
     export interface IAssetsFactoriesData {
@@ -29,7 +29,13 @@ module SimpleLayout.assetsFactory {
         private createFactory(factoryData : IAssetsFactoryData):any {
             if (factoryData) {
                 var factoryClass = this.getClassFromGlobalScope(factoryData.className);
-                var factoryObj = new factoryClass(factoryData.data);
+                var factoryObj;
+
+                if (typeof factoryData.data !== 'undefined')
+                    factoryObj = new factoryClass(factoryData.data);
+                else
+                    factoryObj = new factoryClass();
+
                 if (factoryObj.hasAssetsToLoad()) {
                     this.m_assetsFactories.push(factoryObj);
                 }

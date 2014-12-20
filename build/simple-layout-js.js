@@ -97,6 +97,7 @@ var SimpleLayout;
             // as default we'll take the area that was given to us (Fit into the full given area)
             var itemWidth = givenWidth;
             var itemHeight = givenHeight;
+            this.resetScale();
             // If we're asked not to fill the all area?
             if (this.fillArea === false) {
                 // Do we have an item size?
@@ -140,9 +141,16 @@ var SimpleLayout;
         /**
          * @protected
          */
-        LayoutItem.prototype.getAssetSize = function () {
+        LayoutItem.prototype.resetScale = function () {
             if (this.displayObject) {
                 this.displayObject.resetScaling();
+            }
+        };
+        /**
+         * @protected
+         */
+        LayoutItem.prototype.getAssetSize = function () {
+            if (this.displayObject) {
                 return {
                     width: this.displayObject.width,
                     height: this.displayObject.height
@@ -565,7 +573,11 @@ var SimpleLayout;
             AssetsFactoriesWrapper.prototype.createFactory = function (factoryData) {
                 if (factoryData) {
                     var factoryClass = this.getClassFromGlobalScope(factoryData.className);
-                    var factoryObj = new factoryClass(factoryData.data);
+                    var factoryObj;
+                    if (typeof factoryData.data !== 'undefined')
+                        factoryObj = new factoryClass(factoryData.data);
+                    else
+                        factoryObj = new factoryClass();
                     if (factoryObj.hasAssetsToLoad()) {
                         this.m_assetsFactories.push(factoryObj);
                     }
@@ -1624,6 +1636,7 @@ var SimpleLayout;
         };
         LayoutAssetsFactory.createNodeAssets = function (node, assetsFactory) {
             var containerWrapper = assetsFactory.createDisplayObjectContainer();
+            containerWrapper.name = node.name;
             node.setDisplayObject(containerWrapper);
             for (var i = 0; i < node.countLayoutItems; i++) {
                 var layoutItem = node.getLayoutItemAt(i);

@@ -155,6 +155,9 @@ var SimpleLayout;
                         this.m_spriteSheet.addEventListener('complete', function () {
                             doneCallback();
                         });
+                        this.m_spriteSheet.addEventListener('error', function () {
+                            errorCallback('Unable to load the atlas');
+                        });
                     }
                 }
                 catch (error) {

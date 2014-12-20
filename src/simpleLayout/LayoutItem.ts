@@ -142,6 +142,8 @@ module SimpleLayout {
             var itemWidth:number = givenWidth;
             var itemHeight:number = givenHeight;
 
+            this.resetScale();
+
             // If we're asked not to fill the all area?
             if (this.fillArea === false) {
                 // Do we have an item size?
@@ -195,9 +197,17 @@ module SimpleLayout {
         /**
          * @protected
          */
-        public getAssetSize():ISize {
+        public resetScale():void {
             if (this.displayObject) {
                 this.displayObject.resetScaling();
+            }
+        }
+
+        /**
+         * @protected
+         */
+        public getAssetSize():ISize {
+            if (this.displayObject) {
                 return {
                     width: this.displayObject.width,
                     height: this.displayObject.height

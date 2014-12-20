@@ -27,6 +27,7 @@ module SimpleLayout {
 
         private static createNodeAssets(node:LayoutContainer, assetsFactory:IAssetsFactory):void {
             var containerWrapper = assetsFactory.createDisplayObjectContainer();
+            containerWrapper.name = node.name;
             node.setDisplayObject(containerWrapper);
 
             for (var i:number = 0; i < node.countLayoutItems; i++) {

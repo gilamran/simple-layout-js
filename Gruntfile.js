@@ -131,6 +131,18 @@ module.exports = function (grunt) {
                     removeComments: false,
                     declaration: true
                 }
+            },
+            distSVG: {
+                src: ["src/SVGImpl/**/*.ts"],
+                reference: "src/SVGImpl/reference.ts",
+                out: 'build/simple-layout-for-svg.js',
+                options: {
+                    target: 'es5',
+                    module: 'amd',
+                    sourceMap: true,
+                    removeComments: false,
+                    declaration: true
+                }
             }
         },
 
@@ -186,6 +198,16 @@ module.exports = function (grunt) {
                         to: 'pixi/pixi.d.ts'
                     }
                 ]
+            },
+            svgReferences: {
+                src: ['defs/simple-layout-js/simple-layout-for-svg.d.ts'],
+                overwrite: true,
+                replacements: [
+                    {
+                        from: '/// <reference path="../defs/tsd.d.ts" />',
+                        to: ''
+                    }
+                ]
             }
         },
 		release: {
@@ -204,6 +226,7 @@ module.exports = function (grunt) {
         'clean:libDefinitions',
         'ts:distCreateJS',
         'ts:distPixiJS',
+        'ts:distSVG',
         'copy:implDefinitions',
         'clean:implDefinitions',
         'replace'
